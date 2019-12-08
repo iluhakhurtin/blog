@@ -1,0 +1,25 @@
+﻿<Properties>
+  <MonoDevelop.Ide.ItemProperties.DbUpdates PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="DbUpdates/PostgreSQL/DbManager.cs">
+    <Files>
+      <File FileName="DbUpdates/Program.cs" Line="1" Column="1" />
+      <File FileName="DbUpdates/PostgreSQL/DbManager.cs" Line="26" Column="12" />
+      <File FileName="DbUpdates/Configuration.cs" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="DbUpdates" expanded="True">
+            <Node name="DbUpdates" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

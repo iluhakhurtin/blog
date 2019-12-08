@@ -1,0 +1,7 @@
+BEGIN TRANSACTION;
+	
+UPDATE "DbSettings" SET
+	"SchemaVersion"=4;
+	
+ROLLBACK;
+--COMMIT;

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DbUpdates": {
+      "commandName": "Project",
+      "commandLineArgs": "-cs \"Server=sanalivepostgresql.crgewccat3od.ap-southeast-2.rds.amazonaws.com;Port=5432;Database=postgres;User Id=sanadeveloper;Password=lskuscs1d80k;\" -db \"SanaLiveTestDb\" -uf \"x:\\projects\\sana\\SanaLive\\sana.live\\PostgreSQL\\SanaLiveMaster\\Versions\""
+    }
+  }
+}
