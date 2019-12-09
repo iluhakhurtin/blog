@@ -5,7 +5,7 @@ namespace Blog.Repositories.PostgreSQL
     {
         public IArticlesRepository ArticlesRepository { get; private set; }
 
-        public Repositories()
+        public Repositories(string blogConnectionString)
         {
 
         }

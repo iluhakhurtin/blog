@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blog.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SanaLive.Service.DbConnections;
 
 namespace Blog.Web
 {
@@ -24,6 +26,11 @@ namespace Blog.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            IDbConnections dbConnections = new JsonDbConnections();
+            services.AddSingleton<IDbConnections>(dbConnections);
+
+            IRepositories repositories = this.InitRepositories(services, dbConnections.BlogConnectionString);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +59,15 @@ namespace Blog.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private IRepositories InitRepositories(IServiceCollection services, string blogConnectionString)
+        {
+            IRepositories repositories = new Blog.Repositories.PostgreSQL.Repositories(blogConnectionString);
+
+            services.AddSingleton<IRepositories>(repositories);
+
+            return repositories;
         }
     }
 }
