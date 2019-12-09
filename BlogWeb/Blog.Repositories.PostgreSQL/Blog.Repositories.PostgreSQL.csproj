@@ -4,4 +4,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Blog.Repositories\Blog.Repositories.csproj" />
+  </ItemGroup>
 </Project>

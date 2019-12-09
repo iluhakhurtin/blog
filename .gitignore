@@ -20,3 +20,5 @@
 
 /BlogWeb/Tests/Blog.Domain.Tests/obj/
 /BlogWeb/Tests/Blog.Domain.Tests/bin/
+/BlogWeb/Tests/Blog.Services.Tests/obj/
+/BlogWeb/Tests/Blog.Services.Tests/bin/
