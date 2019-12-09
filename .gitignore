@@ -5,3 +5,11 @@
 /BlogWeb/.vs/
 /BlogWeb/Blog.Web/obj/
 /BlogWeb/Blog.Web/bin/
+/BlogWeb/Blog.Repository/obj/
+/BlogWeb/Blog.Repository/bin/
+/BlogWeb/Blog.Repository.PostgreSQL/obj/
+/BlogWeb/Blog.Repository.PostgreSQL/bin/
+/BlogWeb/Blog.Retriever/obj/
+/BlogWeb/Blog.Retriever/bin/
+/BlogWeb/Blog.Retriever.PostgreSQL/obj/
+/BlogWeb/Blog.Retriever.PostgreSQL/bin/
