@@ -13,3 +13,5 @@
 /BlogWeb/Blog.Retriever/bin/
 /BlogWeb/Blog.Retriever.PostgreSQL/obj/
 /BlogWeb/Blog.Retriever.PostgreSQL/bin/
+/BlogWeb/Blog.Domain/obj/
+/BlogWeb/Blog.Domain/bin/
