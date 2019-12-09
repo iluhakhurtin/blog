@@ -2,6 +2,6 @@
 /PostgreSQL/DbUpdates/DbUpdates/bin
 /PostgreSQL/DbUpdates/DbUpdates/obj
 
-/WebBlog/.vs/
-/WebBlog/WebBlog/obj/
-/WebBlog/WebBlog/bin/
+/BlogWeb/.vs/
+/BlogWeb/Blog.Web/obj/
+/BlogWeb/Blog.Web/bin/
