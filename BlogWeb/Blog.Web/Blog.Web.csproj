@@ -31,5 +31,10 @@
   <ItemGroup>
     <Folder Include="wwwroot\img\" />
     <Folder Include="Views\Catalog\" />
+    <Folder Include="Views\Article\" />
+    <Folder Include="Models\Article\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
   </ItemGroup>
 </Project>

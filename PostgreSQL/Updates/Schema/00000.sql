@@ -38,9 +38,6 @@ WITH (
 CREATE INDEX "IX_Articles_Title"
     ON "Articles"("Title");
 
-CREATE INDEX "IX_Articles_Body"
-    ON "Articles"("Body");
-
 CREATE TABLE "ArticleCategories"
 (
     "ArticleId"		uuid NOT NULL,
