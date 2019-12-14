@@ -30,7 +30,10 @@ namespace Blog.Web
             IDbConnections dbConnections = new JsonDbConnections();
             services.AddSingleton<IDbConnections>(dbConnections);
 
-            IRepositories repositories = this.InitRepositories(services, dbConnections.BlogConnectionString);
+            //repositories
+            IRepositories repositories = this.BuildRepositories(dbConnections.BlogConnectionString);
+            services.AddSingleton<IRepositories>(repositories);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,12 +64,9 @@ namespace Blog.Web
             });
         }
 
-        private IRepositories InitRepositories(IServiceCollection services, string blogConnectionString)
+        private IRepositories BuildRepositories(string blogConnectionString)
         {
             IRepositories repositories = new Blog.Repositories.PostgreSQL.Repositories(blogConnectionString);
-
-            services.AddSingleton<IRepositories>(repositories);
-
             return repositories;
         }
     }

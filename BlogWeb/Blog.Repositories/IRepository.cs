@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
+
 namespace Blog.Repositories
 {
-    public interface IRepository
+    public interface IRepository<T>
     {
     }
 }
