@@ -4,7 +4,7 @@ using Npgsql;
 
 namespace Blog.Repositories.PostgreSQL
 {
-    public abstract class Repository<T> : IRepository<T>
+    internal abstract class Repository<T> : IRepository<T>
     {
         protected readonly string connectionString;
 

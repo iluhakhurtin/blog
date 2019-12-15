@@ -5,7 +5,7 @@ using Npgsql;
 
 namespace Blog.Repositories.PostgreSQL
 {
-    public class ArticlesRepository : Repository<Article>, IArticlesRepository
+    internal class ArticlesRepository : Repository<Article>, IArticlesRepository
     {
         public ArticlesRepository(string connectionString)
             : base(connectionString)

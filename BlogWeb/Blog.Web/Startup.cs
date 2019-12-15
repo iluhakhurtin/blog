@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Repositories;
+using Blog.Retrievers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,6 +35,8 @@ namespace Blog.Web
             IRepositories repositories = this.BuildRepositories(dbConnections.BlogConnectionString);
             services.AddSingleton<IRepositories>(repositories);
 
+            IRetrievers retrievers = this.BuildRetrievers(dbConnections.BlogConnectionString);
+            services.AddSingleton<IRetrievers>(retrievers);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,6 +71,12 @@ namespace Blog.Web
         {
             IRepositories repositories = new Blog.Repositories.PostgreSQL.Repositories(blogConnectionString);
             return repositories;
+        }
+
+        private IRetrievers BuildRetrievers(string blogConnectionString)
+        {
+            IRetrievers retrievers = new Blog.Retrievers.PostgreSQL.Retrievers(blogConnectionString);
+            return retrievers;
         }
     }
 }
