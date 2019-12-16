@@ -1,0 +1,1 @@
+ALTER TABLE "Images" ADD "MimeType" text NULL;

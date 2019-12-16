@@ -32,7 +32,7 @@ namespace Blog.Repositories.PostgreSQL
 
                     using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
                     {
-                        if (dataReader.Read())
+                        if (await dataReader.ReadAsync())
                         {
                             var article = new Article();
                             article.Id = id;

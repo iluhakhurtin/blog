@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
+using Npgsql;
 
 namespace Blog.Retrievers.PostgreSQL
 {
@@ -10,12 +12,42 @@ namespace Blog.Retrievers.PostgreSQL
         {
         }
 
-        public Task<byte[]> GetOriginalFileDataAsync(Guid imageId)
+        public async Task<dynamic> GetOriginalImageDataAsync(Guid imageId)
         {
-            throw new NotImplementedException();
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+                                i.""MimeType"",
+	                            f.""Data""
+                                FROM ""Images"" i
+                                JOIN ""Files"" f ON f.""Id"" = i.""OriginalFileId""
+                                WHERE i.""Id"" = :ImageId;
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    var imageIdParam = command.Parameters.AddWithValue("ImageId", imageId);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        if (await dataReader.ReadAsync())
+                        {
+                            var result = new
+                            {
+                                MimeType = dataReader.GetString(0),
+                                Data = await dataReader.GetStreamAsync(1)
+                            };
+                            return result;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
-        public Task<byte[]> GetPreviewFileDataAsync(Guid imageId)
+        public Task<dynamic> GetPreviewImageDataAsync(Guid imageId)
         {
             throw new NotImplementedException();
         }

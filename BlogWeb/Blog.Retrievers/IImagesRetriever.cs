@@ -1,11 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Blog.Retrievers
 {
     public interface IImagesRetriever : IRetriever
     {
-        Task<byte[]> GetPreviewFileDataAsync(Guid imageId);
-        Task<byte[]> GetOriginalFileDataAsync(Guid imageId);
+        Task<dynamic> GetPreviewImageDataAsync(Guid imageId);
+        Task<dynamic> GetOriginalImageDataAsync(Guid imageId);
     }
 }
