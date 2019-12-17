@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using Blog.Retrievers;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Blog.Web.Controllers
 {
-    public class ImageController : Controller
+    public class ImageController : BaseController
     {
         private readonly IImagesRetriever imagesRetriever;
 
@@ -24,13 +22,29 @@ namespace Blog.Web.Controllers
         {
             try
             {
-                id = Guid.Parse("c8c9a1b1-5505-231d-93cc-cec4e8d03820");
-                var imageData = await this.imagesRetriever.GetOriginalImageDataAsync(id);
-                FileStreamResult fileStreamResult = new FileStreamResult(imageData.Stream, imageData.MimeType);
+                var imageDataResult = await this.imagesRetriever.GetOriginalImageDataAsync(id);
+                var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
+                return fileContentResult;
             }
-            catch
+            catch(Exception ex)
             {
-                base.NotFound();
+                return base.NotFound();
+            }
+        }
+
+        [HttpGet]
+        [Route("images/{fileName}")]
+        public async Task<IActionResult> Index(string fileName)
+        {
+            try
+            {
+                var imageDataResult = await this.imagesRetriever.GetOriginalImageDataAsync(id);
+                var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
+                return fileContentResult;
+            }
+            catch (Exception ex)
+            {
+                return base.NotFound();
             }
         }
     }

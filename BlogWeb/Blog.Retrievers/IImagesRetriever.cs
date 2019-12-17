@@ -6,7 +6,13 @@ namespace Blog.Retrievers
 {
     public interface IImagesRetriever : IRetriever
     {
-        Task<dynamic> GetPreviewImageDataAsync(Guid imageId);
-        Task<dynamic> GetOriginalImageDataAsync(Guid imageId);
+        Task<ImageDataResult> GetPreviewImageDataAsync(Guid imageId);
+        Task<ImageDataResult> GetOriginalImageDataAsync(Guid imageId);
+
+        public class ImageDataResult
+        {
+            public byte[] Data { get; set; }
+            public String MimeType { get; set; }
+        }
     }
 }

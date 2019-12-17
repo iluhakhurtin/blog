@@ -12,12 +12,12 @@ namespace Blog.Retrievers.PostgreSQL
         {
         }
 
-        public async Task<dynamic> GetOriginalImageDataAsync(Guid imageId)
+        public async Task<IImagesRetriever.ImageDataResult> GetOriginalImageDataAsync(Guid imageId)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
                 string sql = @"SELECT
-                                i.""MimeType"",
+                                f.""MimeType"",
 	                            f.""Data""
                                 FROM ""Images"" i
                                 JOIN ""Files"" f ON f.""Id"" = i.""OriginalFileId""
@@ -34,10 +34,10 @@ namespace Blog.Retrievers.PostgreSQL
                     {
                         if (await dataReader.ReadAsync())
                         {
-                            var result = new
+                            var result = new IImagesRetriever.ImageDataResult
                             {
-                                MimeType = dataReader.GetString(0),
-                                Data = await dataReader.GetStreamAsync(1)
+                                MimeType = (string)dataReader["MimeType"],
+                                Data = (byte[])dataReader["Data"]
                             };
                             return result;
                         }
@@ -47,9 +47,39 @@ namespace Blog.Retrievers.PostgreSQL
             return null;
         }
 
-        public Task<dynamic> GetPreviewImageDataAsync(Guid imageId)
+        public async Task<IImagesRetriever.ImageDataResult> GetPreviewImageDataAsync(Guid imageId)
         {
-            throw new NotImplementedException();
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+                                f.""MimeType"",
+	                            f.""Data""
+                                FROM ""Images"" i
+                                JOIN ""Files"" f ON f.""Id"" = i.""PreviewFileId""
+                                WHERE i.""Id"" = :ImageId;
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    var imageIdParam = command.Parameters.AddWithValue("ImageId", imageId);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        if (await dataReader.ReadAsync())
+                        {
+                            var result = new IImagesRetriever.ImageDataResult
+                            {
+                                MimeType = (string)dataReader["MimeType"],
+                                Data = (byte[])dataReader["Data"]
+                            };
+                            return result;
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }
