@@ -15,12 +15,12 @@ namespace Blog.Web.Controllers
     public class ArticleController : BaseController
     {
         private readonly IArticlesRepository articlesRepository;
-        private readonly IFilesRepository filesRepository;
+        private readonly IImagesRetriever imagesRetriever;
 
-        public ArticleController(IRepositories repositories)
+        public ArticleController(IRepositories repositories, IRetrievers retrievers)
         {
             this.articlesRepository = repositories.ArticlesRepository;
-            this.filesRepository = repositories.FilesRepository;
+            this.imagesRetriever = retrievers.ImagesRetriever;
         }
 
 
@@ -38,8 +38,8 @@ namespace Blog.Web.Controllers
         {
             try
             {
-                var file = await this.filesRepository.GetByNameAsync(fileName);
-                var fileContentResult = new FileContentResult(file.Data, file.MimeType);
+                var imageDataResult = await this.imagesRetriever.GetPreviewImageDataByNameAsync(fileName);
+                var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
                 return fileContentResult;
             }
             catch (Exception ex)

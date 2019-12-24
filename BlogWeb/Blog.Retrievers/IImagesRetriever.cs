@@ -8,6 +8,7 @@ namespace Blog.Retrievers
     {
         Task<ImageDataResult> GetPreviewImageDataAsync(Guid imageId);
         Task<ImageDataResult> GetOriginalImageDataAsync(Guid imageId);
+        Task<ImageDataResult> GetPreviewImageDataByNameAsync(String fileName);
 
         public class ImageDataResult
         {

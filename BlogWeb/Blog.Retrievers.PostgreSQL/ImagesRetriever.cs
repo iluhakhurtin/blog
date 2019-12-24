@@ -81,5 +81,41 @@ namespace Blog.Retrievers.PostgreSQL
             }
             return null;
         }
+
+        public async Task<IImagesRetriever.ImageDataResult> GetPreviewImageDataByNameAsync(string fileName)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+	                            prevf.""MimeType"",
+                                prevf.""Data""
+                                FROM ""Files"" origf
+                                JOIN ""Images"" i ON i.""OriginalFileId"" = origf.""Id""
+                                JOIN ""Files"" prevf ON prevf.""Id"" = i.""PreviewFileId""
+                                WHERE origf.""Name"" = :FileName
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    var fileNameParam = command.Parameters.AddWithValue("FileName", fileName);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        if (await dataReader.ReadAsync())
+                        {
+                            var result = new IImagesRetriever.ImageDataResult
+                            {
+                                MimeType = (string)dataReader["MimeType"],
+                                Data = (byte[])dataReader["Data"]
+                            };
+                            return result;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
