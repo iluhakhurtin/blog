@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Blog.Repositories;
 using Blog.Retrievers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -64,6 +67,19 @@ namespace Blog.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "article",
+                    pattern: "Article/Index/images/{fileName}",
+                    new { controller = "Article", action = "Image", arg = "{fileName}" });
+
+                var imageRoutingConstraint = new RegexRoutingConstraint("/(?<images>)/.+\\..+?$");
+
+                endpoints.MapControllerRoute(
+                    name: "images",
+                    pattern: "{*url}",
+                    defaults: new { controller = "Image", action = "Image" },
+                    constraints: new { url = imageRoutingConstraint });
             });
         }
 
@@ -77,6 +93,49 @@ namespace Blog.Web
         {
             IRetrievers retrievers = new Blog.Retrievers.PostgreSQL.Retrievers(blogConnectionString);
             return retrievers;
+        }
+    }
+
+    public class RegexRoutingConstraint : IRouteConstraint
+    {
+        private readonly List<Regex> regexes = new List<Regex>();
+
+        public RegexRoutingConstraint(params string[] regexes)
+        {
+            foreach (var regex in regexes)
+            {
+                this.regexes.Add(new Regex(regex));
+            }
+        }
+
+        public bool Match(HttpContext httpContext,
+                          IRouter route,
+                          string routeKey,
+                          RouteValueDictionary values,
+                          RouteDirection routeDirection)
+        {
+            if (values[routeKey] == null)
+            {
+                return false;
+            }
+
+            var url = values[routeKey].ToString();
+
+            foreach (var regex in regexes)
+            {
+                var match = regex.Match(url);
+                if (match.Success)
+                {
+                    foreach (Group group in match.Groups)
+                    {
+                        values.Add(group.Name, group.Value);
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
