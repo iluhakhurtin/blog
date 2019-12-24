@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blog.Domain;
 using Blog.Repositories;
+using Blog.Retrievers;
 using Blog.Web.Models.Article;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +15,12 @@ namespace Blog.Web.Controllers
     public class ArticleController : BaseController
     {
         private readonly IArticlesRepository articlesRepository;
+        private readonly IFilesRepository filesRepository;
 
         public ArticleController(IRepositories repositories)
         {
             this.articlesRepository = repositories.ArticlesRepository;
+            this.filesRepository = repositories.FilesRepository;
         }
 
 
@@ -31,19 +34,18 @@ namespace Blog.Web.Controllers
         }
 
         // GET: /<controller>/images
-        public IActionResult Image(string fileName)
+        public async Task<IActionResult> Image(string fileName)
         {
-            //try
-            //{
-            //    var imageDataResult = await this.imagesRetriever.GetOriginalImageDataAsync(id);
-            //    var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
-            //    return fileContentResult;
-            //}
-            //catch (Exception ex)
-            //{
-            //    return base.NotFound();
-            //}
-            return base.NotFound();
+            try
+            {
+                var file = await this.filesRepository.GetByNameAsync(fileName);
+                var fileContentResult = new FileContentResult(file.Data, file.MimeType);
+                return fileContentResult;
+            }
+            catch (Exception ex)
+            {
+                return base.NotFound();
+            }
         }
     }
 }
