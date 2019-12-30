@@ -4,4 +4,14 @@
     ViewData["Title"] = "Каталог";
 }
 
+@section Stylesheets {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/catalog/_catalog-partial.css">
+        <link rel="stylesheet" href="~/css/catalog/index.css">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/catalog/index.min.css">
+    </environment>
+}
+
 @await Html.PartialAsync("_CatalogPartial", Model.Categories)

@@ -3,7 +3,7 @@
 
 @foreach (var category in Model)
 {
-    <div style="margin-left: 5px">
+    <div class="category-item">
         <a data-toggle="collapse" asp-controller="Category" asp-action="CategoryDetail" asp-route-id="@category.Id"
            data-target="#@category.Id"
            aria-controls="@category.Id"
