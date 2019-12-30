@@ -1,4 +1,7 @@
-﻿@{
+﻿@model Blog.Web.Models.Catalog.CatalogViewModel
+
+@{
     ViewData["Title"] = "Каталог";
 }
-<div>Здесь будет каталог</div>
+
+@await Html.PartialAsync("_CatalogPartial", Model.Categories)

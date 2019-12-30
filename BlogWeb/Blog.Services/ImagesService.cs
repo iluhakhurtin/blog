@@ -9,7 +9,7 @@ namespace Blog.Services
         File GetPreviewByOriginalFileName(string originalFileName);
     }
 
-    public class ImagesService : IImagesService
+    public class ImagesService : Service, IImagesService
     {
         private readonly IFilesRepository fileRepository;
 

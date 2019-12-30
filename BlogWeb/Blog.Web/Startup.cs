@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Blog.Repositories;
 using Blog.Retrievers;
+using Blog.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -27,19 +28,22 @@ namespace Blog.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection serviceCollection)
         {
-            services.AddControllersWithViews();
+            serviceCollection.AddControllersWithViews();
 
             IDbConnections dbConnections = new JsonDbConnections();
-            services.AddSingleton<IDbConnections>(dbConnections);
+            serviceCollection.AddSingleton<IDbConnections>(dbConnections);
 
             //repositories
             IRepositories repositories = this.BuildRepositories(dbConnections.BlogConnectionString);
-            services.AddSingleton<IRepositories>(repositories);
+            serviceCollection.AddSingleton<IRepositories>(repositories);
 
             IRetrievers retrievers = this.BuildRetrievers(dbConnections.BlogConnectionString);
-            services.AddSingleton<IRetrievers>(retrievers);
+            serviceCollection.AddSingleton<IRetrievers>(retrievers);
+
+            IServices services = this.BuildServices(repositories, retrievers);
+            serviceCollection.AddSingleton<IServices>(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +97,12 @@ namespace Blog.Web
         {
             IRetrievers retrievers = new Blog.Retrievers.PostgreSQL.Retrievers(blogConnectionString);
             return retrievers;
+        }
+
+        private IServices BuildServices(IRepositories repositories, IRetrievers retrievers)
+        {
+            IServices services = new Blog.Services.Services(repositories, retrievers);
+            return services;
         }
     }
 

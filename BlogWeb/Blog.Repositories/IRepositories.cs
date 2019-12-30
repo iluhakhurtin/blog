@@ -5,5 +5,6 @@ namespace Blog.Repositories
     {
         public IArticlesRepository ArticlesRepository { get; }
         public IFilesRepository FilesRepository { get; }
+        public ICategoriesRepository CategoriesRepository { get; }
     }
 }
