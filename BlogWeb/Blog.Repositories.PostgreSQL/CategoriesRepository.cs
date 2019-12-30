@@ -31,7 +31,7 @@ namespace Blog.Repositories.PostgreSQL
 
                     using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
                     {
-                        if (await dataReader.ReadAsync())
+                        while (await dataReader.ReadAsync())
                         {
                             var category = new Category();
                             category.Id = (Guid)dataReader["Id"];

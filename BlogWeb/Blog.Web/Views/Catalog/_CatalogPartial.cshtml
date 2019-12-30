@@ -3,19 +3,14 @@
 
 @foreach (var category in Model)
 {
-    <a data-toggle="collapse" asp-controller="Category" asp-action="CategoryDetail" asp-route-id="@category.Id"
-       data-target="#@category.Id"
-       aria-controls="@category.Id"
-       role="button" aria-expanded="true">
-
-        <div>
-            @category.Name <i class="fa fa-angle-right float-right"> </i>
-        </div>
-
-    </a>
-
-    if (category.Children != null)
-    {
-        @await Html.PartialAsync("_CatalogPartial", category.Children)
-    }
+    <div style="margin-left: 5px">
+        <a data-toggle="collapse" asp-controller="Category" asp-action="CategoryDetail" asp-route-id="@category.Id"
+           data-target="#@category.Id"
+           aria-controls="@category.Id"
+           role="button" aria-expanded="true">@category.Name</a>
+        @if (category.Children != null)
+        {
+            @await Html.PartialAsync("_CatalogPartial", category.Children)
+        }
+    </div>
 }
