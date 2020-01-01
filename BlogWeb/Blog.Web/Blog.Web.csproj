@@ -35,6 +35,8 @@
     <Folder Include="Models\Article\" />
     <Folder Include="Models\Catalog\" />
     <Folder Include="wwwroot\css\catalog\" />
+    <Folder Include="Views\Articles\" />
+    <Folder Include="Models\Articles\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />

@@ -4,10 +4,8 @@
 @foreach (var category in Model)
 {
     <div class="category-item">
-        <a data-toggle="collapse" asp-controller="Category" asp-action="CategoryDetail" asp-route-id="@category.Id"
-           data-target="#@category.Id"
-           aria-controls="@category.Id"
-           role="button" aria-expanded="true">@category.Name</a>
+        <a asp-controller="Articles" asp-action="Index" asp-route-id="@category.Id"
+           role="button">@category.Name</a>
         @if (category.Children != null)
         {
             @await Html.PartialAsync("_CatalogPartial", category.Children)
