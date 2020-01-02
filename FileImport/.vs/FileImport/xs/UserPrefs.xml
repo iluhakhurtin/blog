@@ -2,14 +2,16 @@
   <MonoDevelop.Ide.ItemProperties.FileImport PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="FileImport/Program.cs">
     <Files>
-      <File FileName="FileImport/Program.cs" Line="33" Column="85" />
+      <File FileName="FileImport/Program.cs" Line="52" Column="6" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="FileImport" expanded="True">
             <Node name="FileImport" expanded="True">
-              <Node name="Dependencies" selected="True" />
+              <Node name="Dependencies" expanded="True">
+                <Node name="PackageDependencies" expanded="True" />
+              </Node>
             </Node>
           </Node>
         </State>
