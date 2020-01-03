@@ -13,42 +13,32 @@ namespace FileImport
     {
         static void Main(string[] args)
         {
-            var photoFiles = GetPhotoFiles();
+            Console.WriteLine("Enter postressql server address: ");
+            var server = Console.ReadLine();
 
-            foreach(var photoFile in photoFiles)
+            Console.WriteLine("Enter user: ");
+            var user = Console.ReadLine();
+
+            Console.WriteLine("Enter password: ");
+            var password = Console.ReadLine();
+
+            string connectionString = string.Format("Server={0};Port=5432;Database=Blog;User Id={1};Password={2};",
+                server, user, password);
+
+            Console.WriteLine("Do you want to upload a file directly (1) or process and upload photos(2)?");
+            ConsoleKeyInfo keyInfo = Console.ReadKey();
+            if (keyInfo.Key == ConsoleKey.D1)
             {
-                using (var originalImage = Image.FromFile(photoFile))
-                {
-                    using(var previewImage = GetPreviewImage(originalImage))
-                    {
-                        var previewFileName = Path.GetFileNameWithoutExtension(photoFile);
-                        previewFileName = previewFileName + "_prev.jpg";
-                        using(Stream s = new FileStream(previewFileName, FileMode.OpenOrCreate, FileAccess.Write))
-                        {
-                            previewImage.Save(s, ImageFormat.Jpeg);
-                        }
-                    }
-                }
+                UploadFile(connectionString);
             }
+            else if(keyInfo.Key == ConsoleKey.D2)
+            {
+                ProcessAndUploadPhotos(connectionString);
+            }
+        }
 
-            //var filePath = GetFilePath();
-            //while (!File.Exists(filePath))
-            //{
-            //    filePath = GetFilePath();
-            //}
-
-            //Console.WriteLine("Enter server address: ");
-            //var server = Console.ReadLine();
-
-            //Console.WriteLine("Enter user: ");
-            //var user = Console.ReadLine();
-
-            //Console.WriteLine("Enter password: ");
-            //var password = Console.ReadLine();
-
-            //string connectionString = string.Format("Server={0};Port=5432;Database=Blog;User Id={1};Password={2};",
-            //    server, user, password);
-
+        private static void UploadFile(string connectionString)
+        {
             //var data = File.ReadAllBytes(filePath);
             //using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             //{
@@ -64,6 +54,93 @@ namespace FileImport
             //        command.ExecuteNonQuery();
             //    }
             //}
+        }
+
+        private static void ProcessAndUploadPhotos(string connectionString)
+        {
+            var photoFileNames = GetPhotoFileNames();
+
+            Console.WriteLine("Generating preview files.");
+
+            foreach (var photoFileName in photoFileNames)
+            {
+                using (var originalImage = Image.FromFile(photoFileName))
+                {
+                    using (var previewImage = GetPreviewImage(originalImage))
+                    {
+                        var previewFileName = Path.GetFileNameWithoutExtension(photoFileName);
+                        previewFileName = previewFileName + "_prev.jpg";
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            previewImage.Save(ms, ImageFormat.Jpeg);
+                            ms.Flush();
+                            var previewImageBytes = ms.ToArray();
+
+                            var originalFileName = Path.GetFileName(photoFileName);
+                            var originalImageBytes = File.ReadAllBytes(photoFileName);
+
+                            InsertImage(originalFileName, originalImageBytes, previewFileName, previewImageBytes, connectionString);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void InsertImage(string originalImageFileName, byte[] originalImageFileData,
+            string previewImageFileName, byte[] previewImageFileData, string connectionString)
+        {
+            var mimeType = "image/jpeg";
+            var originalFileId = InsertFile(originalImageFileName, originalImageFileData, mimeType, connectionString);
+            var previewFileId = InsertFile(previewImageFileName, previewImageFileData, mimeType, connectionString);
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            {
+                var imageId = Guid.NewGuid();
+
+                string sql = @"INSERT INTO ""Images""(
+                                ""Id"", ""PreviewFileId"", ""OriginalFileId"")
+	                            VALUES(:Id, :PreviewFileId, :OriginalFileId);
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("Id", imageId);
+                    command.Parameters.AddWithValue("PreviewFileId", previewFileId);
+                    command.Parameters.AddWithValue("OriginalFileId", originalFileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+
+                Console.WriteLine("New image id: " + imageId.ToString());
+            }
+        }
+
+        private static Guid InsertFile(string fileName, byte[] fileData, string mimeType, string connectionString)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            {
+                var fileId = Guid.NewGuid();
+
+                string sql = @"INSERT INTO ""Files""(
+                                ""Id"", ""Name"", ""Extension"", ""Data"", ""MimeType"")
+	                            VALUES(:Id, :Name, :Extension, :Data, :MimeType);
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("Id", fileId);
+                    command.Parameters.AddWithValue("Name", fileName);
+                    command.Parameters.AddWithValue("Extension", Path.GetExtension(fileName));
+                    command.Parameters.AddWithValue("Data", fileData);
+                    command.Parameters.AddWithValue("MimeType", mimeType);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+
+                return fileId;
+            }
         }
 
         private static Image GetPreviewImage(Image originalImage)
@@ -93,8 +170,6 @@ namespace FileImport
             var destRect = new Rectangle(0, 0, width, height);
             var destImage = new Bitmap(width, height);
 
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
             using (var graphics = Graphics.FromImage(destImage))
             {
                 graphics.CompositingMode = CompositingMode.SourceCopy;
@@ -113,7 +188,7 @@ namespace FileImport
             return destImage;
         }
 
-        private static IEnumerable<string> GetPhotoFiles()
+        private static IEnumerable<string> GetPhotoFileNames()
         {
             string directoryPath = String.Empty;
 
@@ -138,13 +213,6 @@ namespace FileImport
             }
 
             return photoFiles;
-        }
-
-        private static string GetFilePath()
-        {
-            Console.WriteLine("Enter path to the file: ");
-            var filePath = Console.ReadLine();
-            return filePath;
         }
     }
 }
