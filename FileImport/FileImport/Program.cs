@@ -2,6 +2,10 @@
 using System.IO;
 using Npgsql;
 using System.Linq;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace FileImport
 {
@@ -9,25 +13,23 @@ namespace FileImport
     {
         static void Main(string[] args)
         {
-            string directoryPath = String.Empty;
+            var photoFiles = GetPhotoFiles();
 
-            while (!Directory.Exists(directoryPath))
+            foreach(var photoFile in photoFiles)
             {
-                Console.WriteLine("Enter path to the directory with photos: ");
-                directoryPath = Console.ReadLine();
-            }
-
-            var photoFiles = Directory.EnumerateFiles(directoryPath).Where(fn => fn.EndsWith(".jpg") || fn.EndsWith(".JPG")).ToList();
-            if(photoFiles.Count > 0)
-            {
-                Console.WriteLine("The files to be processed:");
-                foreach (var photoFile in photoFiles)
+                using (var originalImage = Image.FromFile(photoFile))
                 {
-                    Console.WriteLine(photoFile);
+                    using(var previewImage = GetPreviewImage(originalImage))
+                    {
+                        var previewFileName = Path.GetFileNameWithoutExtension(photoFile);
+                        previewFileName = previewFileName + "_prev.jpg";
+                        using(Stream s = new FileStream(previewFileName, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            previewImage.Save(s, ImageFormat.Jpeg);
+                        }
+                    }
                 }
             }
-
-
 
             //var filePath = GetFilePath();
             //while (!File.Exists(filePath))
@@ -62,6 +64,80 @@ namespace FileImport
             //        command.ExecuteNonQuery();
             //    }
             //}
+        }
+
+        private static Image GetPreviewImage(Image originalImage)
+        {
+            int maxWidth = 1500;
+            int maxHeight = 1000;
+
+            if(originalImage.Width <= maxWidth && originalImage.Height <= maxHeight)
+            {
+                return originalImage;
+            }
+
+            var ratioX = (double)maxWidth / originalImage.Width;
+            var ratioY = (double)maxHeight / originalImage.Height;
+            var ratio = Math.Min(ratioX, ratioY);
+
+            var newWidth = (int)(originalImage.Width * ratio);
+            var newHeight = (int)(originalImage.Height * ratio);
+
+            var newImage = ResizeImage(originalImage, newWidth, newHeight);
+
+            return newImage;
+        }
+
+        private static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
+
+        private static IEnumerable<string> GetPhotoFiles()
+        {
+            string directoryPath = String.Empty;
+
+            while (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("Enter path to the directory with photos: ");
+                directoryPath = Console.ReadLine();
+            }
+
+            var photoFiles = Directory.EnumerateFiles(directoryPath).Where(fn => fn.EndsWith(".jpg") || fn.EndsWith(".JPG"));
+            if (photoFiles.FirstOrDefault() == null)
+            {
+                Console.WriteLine("No photo files found...");
+            }
+            else
+            {
+                Console.WriteLine("The files to be processed:");
+                foreach (var photoFile in photoFiles)
+                {
+                    Console.WriteLine(photoFile);
+                }
+            }
+
+            return photoFiles;
         }
 
         private static string GetFilePath()
