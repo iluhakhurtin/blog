@@ -89,10 +89,10 @@ namespace Blog.Retrievers.PostgreSQL
                 string sql = @"SELECT
 	                            prevf.""MimeType"",
                                 prevf.""Data""
-                                FROM ""Files"" origf
-                                JOIN ""Images"" i ON i.""OriginalFileId"" = origf.""Id""
+                                FROM ""Files"" f
+                                JOIN ""Images"" i ON i.""OriginalFileId"" = f.""Id"" OR i.""PreviewFileId"" = f.""Id""
                                 JOIN ""Files"" prevf ON prevf.""Id"" = i.""PreviewFileId""
-                                WHERE origf.""Name"" = :FileName
+                                WHERE f.""Name"" = :FileName
                             ";
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))

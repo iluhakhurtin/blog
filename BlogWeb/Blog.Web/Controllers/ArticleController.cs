@@ -38,14 +38,26 @@ namespace Blog.Web.Controllers
         {
             try
             {
-                var imageDataResult = await this.imagesRetriever.GetPreviewImageDataByNameAsync(fileName);
-                var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
-                return fileContentResult;
+                if (fileName.Contains("prev"))
+                {
+                    return await this.GetPreviewImage(fileName);
+                }
+                else
+                {
+                    return base.RedirectToAction("Image", "Original", fileName);
+                }
             }
             catch (Exception ex)
             {
                 return base.NotFound();
             }
+        }
+
+        private async Task<IActionResult> GetPreviewImage(string fileName)
+        {
+            var imageDataResult = await this.imagesRetriever.GetPreviewImageDataByNameAsync(fileName);
+            var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
+            return fileContentResult;
         }
     }
 }

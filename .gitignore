@@ -22,5 +22,11 @@
 /BlogWeb/Tests/Blog.Domain.Tests/bin/
 /BlogWeb/Tests/Blog.Services.Tests/obj/
 /BlogWeb/Tests/Blog.Services.Tests/bin/
+
+/FileImport/.vs/
 /FileImport/FileImport/bin/
 /FileImport/FileImport/obj/
+
+/ArticleProcessor/.vs/
+/ArticleProcessor/ArticleProcessor/bin/
+/ArticleProcessor/ArticleProcessor/obj/
