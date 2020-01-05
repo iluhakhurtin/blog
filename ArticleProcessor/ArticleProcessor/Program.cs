@@ -38,7 +38,7 @@ namespace ArticleProcessor
         private static string ProcessImagesTags(string content)
         {
             Regex photoRegex = new Regex(@"\<img class\=\""image\"" src\=\""images\/.+\.jpg\"" \/\>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            Regex srcRegex = new Regex(@"(?<=src="")(.+?)(?= "" \/\>)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            Regex srcRegex = new Regex(@"(?<=src=\"")(.+?)(?=\""\s\/\>)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
             var photoMatches = photoRegex.Matches(content);
             foreach(Match photoMatch in photoMatches)
@@ -49,7 +49,12 @@ namespace ArticleProcessor
                     var srcMatch = srcRegex.Match(photoMatch.Value);
                     if (srcMatch.Success)
                     {
-                        var wrappedLinkedPhoto = String.Format(@"<a href=""{0}"" target=""_blank"">{1}</a>", srcMatch.Value, photoMatch.Value);
+                        var previewSrc = Path.GetFileNameWithoutExtension(srcMatch.Value) + "_prev" + Path.GetExtension(srcMatch.Value);
+                        previewSrc = Path.Combine(Path.GetDirectoryName(srcMatch.Value), previewSrc);
+
+                        var photoTag = photoMatch.Value.Replace(srcMatch.Value, previewSrc);
+
+                        var wrappedLinkedPhoto = String.Format(@"<a href=""{0}"" target=""_blank"">{1}</a>", srcMatch.Value, photoTag);
                         content = content.Replace(photoMatch.Value, wrappedLinkedPhoto);
                     }
                 }
