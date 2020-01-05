@@ -54,7 +54,7 @@ namespace ArticleProcessor
 
                         var photoTag = photoMatch.Value.Replace(srcMatch.Value, previewSrc);
 
-                        var wrappedLinkedPhoto = String.Format(@"<a href=""{0}"" target=""_blank"">{1}</a>", srcMatch.Value, photoTag);
+                        var wrappedLinkedPhoto = String.Format("<a href=\"{0}\" target=\"_blank\">\n\t\t\t\t{1}\n\t\t\t</a>", srcMatch.Value, photoTag);
                         content = content.Replace(photoMatch.Value, wrappedLinkedPhoto);
                     }
                 }

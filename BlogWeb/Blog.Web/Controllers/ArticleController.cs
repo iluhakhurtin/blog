@@ -44,7 +44,7 @@ namespace Blog.Web.Controllers
                 }
                 else
                 {
-                    return base.RedirectToAction("Image", "Original", fileName);
+                    return await this.GetOriginalImage(fileName);
                 }
             }
             catch (Exception ex)
@@ -56,6 +56,13 @@ namespace Blog.Web.Controllers
         private async Task<IActionResult> GetPreviewImage(string fileName)
         {
             var imageDataResult = await this.imagesRetriever.GetPreviewImageDataByNameAsync(fileName);
+            var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
+            return fileContentResult;
+        }
+
+        private async Task<IActionResult> GetOriginalImage(string fileName)
+        {
+            var imageDataResult = await this.imagesRetriever.GetOriginalImageDataByNameAsync(fileName);
             var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
             return fileContentResult;
         }

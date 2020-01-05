@@ -31,19 +31,5 @@ namespace Blog.Web.Controllers
                 return base.NotFound();
             }
         }
-
-        public async Task<IActionResult> Original(string fileName)
-        {
-            try
-            {
-                var imageDataResult = await this.imagesRetriever.GetPreviewImageDataByNameAsync(fileName);
-                var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
-                return fileContentResult;
-            }
-            catch (Exception ex)
-            {
-                return base.NotFound();
-            }
-        }
     }
 }
