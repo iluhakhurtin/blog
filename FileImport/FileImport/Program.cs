@@ -13,17 +13,7 @@ namespace FileImport
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter postressql server address: ");
-            var server = Console.ReadLine();
-
-            Console.WriteLine("Enter user: ");
-            var user = Console.ReadLine();
-
-            Console.WriteLine("Enter password: ");
-            var password = Console.ReadLine();
-
-            string connectionString = string.Format("Server={0};Port=5432;Database=Blog;User Id={1};Password={2};",
-                server, user, password);
+            string connectionString = GetConnectionString();
 
             Console.WriteLine("Do you want to upload a file directly (1) or process and upload photos(2)?");
             ConsoleKeyInfo keyInfo = Console.ReadKey();
@@ -39,21 +29,21 @@ namespace FileImport
 
         private static void UploadFile(string connectionString)
         {
-            //var data = File.ReadAllBytes(filePath);
-            //using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            //{
-            //    string sql = @"UPDATE ""Files"" SET ""Data"" = :Data
-            //                    WHERE ""Id"" = '86c001a8-3975-8073-f1e3-067bb081d215';
-            //                ";
+            var filePath = GetFilePath();
+            var mimeType = GetMimeType(filePath);
+            var data = File.ReadAllBytes(filePath);
+            var fileName = Path.GetFileName(filePath);
 
-            //    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
-            //    {
-            //        var dataParam = command.Parameters.AddWithValue("Data", data);
+            var fileId = InsertFile(fileName, data, mimeType, connectionString);
+            Console.WriteLine("New file id is: {0}", fileId);
 
-            //        connection.Open();
-            //        command.ExecuteNonQuery();
-            //    }
-            //}
+            Console.WriteLine("Do you want to insert an image as well? (y/n)");
+            ConsoleKeyInfo keyInfo = Console.ReadKey();
+            if (keyInfo.Key == ConsoleKey.Y)
+            {
+                var imageId = InsertImage(fileId, fileId, connectionString);
+                Console.WriteLine("New image with id {0} has been added", imageId);
+            }
         }
 
         private static void ProcessAndUploadPhotos(string connectionString)
@@ -79,20 +69,26 @@ namespace FileImport
                             var originalFileName = Path.GetFileName(photoFileName);
                             var originalImageBytes = File.ReadAllBytes(photoFileName);
 
-                            InsertImage(originalFileName, originalImageBytes, previewFileName, previewImageBytes, connectionString);
+                            InsertImageWithFiles(originalFileName, originalImageBytes, previewFileName, previewImageBytes, connectionString);
                         }
                     }
                 }
             }
         }
 
-        private static void InsertImage(string originalImageFileName, byte[] originalImageFileData,
+        private static void InsertImageWithFiles(string originalImageFileName, byte[] originalImageFileData,
             string previewImageFileName, byte[] previewImageFileData, string connectionString)
         {
             var mimeType = "image/jpeg";
             var originalFileId = InsertFile(originalImageFileName, originalImageFileData, mimeType, connectionString);
             var previewFileId = InsertFile(previewImageFileName, previewImageFileData, mimeType, connectionString);
 
+            var imageId = InsertImage(originalFileId, previewFileId, connectionString);
+            Console.WriteLine("New image id: " + imageId.ToString());
+        }
+
+        private static Guid InsertImage(Guid originalFileId, Guid previewFileId, string connectionString)
+        {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 var imageId = Guid.NewGuid();
@@ -112,7 +108,7 @@ namespace FileImport
                     command.ExecuteNonQuery();
                 }
 
-                Console.WriteLine("New image id: " + imageId.ToString());
+                return imageId;
             }
         }
 
@@ -213,6 +209,75 @@ namespace FileImport
             }
 
             return photoFiles;
+        }
+
+        private static string GetFilePath()
+        {
+            string filePath = String.Empty;
+
+            while (!File.Exists(filePath))
+            {
+                Console.WriteLine("Enter path to the file to upload: ");
+                filePath = Console.ReadLine();
+            }
+
+            return filePath;
+        }
+
+        private static string GetConnectionString()
+        {
+            Console.WriteLine("Use localhost settings (y/n)?");
+            string server;
+            string user;
+            string password;
+            ConsoleKeyInfo keyInfo = Console.ReadKey();
+            if (keyInfo.Key == ConsoleKey.Y)
+            {
+                server = "localhost";
+                user = "postgres";
+                password = "123456";
+            }
+            else
+            {
+                Console.WriteLine("Enter postressql server address: ");
+                server = Console.ReadLine();
+
+                Console.WriteLine("Enter user: ");
+                user = Console.ReadLine();
+
+                Console.WriteLine("Enter password: ");
+                password = Console.ReadLine();
+            }
+
+            string connectionString = string.Format("Server={0};Port=5432;Database=Blog;User Id={1};Password={2};",
+                server, user, password);
+
+            return connectionString;
+        }
+
+        private static string GetMimeType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName);
+
+            switch (extension.ToLower())
+            {
+                case ".png":
+                    return "image/png";
+                case ".jpg":
+                case ".jpeg":
+                case ".jfif":
+                case ".pjpeg":
+                case ".pjp":
+                    return "image/jpeg";
+                case ".gif":
+                    return "image/gif";
+                case ".bmp":
+                    return "image/bmp";
+                default:
+                    Console.WriteLine("Enter file mime type:");
+                    var mimeType = Console.ReadLine();
+                    return mimeType;
+            }
         }
     }
 }

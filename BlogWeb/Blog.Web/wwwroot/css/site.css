@@ -24,6 +24,10 @@ p {
 	vertical-align: middle;
 }
 
+.imageContainer td {
+    padding: 1px;
+}
+
 .image {
 	width: 100%;
 }
