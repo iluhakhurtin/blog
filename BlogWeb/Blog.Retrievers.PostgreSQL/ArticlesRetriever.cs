@@ -19,12 +19,27 @@ namespace Blog.Retrievers.PostgreSQL
 
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
-                string sql = @"SELECT
-	                                ar.""Id"",
-                                    ar.""Title""
-                                    FROM ""ArticleCategories"" arc
-                                    JOIN ""Articles"" ar ON ar.""Id"" = arc.""ArticleId""
-                                    WHERE arc.""CategoryId"" = :CategoryId;
+                string sql = @"WITH RECURSIVE ""RecursiveCategories"" AS (
+                                    SELECT
+                                        ""Id"",
+                                        ""ParentId""
+                                        FROM ""Categories""
+                                        WHERE ""Id"" = :CategoryId
+                                    UNION
+                                    SELECT
+                                        c.""Id"",
+                                        c.""ParentId""
+                                        FROM ""Categories"" c
+                                        JOIN ""RecursiveCategories"" rc ON rc.""Id"" = c.""ParentId""
+                                )
+                                SELECT
+                                    DISTINCT
+                                        a.""Id"",
+                                        a.""Title""
+                                    FROM ""RecursiveCategories"" rc
+                                    JOIN ""ArticleCategories"" ac ON ac.""CategoryId"" = rc.""Id""
+                                    JOIN ""Articles"" a ON a.""Id"" = ac.""ArticleId""
+                                    ORDER BY a.""Title""
                             ";
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
