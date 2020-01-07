@@ -7,5 +7,6 @@ namespace Blog.Repositories
     public interface IFilesRepository : IRepository<File>
     {
         Task<File> GetByNameAsync(string fileName);
+        Task<File> GetByIdAsync(Guid fileId);
     }
 }

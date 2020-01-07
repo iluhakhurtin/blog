@@ -50,5 +50,44 @@ namespace Blog.Repositories.PostgreSQL
             }
             return null;
         }
+
+
+        public async Task<File> GetByIdAsync(Guid fileId)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+                                ""Name"",
+                                ""MimeType"",
+                                ""Extension"",
+                                ""Data""
+                                FROM ""Files""
+                                WHERE ""Id""=:Id;
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    var idParam = command.Parameters.AddWithValue("Id", fileId);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        if (await dataReader.ReadAsync())
+                        {
+                            var file = new File();
+                            file.Id = fileId;
+                            file.Name = Convert.ToString(dataReader["Name"]);
+                            file.MimeType = Convert.ToString(dataReader["MimeType"]);
+                            file.Extension = Convert.ToString(dataReader["Extension"]);
+                            file.Data = (byte[])dataReader["Data"];
+
+                            return file;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
