@@ -56,6 +56,9 @@ namespace Blog.Web.Controllers
         private async Task<IActionResult> GetPreviewImage(string fileName)
         {
             var imageDataResult = await this.imagesRetriever.GetPreviewImageDataByNameAsync(fileName);
+            if (imageDataResult == null)
+                return base.NotFound();
+            
             var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
             return fileContentResult;
         }
@@ -63,6 +66,9 @@ namespace Blog.Web.Controllers
         private async Task<IActionResult> GetOriginalImage(string fileName)
         {
             var imageDataResult = await this.imagesRetriever.GetOriginalImageDataByNameAsync(fileName);
+            if (imageDataResult == null)
+                return base.NotFound();
+
             var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
             return fileContentResult;
         }
