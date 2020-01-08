@@ -20,7 +20,35 @@ namespace Blog.Web.Controllers
             this.imagesRetriever = retrievers.ImagesRetriever;
         }
 
-        [HttpGet]
+
+        public async Task<IActionResult> Preview(Guid id)
+        {
+            try
+            {
+                var image = await this.imagesRetriever.GetPreviewImageDataAsync(id);
+                var fileContentResult = new FileContentResult(image.Data, image.MimeType);
+                return fileContentResult;
+            }
+            catch (Exception ex)
+            {
+                return base.NotFound();
+            }
+        }
+
+        public async Task<IActionResult> Original(Guid id)
+        {
+            try
+            {
+                var image = await this.imagesRetriever.GetOriginalImageDataAsync(id);
+                var fileContentResult = new FileContentResult(image.Data, image.MimeType);
+                return fileContentResult;
+            }
+            catch (Exception ex)
+            {
+                return base.NotFound();
+            }
+        }
+
         public async Task<IActionResult> Index(Guid id)
         {
             try

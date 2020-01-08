@@ -49,12 +49,7 @@ namespace ArticleProcessor
                     var srcMatch = srcRegex.Match(photoMatch.Value);
                     if (srcMatch.Success)
                     {
-                        var previewSrc = Path.GetFileNameWithoutExtension(srcMatch.Value) + "_prev" + Path.GetExtension(srcMatch.Value);
-                        previewSrc = Path.Combine(Path.GetDirectoryName(srcMatch.Value), previewSrc);
-
-                        var photoTag = photoMatch.Value.Replace(srcMatch.Value, previewSrc);
-
-                        var wrappedLinkedPhoto = String.Format("<a href=\"{0}\" target=\"_blank\">\n\t\t\t\t{1}\n\t\t\t</a>", srcMatch.Value, photoTag);
+                        var wrappedLinkedPhoto = String.Format("<a href=\"../../Image/Original/\" target=\"_blank\">\n\t\t\t\t{0}\n\t\t\t</a>", photoMatch.Value);
                         content = content.Replace(photoMatch.Value, wrappedLinkedPhoto);
                     }
                 }

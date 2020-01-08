@@ -35,11 +35,12 @@ namespace Blog.Retrievers.PostgreSQL
                                 SELECT
                                     DISTINCT
                                         a.""Id"",
-                                        a.""Title""
+                                        a.""Title"",
+                                        a.""Timestamp""
                                     FROM ""RecursiveCategories"" rc
                                     JOIN ""ArticleCategories"" ac ON ac.""CategoryId"" = rc.""Id""
                                     JOIN ""Articles"" a ON a.""Id"" = ac.""ArticleId""
-                                    ORDER BY a.""Title""
+                                    ORDER BY a.""Timestamp"", a.""Title""
                             ";
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
