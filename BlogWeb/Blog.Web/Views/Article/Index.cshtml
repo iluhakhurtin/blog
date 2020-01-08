@@ -1,7 +1,7 @@
 ﻿@model Blog.Web.Models.Article.ArticleViewModel
 
 @{
-    ViewData["Title"] = "Статья";
+    ViewData["Title"] = Model.Title;
 }
 <h1>@Model.Title</h1>
 <div>@Html.Raw(Model.Body)</div>
