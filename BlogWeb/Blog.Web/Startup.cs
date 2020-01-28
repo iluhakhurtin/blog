@@ -114,10 +114,10 @@ namespace Blog.Web
 
         private void InitIdentity(IServiceCollection serviceCollection, string connectionString)
         {
-            serviceCollection.AddDbContext<IdentityDbContext>(options => options.UseNpgsql(connectionString));
+            serviceCollection.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
-            serviceCollection.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityDbContext>()
+            serviceCollection.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             serviceCollection.Configure<IdentityOptions>(options =>
@@ -153,8 +153,8 @@ namespace Blog.Web
 
         private async Task InitAdminUserAndRoles(IServiceProvider serviceProvider)
         {
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             IdentityResult roleResult;
             //Adding Admin Role 
@@ -162,7 +162,7 @@ namespace Blog.Web
             if (!roleCheck)
             {
                 //create the roles and seed them to the database  
-                roleResult = await roleManager.CreateAsync(new IdentityRole(Roles.Administrator));
+                roleResult = await roleManager.CreateAsync(new ApplicationRole(Roles.Administrator));
             }
 
             //Adding Private Reader role
@@ -170,17 +170,17 @@ namespace Blog.Web
             if (!roleCheck)
             {
                 //create the role if it does not exists
-                roleResult = await roleManager.CreateAsync(new IdentityRole(Roles.PrivateReader));
+                roleResult = await roleManager.CreateAsync(new ApplicationRole(Roles.PrivateReader));
             }
 
             //Assign Admin role to the main User
 
             string adminEmal = "admin@blog.com";
-            IdentityUser user = await userManager.FindByEmailAsync(adminEmal);
+            ApplicationUser user = await userManager.FindByEmailAsync(adminEmal);
 
             if (user == null)
             {
-                user = new IdentityUser();
+                user = new ApplicationUser();
                 user.Email = adminEmal;
                 user.UserName = adminEmal;
                 await userManager.CreateAsync(user, "lkjaksdf");

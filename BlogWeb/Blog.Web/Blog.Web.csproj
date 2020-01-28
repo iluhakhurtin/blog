@@ -37,10 +37,11 @@
     <Folder Include="wwwroot\css\catalog\" />
     <Folder Include="Views\Articles\" />
     <Folder Include="Models\Articles\" />
+    <Folder Include="Views\Account\" />
+    <Folder Include="Models\Account\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
