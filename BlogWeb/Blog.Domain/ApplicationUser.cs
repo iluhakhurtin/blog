@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Domain
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<Guid>
     {
         public ApplicationUser()
             : base()

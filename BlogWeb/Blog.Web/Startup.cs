@@ -158,19 +158,19 @@ namespace Blog.Web
 
             IdentityResult roleResult;
             //Adding Admin Role 
-            var roleCheck = await roleManager.RoleExistsAsync(Roles.Administrator);
+            var roleCheck = await roleManager.RoleExistsAsync(ApplicationRole.Administrator);
             if (!roleCheck)
             {
                 //create the roles and seed them to the database  
-                roleResult = await roleManager.CreateAsync(new ApplicationRole(Roles.Administrator));
+                roleResult = await roleManager.CreateAsync(new ApplicationRole(ApplicationRole.Administrator));
             }
 
             //Adding Private Reader role
-            roleCheck = await roleManager.RoleExistsAsync(Roles.PrivateReader);
+            roleCheck = await roleManager.RoleExistsAsync(ApplicationRole.PrivateReader);
             if (!roleCheck)
             {
                 //create the role if it does not exists
-                roleResult = await roleManager.CreateAsync(new ApplicationRole(Roles.PrivateReader));
+                roleResult = await roleManager.CreateAsync(new ApplicationRole(ApplicationRole.PrivateReader));
             }
 
             //Assign Admin role to the main User
@@ -186,7 +186,7 @@ namespace Blog.Web
                 await userManager.CreateAsync(user, "lkjaksdf");
             }
 
-            await userManager.AddToRoleAsync(user, Roles.Administrator);
+            await userManager.AddToRoleAsync(user, ApplicationRole.Administrator);
         }
     }
 
