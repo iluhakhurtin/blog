@@ -3,5 +3,16 @@
 @{
     ViewData["Title"] = Model.Title;
 }
-<h1>@Model.Title</h1>
-<div>@Html.Raw(Model.Body)</div>
+
+@section Stylesheets {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/article/index.css">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/article/index.min.css">
+    </environment>
+}
+
+<h1 class="container text-center article-title">@Model.Title</h1>
+
+<div class="container article-body">@Html.Raw(Model.Body)</div>

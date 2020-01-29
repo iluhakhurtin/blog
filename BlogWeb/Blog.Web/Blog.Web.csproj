@@ -39,6 +39,7 @@
     <Folder Include="Models\Articles\" />
     <Folder Include="Views\Account\" />
     <Folder Include="Models\Account\" />
+    <Folder Include="wwwroot\css\article\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
@@ -47,5 +48,7 @@
   <ItemGroup>
     <Content Remove="wwwroot\css\catalog\index.min.css" />
     <Content Remove="wwwroot\css\site.min.css" />
+    <Content Remove="bundleconfig.json" />
+    <Content Remove="appsettings.json" />
   </ItemGroup>
 </Project>
