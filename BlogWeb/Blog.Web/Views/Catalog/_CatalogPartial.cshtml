@@ -3,8 +3,8 @@
 
 @foreach (var category in Model)
 {
-    <div class="category-item">
-        <a asp-controller="Articles" asp-action="Index" asp-route-id="@category.Id"
+    <div class="category-item nav-item">
+        <a class="nav-link" asp-controller="Articles" asp-action="Index" asp-route-id="@category.Id"
            role="button">@category.Name</a>
         @if (category.Children != null)
         {

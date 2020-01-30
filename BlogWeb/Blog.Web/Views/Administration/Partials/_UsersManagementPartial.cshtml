@@ -1,0 +1,16 @@
+﻿@model IDViewModel
+
+<environment include="Development">
+    <script src="~/components/_BasePartial.js"></script>
+    <script src="~/components/Administration/Partials/_UsersManagementPartial/_UsersManagementPartial.js"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/components/_BasePartial.min.js"></script>
+    <script src="~/components/Administration/Partials/_UsersManagementPartial/_UsersManagementPartial.min.js"></script>
+</environment>
+
+<div id='@(Model.ID)' class="users-management jqgrid-container">
+    <table id='@(Model.ID)-grid' class="grid"></table>
+    <div id='@(Model.ID)-pager' class="pager"></div>
+    <span class="oi oi-person"></span>
+</div>

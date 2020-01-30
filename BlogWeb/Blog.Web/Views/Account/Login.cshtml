@@ -1,7 +1,7 @@
 ﻿@model Blog.Web.Models.Account.LoginViewModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Вход";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -25,16 +25,16 @@
                     <div class="checkbox">
                         <label asp-for="RememberMe">
                             <input asp-for="RememberMe" />
-                            @Html.DisplayNameFor(m => m.RememberMe)
+                            <span>Запомнить меня</span>
                         </label>
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-default">Log in</button>
+                    <button type="submit" class="btn btn-default">Войти</button>
                 </div>
                 <div class="form-group">
                     <p>
-                        <a asp-action="ForgotPassword">Forgot your password?</a>
+                        <a asp-action="ForgotPassword">Забыли пароль?</a>
                     </p>
                 </div>
             </form>

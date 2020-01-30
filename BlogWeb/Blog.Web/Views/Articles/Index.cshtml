@@ -6,8 +6,8 @@
 
 @foreach (var article in Model.Articles)
 {
-    <div class="article-item">
-        <a asp-controller="Article" asp-action="Index" asp-route-id="@article.Id"
+    <div class="nav-item article-item">
+        <a class="nav-link" asp-controller="Article" asp-action="Index" asp-route-id="@article.Id"
            role="button">@article.Title</a>
     </div>
 }

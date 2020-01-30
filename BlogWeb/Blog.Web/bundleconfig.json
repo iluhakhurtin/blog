@@ -19,8 +19,42 @@
       "renameLocals": true
     },
     // Optionally generate .map file
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "wwwroot/css/jqgrid.min.css",
+    // An array of relative input file paths. Globbing patterns supported
+    "inputFiles": [
+      "wwwroot/css/jqgrid.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/jqgrid-default-settings.min.js",
+    "inputFiles": [
+      "wwwroot/js/jqgrid-default-settings.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
     "sourceMap": false
   },
+  {
+    "outputFileName": "wwwroot/js/utils.min.js",
+    "inputFiles": [
+      "wwwroot/js/utils.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  },
+
   {
     "outputFileName": "wwwroot/css/catalog/index.min.css",
     "inputFiles": [
@@ -33,5 +67,35 @@
     "inputFiles": [
       "wwwroot/css/article/index.css"
     ]
+  },
+
+  //Minify Partial Componentss scripts and css files
+
+  {
+    "outputFileName": "wwwroot/components/_BasePartial.min.js",
+    "inputFiles": [
+      "wwwroot/components/_BasePartial.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  },
+
+  {
+    "outputFileName": "wwwroot/components/Administration/Partials/_UsersManagementPartial/_UsersManagementPartial.min.js",
+    "inputFiles": [
+      "wwwroot/components/Administration/Partials/_UsersManagementPartial/_UsersManagementPartial.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
   }
 ]

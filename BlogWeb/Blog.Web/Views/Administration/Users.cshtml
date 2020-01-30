@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Users";
+}
+
+@section Stylesheets {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/jquery-ui/css/jquery-ui.css">
+        <link rel="stylesheet" href="~/lib/octicons/octicons.css">
+        <link rel="stylesheet" href="~/lib/jqGrid/css/ui.jqgrid-bootstrap4.css" />
+        <link rel="stylesheet" href="~/css/jqgrid.css">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/lib/jquery-ui/css/jquery-ui.min.css">
+        <link rel="stylesheet" href="~/lib/octicons/octicons.min.css" />
+        <link rel="stylesheet" href="~/lib/jqGrid/css/ui.jqgrid-bootstrap4.min.css" />
+        <link rel="stylesheet" href="~/css/jqgrid.min.css">
+    </environment>
+}
+
+@section Scripts {
+    <environment include="Development">
+        <script src="~/lib/jquery-ui/js/jquery-ui.js"></script>
+        <script src="~/lib/jqGrid/js/i18n/grid.locale-en.js"></script>
+        <script src="~/lib/jqGrid/js/jquery.jqGrid.js"></script>
+        <script src="~/js/jqgrid-default-settings.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/jquery-ui/js/jquery-ui.min.js"></script>
+        <script src="~/lib/jqGrid/js/i18n/grid.locale-en.js"></script>
+        <script src="~/lib/jqGrid/js/jquery.jqGrid.min.js"></script>
+        <script src="~/js/jqgrid-default-settings.min.js"></script>
+    </environment>
+}
+
+<h2>Users</h2>
+
+@{ const string usersManagementComponentlID = "uxUsersManagementComponent"; }
+
+@*render partial components*@
+@await Html.PartialAsync("~/Views/Administration/Partials/_UsersManagementPartial.cshtml", new IDViewModel() { ID = usersManagementComponentlID })
+
+<script type="text/javascript" language="javascript">
+    //create partial components objects
+    $(document).ready(function () {
+        uxUsersManagementComponent = new _UsersManagementPartial('#@(usersManagementComponentlID)', '@Url.Content("~/api/Administration/UsersApi")');
+    });
+</script>
