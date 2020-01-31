@@ -44,18 +44,6 @@
                     editable: true
                 },
                 {
-                    label: 'First Name',
-                    name: 'FirstName',
-                    width: 80,
-                    editable: true
-                },
-                {
-                    label: 'Last Name',
-                    name: 'LastName',
-                    width: 80,
-                    editable: true
-                },
-                {
                     label: 'Roles',
                     name: 'Roles',
                     width: 100,
@@ -91,7 +79,7 @@
             viewrecords: true,
             hoverrows: true,
             rowNum: 10,
-            caption: 'Users Management',
+            caption: 'Управление пользователями',
             sortable: true,
             //altRows: true, This does not work in boostrarap
             //altclass: '....'
@@ -113,7 +101,7 @@
             },
             // options for the Edit Dialog
             {
-                editCaption: "Edit user roles",
+                editCaption: "Роли",
                 closeAfterEdit: true,
                 reloadAfterSubmit: true,
                 recreateForm: true,

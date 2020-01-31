@@ -72,9 +72,9 @@
   //Minify Partial Componentss scripts and css files
 
   {
-    "outputFileName": "wwwroot/components/_BasePartial.min.js",
+    "outputFileName": "wwwroot/js/_base-partial.min.js",
     "inputFiles": [
-      "wwwroot/components/_BasePartial.js"
+      "wwwroot/js/_base-partial.js"
     ],
     // Optionally specify minification options
     "minify": {
@@ -86,9 +86,9 @@
   },
 
   {
-    "outputFileName": "wwwroot/components/Administration/Partials/_UsersManagementPartial/_UsersManagementPartial.min.js",
+    "outputFileName": "wwwroot/js/administration/partials/_users-management-partial.min.js",
     "inputFiles": [
-      "wwwroot/components/Administration/Partials/_UsersManagementPartial/_UsersManagementPartial.js"
+      "wwwroot/js/administration/partials/_users-management-partial.js"
     ],
     // Optionally specify minification options
     "minify": {

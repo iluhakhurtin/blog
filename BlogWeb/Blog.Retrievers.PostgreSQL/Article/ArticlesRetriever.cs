@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
+using Blog.Retrievers.Article;
 using Npgsql;
 
-namespace Blog.Retrievers.PostgreSQL
+namespace Blog.Retrievers.PostgreSQL.Article
 {
     internal class ArticlesRetriever : Retriever, IArticlesRetriever
     {
@@ -13,9 +13,9 @@ namespace Blog.Retrievers.PostgreSQL
         {
         }
 
-        public async Task<IList<IArticlesRetriever.ArticleDataResult>> GetCategoryArticlesAsync(Guid categoryId)
+        public async Task<IList<ArticleDataResult>> GetCategoryArticlesAsync(Guid categoryId)
         {
-            var result = new List<IArticlesRetriever.ArticleDataResult>();
+            var result = new List<ArticleDataResult>();
 
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
@@ -45,7 +45,7 @@ namespace Blog.Retrievers.PostgreSQL
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    var imageIdParam = command.Parameters.AddWithValue("CategoryId", categoryId);
+                    command.Parameters.AddWithValue("CategoryId", categoryId);
 
                     await connection.OpenAsync();
 
@@ -53,7 +53,7 @@ namespace Blog.Retrievers.PostgreSQL
                     {
                         while (await dataReader.ReadAsync())
                         {
-                            var item = new IArticlesRetriever.ArticleDataResult
+                            var item = new ArticleDataResult
                             {
                                 Id = (Guid)dataReader["Id"],
                                 Title = (string)dataReader["Title"]

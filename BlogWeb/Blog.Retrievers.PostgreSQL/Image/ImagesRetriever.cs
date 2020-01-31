@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Blog.Retrievers.Image;
 using Npgsql;
 
-namespace Blog.Retrievers.PostgreSQL
+namespace Blog.Retrievers.PostgreSQL.Image
 {
     internal class ImagesRetriever : Retriever, IImagesRetriever
     {
@@ -12,7 +13,7 @@ namespace Blog.Retrievers.PostgreSQL
         {
         }
 
-        public async Task<IImagesRetriever.ImageDataResult> GetOriginalImageDataAsync(Guid imageId)
+        public async Task<ImageDataResult> GetOriginalImageDataAsync(Guid imageId)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
@@ -26,7 +27,7 @@ namespace Blog.Retrievers.PostgreSQL
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    var imageIdParam = command.Parameters.AddWithValue("ImageId", imageId);
+                    command.Parameters.AddWithValue("ImageId", imageId);
 
                     await connection.OpenAsync();
 
@@ -34,7 +35,7 @@ namespace Blog.Retrievers.PostgreSQL
                     {
                         if (await dataReader.ReadAsync())
                         {
-                            var result = new IImagesRetriever.ImageDataResult
+                            var result = new ImageDataResult
                             {
                                 MimeType = (string)dataReader["MimeType"],
                                 Data = (byte[])dataReader["Data"]
@@ -47,7 +48,7 @@ namespace Blog.Retrievers.PostgreSQL
             return null;
         }
 
-        public async Task<IImagesRetriever.ImageDataResult> GetPreviewImageDataAsync(Guid imageId)
+        public async Task<ImageDataResult> GetPreviewImageDataAsync(Guid imageId)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
@@ -69,7 +70,7 @@ namespace Blog.Retrievers.PostgreSQL
                     {
                         if (await dataReader.ReadAsync())
                         {
-                            var result = new IImagesRetriever.ImageDataResult
+                            var result = new ImageDataResult
                             {
                                 MimeType = (string)dataReader["MimeType"],
                                 Data = (byte[])dataReader["Data"]
@@ -82,7 +83,7 @@ namespace Blog.Retrievers.PostgreSQL
             return null;
         }
 
-        public async Task<IImagesRetriever.ImageDataResult> GetPreviewImageDataByNameAsync(string fileName)
+        public async Task<ImageDataResult> GetPreviewImageDataByNameAsync(string fileName)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
@@ -105,7 +106,7 @@ namespace Blog.Retrievers.PostgreSQL
                     {
                         if (await dataReader.ReadAsync())
                         {
-                            var result = new IImagesRetriever.ImageDataResult
+                            var result = new ImageDataResult
                             {
                                 MimeType = (string)dataReader["MimeType"],
                                 Data = (byte[])dataReader["Data"]
@@ -118,7 +119,7 @@ namespace Blog.Retrievers.PostgreSQL
             return null;
         }
 
-        public async Task<IImagesRetriever.ImageDataResult> GetOriginalImageDataByNameAsync(string fileName)
+        public async Task<ImageDataResult> GetOriginalImageDataByNameAsync(string fileName)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
@@ -141,7 +142,7 @@ namespace Blog.Retrievers.PostgreSQL
                     {
                         if (await dataReader.ReadAsync())
                         {
-                            var result = new IImagesRetriever.ImageDataResult
+                            var result = new ImageDataResult
                             {
                                 MimeType = (string)dataReader["MimeType"],
                                 Data = (byte[])dataReader["Data"]

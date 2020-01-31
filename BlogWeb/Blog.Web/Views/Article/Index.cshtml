@@ -6,13 +6,13 @@
 
 @section Stylesheets {
     <environment include="Development">
-        <link rel="stylesheet" href="~/css/article/index.css">
+        <link rel="stylesheet" href="~/css/article/index.css" asp-append-version="true">
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="~/css/article/index.min.css">
+        <link rel="stylesheet" href="~/css/article/index.min.css" asp-append-version="true">
     </environment>
 }
 
-<h1 class="container text-center article-title">@Model.Title</h1>
+<h1 class="container text-center title">@Model.Title</h1>
 
-<div class="container article-body">@Html.Raw(Model.Body)</div>
+<div class="container">@Html.Raw(Model.Body)</div>

@@ -42,15 +42,15 @@
     <Folder Include="wwwroot\css\article\" />
     <Folder Include="Views\Administration\" />
     <Folder Include="Views\Administration\Partials\" />
-    <Folder Include="wwwroot\components\" />
-    <Folder Include="wwwroot\components\Adminstration\" />
-    <Folder Include="wwwroot\components\Adminstration\Partials\" />
-    <Folder Include="wwwroot\components\Adminstration\Partials\_UsersManagementPartial\" />
     <Folder Include="Controllers\Administration\" />
+    <Folder Include="Models\jqGrid\" />
+    <Folder Include="wwwroot\js\administration\" />
+    <Folder Include="wwwroot\js\administration\partials\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\css\catalog\index.min.css" />

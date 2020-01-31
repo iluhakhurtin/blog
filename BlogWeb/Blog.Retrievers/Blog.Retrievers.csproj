@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Image\" />
+    <Folder Include="User\" />
+    <Folder Include="Article\" />
+  </ItemGroup>
 </Project>

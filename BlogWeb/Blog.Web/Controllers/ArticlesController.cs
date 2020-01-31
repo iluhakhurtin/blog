@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Retrievers;
+using Blog.Retrievers.Article;
 using Blog.Web.Models.Articles;
 using Microsoft.AspNetCore.Mvc;
 

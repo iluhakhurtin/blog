@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Blog.Retrievers
+namespace Blog.Retrievers.Image
 {
     public interface IImagesRetriever : IRetriever
     {
@@ -10,11 +10,5 @@ namespace Blog.Retrievers
         Task<ImageDataResult> GetOriginalImageDataAsync(Guid imageId);
         Task<ImageDataResult> GetPreviewImageDataByNameAsync(String fileName);
         Task<ImageDataResult> GetOriginalImageDataByNameAsync(String fileName);
-
-        public class ImageDataResult
-        {
-            public byte[] Data { get; set; }
-            public String MimeType { get; set; }
-        }
     }
 }

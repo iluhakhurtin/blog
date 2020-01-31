@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blog.Repositories;
 using Blog.Retrievers;
+using Blog.Retrievers.Image;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers

@@ -5,8 +5,5 @@ namespace Blog.Web.Controllers
 {
     public abstract class BaseController : Controller
     {
-        public BaseController()
-        {
-        }
     }
 }
