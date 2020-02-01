@@ -1,10 +1,10 @@
 ﻿using System;
 namespace Blog.Domain
 {
-    public class ArticleRole : Entity
+    public class ArticleCategory : Entity
     {
         public virtual Guid ArticleId { get; set; }
-        public virtual Guid RoleId { get; set; }
+        public virtual Guid CategoryId { get; set; }
 
         #region Article
         private Article article;
@@ -17,34 +17,33 @@ namespace Blog.Domain
             }
             set
             {
-                if(value != null)
-                {
+                if (value != null)
                     this.ArticleId = value.Id;
-                }
                 this.article = value;
             }
         }
         #endregion
 
-        #region Role
-        private ApplicationRole role;
+        #region Category
+        private Category category;
 
-        public ApplicationRole Role
+        public Category Category
         {
             get
             {
-                return this.role;
+                return this.category;
             }
             set
             {
-                if(value != null)
-                {
-                    this.RoleId = value.Id;
-                }
-                this.role = value;
+                if (value != null)
+                    this.CategoryId = value.Id;
+                this.category = value;
             }
         }
-
         #endregion
+
+        public ArticleCategory()
+        {
+        }
     }
 }

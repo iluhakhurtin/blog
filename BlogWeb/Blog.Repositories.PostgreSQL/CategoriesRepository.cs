@@ -45,5 +45,37 @@ namespace Blog.Repositories.PostgreSQL
             }
             return categories;
         }
+
+        public async Task AddAsync(Category category)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = String.Format(@"
+                    INSERT INTO ""Categories""(
+                        ""Id"",
+	                    ""Name"", 
+	                    ""ParentId""
+	                )
+	                VALUES (
+                        :Id,
+	                    :Name, 
+	                    :ParentId
+	                );
+                    ");
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue(":Id", category.Id);
+                    command.Parameters.AddWithValue(":Name", category.Name);
+
+                    var parentIdParam = new NpgsqlParameter(":ParentId", (object)category.ParentId ?? DBNull.Value);
+                    command.Parameters.Add(parentIdParam);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                connection.Close();
+            }
+        }
     }
 }

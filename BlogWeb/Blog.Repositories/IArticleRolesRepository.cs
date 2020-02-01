@@ -4,7 +4,7 @@ using Blog.Domain;
 
 namespace Blog.Repositories
 {
-    public interface IArticleRolesRepository
+    public interface IArticleRolesRepository : IRepository<ArticleRole>
     {
         Task AddAsync(ArticleRole articleRole);
     }
