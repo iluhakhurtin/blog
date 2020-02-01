@@ -17,11 +17,17 @@
 /BlogWeb/Blog.Domain/bin/
 /BlogWeb/Blog.Services/obj/
 /BlogWeb/Blog.Services/bin/
+/BlogWeb/Blog.Logger/obj/
+/BlogWeb/Blog.Logger/bin/
 
 /BlogWeb/Tests/Blog.Domain.Tests/obj/
 /BlogWeb/Tests/Blog.Domain.Tests/bin/
 /BlogWeb/Tests/Blog.Services.Tests/obj/
 /BlogWeb/Tests/Blog.Services.Tests/bin/
+/BlogWeb/Tests/Blog.Retrievers.Tests/obj/
+/BlogWeb/Tests/Blog.Retrievers.Tests/bin/
+/BlogWeb/Tests/Blog.Retrievers.PostgreSQL.Tests/obj/
+/BlogWeb/Tests/Blog.Retrievers.PostgreSQL.Tests/bin/
 
 /FileImport/.vs/
 /FileImport/FileImport/bin/
