@@ -13,7 +13,8 @@ namespace Blog.Retrievers.Article
         {
             if (String.IsNullOrEmpty(this.Roles))
                 return null;
-            return this.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var roles = this.Roles.Split(new char[] { ',', ' '}, StringSplitOptions.RemoveEmptyEntries);
+            return roles;
         }
     }
 }

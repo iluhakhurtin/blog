@@ -12,6 +12,39 @@ namespace Blog.Repositories.PostgreSQL
         {
         }
 
+        public async Task AddAsync(Article article)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = String.Format(@"
+                    INSERT INTO ""Articles""(
+                        ""Id"",
+	                    ""Title"", 
+	                    ""Body"",
+                        ""Timestamp""
+	                )
+	                VALUES (
+                        :Id,
+	                    :Title, 
+	                    :Body,
+                        :Timestamp
+	                );
+                    ");
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue(":Id", article.Id);
+                    command.Parameters.AddWithValue(":Title", article.Title);
+                    command.Parameters.AddWithValue(":Body", article.Body);
+                    command.Parameters.AddWithValue(":Timestamp", article.Timestamp);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                connection.Close();
+            }
+        }
+
         public async Task<Article> GetAsync(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))

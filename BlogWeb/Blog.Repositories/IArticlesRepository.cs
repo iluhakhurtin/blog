@@ -6,6 +6,7 @@ namespace Blog.Repositories
 {
     public interface IArticlesRepository : IRepository<Article>
     {
+        Task AddAsync(Article article);
         Task<Article> GetAsync(Guid id);
     }
 }
