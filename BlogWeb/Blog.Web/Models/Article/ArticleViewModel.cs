@@ -17,5 +17,11 @@ namespace Blog.Web.Models.Article
             this.Title = article.Title;
             this.Body = article.Body;
         }
+
+        public ArticleViewModel(Blog.Retrievers.Article.ArticleWithRolesDataResult articleWithRolesDataResult)
+        {
+            this.Title = articleWithRolesDataResult.Title;
+            this.Body = articleWithRolesDataResult.Body;
+        }
     }
 }

@@ -133,6 +133,7 @@
     this.getRoles = function () {
         return {
             "PrivateReader": "PrivateReader",
+            "ImageViewer": "ImageViewer",
             "Administrator": "Administrator"
         };
     };

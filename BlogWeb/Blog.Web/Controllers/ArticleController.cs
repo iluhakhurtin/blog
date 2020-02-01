@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Blog.Domain;
 using Blog.Repositories;
 using Blog.Retrievers;
+using Blog.Retrievers.Article;
 using Blog.Retrievers.Image;
 using Blog.Web.Models.Article;
 using Microsoft.AspNetCore.Authorization;
@@ -16,12 +17,12 @@ namespace Blog.Web.Controllers
 {
     public class ArticleController : BaseController
     {
-        private readonly IArticlesRepository articlesRepository;
+        private readonly IArticlesRetriever articlesRetriever;
         private readonly IImagesRetriever imagesRetriever;
 
-        public ArticleController(IRepositories repositories, IRetrievers retrievers)
+        public ArticleController(IRetrievers retrievers)
         {
-            this.articlesRepository = repositories.ArticlesRepository;
+            this.articlesRetriever = retrievers.ArticlesRetriever;
             this.imagesRetriever = retrievers.ImagesRetriever;
         }
 
@@ -29,10 +30,33 @@ namespace Blog.Web.Controllers
         // GET: /<controller>/
         public async Task<IActionResult> Index(Guid id)
         {
-            var article = await this.articlesRepository.GetAsync(id);
-            var articleViewModel = new ArticleViewModel(article);
+            try
+            {
+                var articleWithRolesDataResult = await this.articlesRetriever.GetArticleWithRolesAsync(id);
+                var articleRoles = articleWithRolesDataResult.GetRoles();
+                if(articleRoles != null && !User.IsInRole(ApplicationRole.Administrator))
+                {
+                    var authorized = false;
+                    foreach (var role in articleRoles)
+                    {
+                        if (User.IsInRole(role))
+                        {
+                            authorized = true;
+                            break;
+                        }
+                    }
 
-            return View(articleViewModel);
+                    if(!authorized)
+                        return base.Unauthorized();
+                }
+
+                var articleViewModel = new ArticleViewModel(articleWithRolesDataResult);
+                return View(articleViewModel);
+            }
+            catch(Exception ex)
+            {
+                return base.NotFound();
+            }
         }
 
         // GET: /<controller>/images
