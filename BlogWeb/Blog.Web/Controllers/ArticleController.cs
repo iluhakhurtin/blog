@@ -7,6 +7,7 @@ using Blog.Repositories;
 using Blog.Retrievers;
 using Blog.Retrievers.Image;
 using Blog.Web.Models.Article;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -66,12 +67,16 @@ namespace Blog.Web.Controllers
 
         private async Task<IActionResult> GetOriginalImage(string fileName)
         {
-            var imageDataResult = await this.imagesRetriever.GetOriginalImageDataByNameAsync(fileName);
-            if (imageDataResult == null)
-                return base.NotFound();
+            if(User.IsInRole(ApplicationRole.Administrator) || User.IsInRole(ApplicationRole.ImageViewer))
+            {
+                var imageDataResult = await this.imagesRetriever.GetOriginalImageDataByNameAsync(fileName);
+                if (imageDataResult == null)
+                    return base.NotFound();
 
-            var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
-            return fileContentResult;
+                var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
+                return fileContentResult;
+            }
+            return base.Unauthorized();
         }
     }
 }

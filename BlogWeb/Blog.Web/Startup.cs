@@ -188,8 +188,15 @@ namespace Blog.Web
                 roleResult = await roleManager.CreateAsync(new ApplicationRole(ApplicationRole.PrivateReader));
             }
 
-            //Assign Admin role to the main User
+            //Adding Photo Viewer role
+            roleCheck = await roleManager.RoleExistsAsync(ApplicationRole.ImageViewer);
+            if (!roleCheck)
+            {
+                //create the role if it does not exists
+                roleResult = await roleManager.CreateAsync(new ApplicationRole(ApplicationRole.ImageViewer));
+            }
 
+            //Assign Admin role to the main User
             string adminEmal = "admin@blog.com";
             ApplicationUser user = await userManager.FindByEmailAsync(adminEmal);
 

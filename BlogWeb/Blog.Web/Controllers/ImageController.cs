@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Blog.Domain;
 using Blog.Repositories;
 using Blog.Retrievers;
 using Blog.Retrievers.Image;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers
@@ -36,6 +38,7 @@ namespace Blog.Web.Controllers
             }
         }
 
+        [Authorize(Roles = ApplicationRole.Administrator + "," + ApplicationRole.ImageViewer)]
         public async Task<IActionResult> Original(Guid id)
         {
             try
