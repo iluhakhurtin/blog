@@ -46,8 +46,8 @@ namespace Blog.Web.Controllers
                         }
                     }
 
-                    if(!authorized)
-                        return base.Unauthorized();
+                    if (!authorized)
+                        return base.AccessDenied();
                 }
 
                 var articleViewModel = new ArticleViewModel(articleWithRolesDataResult);
@@ -91,16 +91,16 @@ namespace Blog.Web.Controllers
 
         private async Task<IActionResult> GetOriginalImage(string fileName)
         {
-            if(User.IsInRole(ApplicationRole.Administrator) || User.IsInRole(ApplicationRole.ImageViewer))
-            {
+            //if(User.IsInRole(ApplicationRole.Administrator) || User.IsInRole(ApplicationRole.ImageViewer))
+            //{
                 var imageDataResult = await this.imagesRetriever.GetOriginalImageDataByNameAsync(fileName);
                 if (imageDataResult == null)
                     return base.NotFound();
 
                 var fileContentResult = new FileContentResult(imageDataResult.Data, imageDataResult.MimeType);
                 return fileContentResult;
-            }
-            return base.Unauthorized();
+            //}
+            //return base.AccessDenied();
         }
     }
 }
