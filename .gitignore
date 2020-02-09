@@ -3,6 +3,7 @@
 /PostgreSQL/DbUpdates/DbUpdates/obj
 
 /BlogWeb/.vs/
+/BlogWeb/Blog.Web/**/*.min.*
 /BlogWeb/Blog.Web/obj/
 /BlogWeb/Blog.Web/bin/
 /BlogWeb/Blog.Repositories/obj/
