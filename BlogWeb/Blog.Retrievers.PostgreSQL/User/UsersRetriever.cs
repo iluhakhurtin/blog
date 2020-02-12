@@ -12,7 +12,12 @@ namespace Blog.Retrievers.PostgreSQL.User
         {
         }
 
-        public async Task<UsersPagedDataTable> GetUsersPagedAsync(string emailFiler, string sortColumn, string sortOrder, int pageNumber, int pageSize)
+        public async Task<UsersPagedDataTable> GetUsersPagedAsync(
+            string emailFilter,
+            string sortColumn,
+            string sortOrder,
+            int pageNumber,
+            int pageSize)
         {
             UsersPagedDataTable usersPagedDataTable = new UsersPagedDataTable(pageNumber, pageSize);
 
@@ -52,7 +57,7 @@ namespace Blog.Retrievers.PostgreSQL.User
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    var emailFilterParam = new NpgsqlParameter<string>("EmailFilter", emailFiler);
+                    var emailFilterParam = new NpgsqlParameter<string>("EmailFilter", emailFilter);
                     command.Parameters.Add(emailFilterParam);
 
                     var sortColumnParam = new NpgsqlParameter<string>("SortColumn", sortColumn);

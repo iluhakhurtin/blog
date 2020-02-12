@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers.Administration
 {
-    public class UsersController : BaseAdministrationController
+    public class ArticlesController : BaseAdministrationController
     {
-        public UsersController(ILog log)
+        public ArticlesController(ILog log)
             : base(log)
         {
 

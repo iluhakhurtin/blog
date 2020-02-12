@@ -1,4 +1,4 @@
-﻿function _UsersManagementPartial(elem, apiUrl) {
+﻿function _ArticlesManagementPartial(elem, articlesApiUrl) {
     //call base constructor
     _BaseManagementPartial.apply(this, arguments);
 
@@ -8,14 +8,6 @@
     this.pagerID = '#' + this.elem.find('.pager').attr("id");
 
     //+ Methods
-
-    this.onBeforeShowEditForm = function (formid) {
-        $("#Email", formid).attr("readonly", "readonly");
-    };
-
-    this.onBeforeShowAddForm = function (formid) {
-        $("#Email", formid).removeAttr("readonly", "readonly");
-    };
 
     this.onAfterSubmit = function (data, postdata, oper) {
         var responseMessage = data.responseJSON;
@@ -35,8 +27,20 @@
             datatype: "json",
             colModel: [
                 {
-                    label: 'Email',
-                    name: 'Email',
+                    label: 'Title',
+                    name: 'Title',
+                    width: 100,
+                    editable: true
+                },
+                {
+                    label: 'Body',
+                    name: 'Body',
+                    width: 100,
+                    editable: true
+                },
+                {
+                    label: 'Timestamp',
+                    name: 'Timestamp',
                     width: 100,
                     editable: true
                 },
@@ -55,14 +59,6 @@
                         multiple: true,
                         value: this.getRoles()
                     }
-                },
-                {
-                    label: 'Password',
-                    name: 'Password',
-                    hidden: true,
-                    editable: true,
-                    editrules: { edithidden: true },
-                    hidedlg: true
                 }
             ],
             autowidth: true,
@@ -76,7 +72,7 @@
             viewrecords: true,
             hoverrows: true,
             rowNum: 10,
-            caption: 'Управление пользователями',
+            caption: 'Управление статьями',
             sortable: true,
             //altRows: true, This does not work in boostrarap
             //altclass: '....'
@@ -102,16 +98,14 @@
                 closeAfterEdit: true,
                 reloadAfterSubmit: true,
                 recreateForm: true,
-                afterSubmit: utils.bind(this, this.onAfterSubmit),
-                beforeShowForm: utils.bind(this, this.onBeforeShowEditForm)
+                afterSubmit: utils.bind(this, this.onAfterSubmit)
             },
             // options for the Add Dialog
             {
                 closeAfterAdd: true,
                 reloadAfterSubmit: true,
                 recreateForm: true,
-                afterSubmit: utils.bind(this, this.onAfterSubmit),
-                beforeShowForm: utils.bind(this, this.onBeforeShowAddForm)
+                afterSubmit: utils.bind(this, this.onAfterSubmit)
             },
             // options for the Delete Dailog
             {
@@ -136,4 +130,4 @@
     //- Methods calls
 };
 
-_UsersManagementPartial.prototype = new _BaseManagementPartial();
+_ArticlesManagementPartial.prototype = new _BaseManagementPartial();

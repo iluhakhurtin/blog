@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Blog.Retrievers;
 using Blog.Retrievers.Article;
 using Blog.Web.Models.Articles;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,17 +17,28 @@ namespace Blog.Web.Controllers
         private readonly IArticlesRetriever articlesRetriever;
 
 
-        public ArticlesController(IRetrievers retrievers)
+        public ArticlesController(ILog log, IRetrievers retrievers)
+            : base(log)
         {
             this.articlesRetriever = retrievers.ArticlesRetriever;
         }
 
         public async Task<IActionResult> Index(Guid id)
         {
-            var articles = await this.articlesRetriever.GetCategoryArticlesAsync(id);
-            var articlesViewModel = new ArticlesViewModel(articles);
+            try
+            {
+                var articles = await this.articlesRetriever.GetCategoryArticlesAsync(id);
+                var articlesViewModel = new ArticlesViewModel(articles);
 
-            return View(articlesViewModel);
+                return View(articlesViewModel);
+            }
+            catch(Exception ex)
+            {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
+                return base.NotFound();
+            }
         }
     }
 }

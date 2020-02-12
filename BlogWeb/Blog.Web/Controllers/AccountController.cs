@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Blog.Domain;
 using Blog.Web.Models.Account;
+using log4net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,8 +16,9 @@ namespace Blog.Web.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager,
+        public AccountController(ILog log, UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
+            : base(log)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;

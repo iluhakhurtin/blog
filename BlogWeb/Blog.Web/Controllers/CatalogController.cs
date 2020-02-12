@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blog.Services;
 using Blog.Web.Models.Catalog;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,7 +15,8 @@ namespace Blog.Web.Controllers
     {
         private readonly ICategoriesService categoriesService;
 
-        public CatalogController(IServices services)
+        public CatalogController(ILog log, IServices services)
+            : base(log)
         {
             this.categoriesService = services.CategoriesService;
         }
@@ -27,10 +29,5 @@ namespace Blog.Web.Controllers
 
             return View(catalogViewModel);
         }
-
-        //public async Task<IActionResult> SideCategory()
-        //{
-
-        //}
     }
 }

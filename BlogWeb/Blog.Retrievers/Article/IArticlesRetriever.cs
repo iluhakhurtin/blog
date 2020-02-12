@@ -8,5 +8,14 @@ namespace Blog.Retrievers.Article
     {
         Task<IList<ArticleDataResult>> GetCategoryArticlesAsync(Guid categoryId);
         Task<ArticleWithRolesDataResult> GetArticleWithRolesAsync(Guid articleId);
+        Task<ArticlesPagedDataTable> GetArticlesPagedAsync(
+            string titleFilter,
+            string bodyFilter,
+            string rolesFilter,
+            string categoriesFilter,
+            string sortColumn,
+            string sortOrder,
+            int pageNumber,
+            int pageSize);
     }
 }

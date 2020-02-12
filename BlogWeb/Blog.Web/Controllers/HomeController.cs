@@ -6,16 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Blog.Web.Models;
+using log4net;
 
 namespace Blog.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILog log)
+            : base(log)
         {
-            _logger = logger;
         }
 
         public IActionResult Index()

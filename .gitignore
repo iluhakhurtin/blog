@@ -29,6 +29,8 @@
 /BlogWeb/Tests/Blog.Retrievers.Tests/bin/
 /BlogWeb/Tests/Blog.Retrievers.PostgreSQL.Tests/obj/
 /BlogWeb/Tests/Blog.Retrievers.PostgreSQL.Tests/bin/
+/BlogWeb/Tests/Blog.Logger.Tests/bin/
+/BlogWeb/Tests/Blog.Logger.Tests/obj/
 
 /FileImport/.vs/
 /FileImport/FileImport/bin/

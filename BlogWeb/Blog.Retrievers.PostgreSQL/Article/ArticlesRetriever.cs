@@ -13,6 +13,19 @@ namespace Blog.Retrievers.PostgreSQL.Article
         {
         }
 
+        public Task<ArticlesPagedDataTable> GetArticlesPagedAsync(
+            string titleFilter,
+            string bodyFilter,
+            string rolesFilter,
+            string categoriesFilter,
+            string sortColumn,
+            string sortOrder,
+            int pageNumber,
+            int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ArticleWithRolesDataResult> GetArticleWithRolesAsync(Guid articleId)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))

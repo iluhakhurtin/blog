@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers
 {
     public abstract class BaseController : Controller
     {
-        public IActionResult AccessDenied()
+        protected readonly ILog log;
+
+        public BaseController(ILog log)
         {
-            return base.RedirectToAction("AccessDenied", "Account");
+            this.log = log;
         }
     }
 }

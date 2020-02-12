@@ -27,6 +27,9 @@
     <ProjectReference Include="..\Blog.Retrievers.PostgreSQL\Blog.Retrievers.PostgreSQL.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\Blog.Logger\Blog.Logger.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\img\" />

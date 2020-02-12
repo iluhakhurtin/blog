@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Blog.Domain;
 using Blog.Retrievers;
-using Blog.Retrievers.User;
+using Blog.Retrievers.Article;
 using Blog.Web.Models.jqGrid;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
@@ -14,26 +14,23 @@ using Newtonsoft.Json;
 
 namespace Blog.Web.Controllers.Administration
 {
-    [Route("api/Administration/UsersApi")]
-    public class UsersApiController : BaseApiAdministrationController
+    [Route("api/Administration/ArticlesApi")]
+    public class ArticlesApiController : BaseApiAdministrationController
     {
-        private readonly IUsersRetriever usersRetriever;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IArticlesRetriever articlesRetriever;
         private readonly RoleManager<ApplicationRole> roleManager;
 
-        public UsersApiController(
+        public ArticlesApiController(
             ILog log,
             IRetrievers retrievers,
-            UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager)
             : base(log)
         {
-            this.usersRetriever = retrievers.UsersRetriever;
-            this.userManager = userManager;
+            this.articlesRetriever = retrievers.ArticlesRetriever;
             this.roleManager = roleManager;
         }
 
-        // GET: api/UsersApi
+        // GET: api/ArticlesApi
         [HttpGet]
         public async Task<jqGridResult> Get(
             bool _search,
@@ -47,16 +44,25 @@ namespace Blog.Web.Controllers.Administration
         {
             try
             {
-                string email = null;
+                string title = null;
+                string body = null;
+                string roles = null;
+                string categories = null;
 
                 if (!String.IsNullOrEmpty(filters))
                 {
                     jqGridFilter filter = JsonConvert.DeserializeObject<jqGridFilter>(filters);
-                    email = filter.GetFilterByFieldName(UsersPagedDataTable.Email);
+                    title = filter.GetFilterByFieldName(ArticlesPagedDataTable.Title);
+                    body = filter.GetFilterByFieldName(ArticlesPagedDataTable.Body);
+                    roles = filter.GetFilterByFieldName(ArticlesPagedDataTable.Roles);
+                    categories = filter.GetFilterByFieldName(ArticlesPagedDataTable.Categories);
                 }
 
-                UsersPagedDataTable pagedDataTable = await this.usersRetriever.GetUsersPagedAsync(
-                    email,
+                ArticlesPagedDataTable pagedDataTable = await this.articlesRetriever.GetArticlesPagedAsync(
+                    title,
+                    body,
+                    roles,
+                    categories,
                     sidx,
                     sord,
                     page,
@@ -80,13 +86,13 @@ namespace Blog.Web.Controllers.Administration
             }
         }
 
-        // POST: api/UsersApi
+        // POST: api/ArticlesApi
         [HttpPost]
         public async Task<HttpResponseMessage> Post(
             [FromForm]string id,
             [FromForm]string oper,
-            [FromForm]string Email,
-            [FromForm]string Password,
+            [FromForm]string Title,
+            [FromForm]string Body,
             [FromForm]string Roles)
         {
 

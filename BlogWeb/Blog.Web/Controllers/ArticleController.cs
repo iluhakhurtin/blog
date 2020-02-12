@@ -8,6 +8,7 @@ using Blog.Retrievers;
 using Blog.Retrievers.Article;
 using Blog.Retrievers.Image;
 using Blog.Web.Models.Article;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,8 @@ namespace Blog.Web.Controllers
         private readonly IArticlesRetriever articlesRetriever;
         private readonly IImagesRetriever imagesRetriever;
 
-        public ArticleController(IRetrievers retrievers)
+        public ArticleController(ILog log, IRetrievers retrievers)
+            : base(log)
         {
             this.articlesRetriever = retrievers.ArticlesRetriever;
             this.imagesRetriever = retrievers.ImagesRetriever;
@@ -47,7 +49,7 @@ namespace Blog.Web.Controllers
                     }
 
                     if (!authorized)
-                        return base.AccessDenied();
+                        return base.Unauthorized();
                 }
 
                 var articleViewModel = new ArticleViewModel(articleWithRolesDataResult);
@@ -55,6 +57,9 @@ namespace Blog.Web.Controllers
             }
             catch(Exception ex)
             {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
                 return base.NotFound();
             }
         }
@@ -75,6 +80,9 @@ namespace Blog.Web.Controllers
             }
             catch (Exception ex)
             {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
                 return base.NotFound();
             }
         }

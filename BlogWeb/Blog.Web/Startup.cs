@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Blog.Domain;
 using System.Net;
+using log4net;
+using Blog.Logger.LogFactories;
 
 namespace Blog.Web
 {
@@ -47,6 +49,9 @@ namespace Blog.Web
 
             IRetrievers retrievers = this.BuildRetrievers(dbConnections.BlogConnectionString);
             serviceCollection.AddSingleton<IRetrievers>(retrievers);
+
+            ILog log = this.BuildLog();
+            serviceCollection.AddSingleton<ILog>(log);
 
             IServices services = this.BuildServices(repositories, retrievers);
             serviceCollection.AddSingleton<IServices>(services);
@@ -106,6 +111,13 @@ namespace Blog.Web
         {
             IRetrievers retrievers = new Blog.Retrievers.PostgreSQL.Retrievers(blogConnectionString);
             return retrievers;
+        }
+
+        private ILog BuildLog()
+        {
+            var logFactory = new JsonLogFactory();
+            ILog log = logFactory.GetLog();
+            return log;
         }
 
         private IServices BuildServices(IRepositories repositories, IRetrievers retrievers)

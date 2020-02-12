@@ -84,11 +84,37 @@
     // Optionally generate .map file
     "sourceMap": false
   },
+  {
+    "outputFileName": "wwwroot/js/administration/partials/_base-management-partial.min.js",
+    "inputFiles": [
+      "wwwroot/js/administration/partials/_base-management-partial.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  },
 
   {
     "outputFileName": "wwwroot/js/administration/partials/_users-management-partial.min.js",
     "inputFiles": [
       "wwwroot/js/administration/partials/_users-management-partial.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/administration/partials/_articles-management-partial.min.js",
+    "inputFiles": [
+      "wwwroot/js/administration/partials/_articles-management-partial.js"
     ],
     // Optionally specify minification options
     "minify": {

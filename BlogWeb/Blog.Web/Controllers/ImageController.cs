@@ -7,6 +7,7 @@ using Blog.Domain;
 using Blog.Repositories;
 using Blog.Retrievers;
 using Blog.Retrievers.Image;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,8 @@ namespace Blog.Web.Controllers
         private readonly IImagesRetriever imagesRetriever;
         private readonly IFilesRepository filesRepository;
 
-        public ImageController(IRepositories repositories, IRetrievers retrievers)
+        public ImageController(ILog log, IRepositories repositories, IRetrievers retrievers)
+            : base(log)
         {
             this.filesRepository = repositories.FilesRepository;
             this.imagesRetriever = retrievers.ImagesRetriever;
@@ -34,6 +36,9 @@ namespace Blog.Web.Controllers
             }
             catch (Exception ex)
             {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
                 return base.NotFound();
             }
         }
@@ -49,6 +54,9 @@ namespace Blog.Web.Controllers
             }
             catch (Exception ex)
             {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
                 return base.NotFound();
             }
         }
@@ -63,6 +71,9 @@ namespace Blog.Web.Controllers
             }
             catch(Exception ex)
             {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
                 return base.NotFound();
             }
         }

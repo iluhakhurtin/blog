@@ -1,11 +1,8 @@
-﻿using System.Configuration;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using System.Threading.Tasks;
 using Npgsql;
 using Respawn;
 
-namespace Blog.Retrievers.PostgreSQL.Tests
+namespace Blog.PostgreSQL.Tests
 {
     public class DatabaseCleaner
     {
