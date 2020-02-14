@@ -13,9 +13,8 @@ namespace Blog.Retrievers.PostgreSQL.Article
         {
         }
 
-        public Task<ArticlesPagedDataTable> GetArticlesPagedAsync(
+        public async Task<ArticlesPagedDataTable> GetArticlesPagedAsync(
             string titleFilter,
-            string bodyFilter,
             string rolesFilter,
             string categoriesFilter,
             string sortColumn,
@@ -23,7 +22,95 @@ namespace Blog.Retrievers.PostgreSQL.Article
             int pageNumber,
             int pageSize)
         {
-            throw new NotImplementedException();
+            var articlesPagedDataTable = new ArticlesPagedDataTable(pageNumber, pageSize);
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+	                                *
+	                                FROM
+	                                (SELECT
+		                                COUNT(1) OVER()                 AS ""ResultsCount"",
+                                        a.""Id""                        AS ""Id"",
+                                        MAX(a.""Title"")                AS ""Title"",
+		                                MAX(a.""Body"")                 AS ""Body"",
+		                                MAX(a.""Timestamp"")            AS ""Timestamp"",
+		                                string_agg(r.""Name"", ', ')    AS ""Roles"",
+	 	                                string_agg(c.""Name"", ', ')    AS ""Categories""
+                                        FROM ""Articles"" a
+                                        LEFT JOIN ""ArticleRoles"" ar ON ar.""ArticleId"" = a.""Id""
+                                        LEFT JOIN ""AspNetRoles"" r ON r.""Id"" = ar.""RoleId""
+                                        LEFT JOIN ""ArticleCategories"" ac ON ac.""ArticleId"" = a.""Id""
+                                        LEFT JOIN ""Categories"" c ON c.""Id"" = ac.""CategoryId""
+                                        WHERE :TitleFilter IS NULL OR a.""Title"" ILIKE('%' || :TitleFilter || '%')
+                                        GROUP BY a.""Id"") Subquery
+                                    WHERE :RolesFilter IS NULL OR Subquery.""Roles"" ILIKE('%' || :RolesFilter || '%')
+                                        AND :CategoriesFilter IS NULL OR Subquery.""Categories"" ILIKE ('%' || :CategoriesFilter || '%')
+                                    ORDER BY
+                                        CASE
+                                            WHEN :SortOrder = 'desc' THEN
+                                                CASE
+                                                    WHEN :SortColumn = 'Title' THEN CAST(Subquery.""Title"" AS text)
+                                                    WHEN :SortColumn = 'Timestamp' THEN CAST(Subquery.""Timestamp"" AS text)
+                                                    WHEN :SortColumn = 'Roles' THEN CAST(Subquery.""Roles"" AS text)
+                                                    WHEN :SortColumn = 'Categories' THEN CAST(Subquery.""Categories"" AS text)
+					                                ELSE CAST(Subquery.""Id"" AS text)
+				                                END
+                                        END DESC,
+		                                CASE
+                                            WHEN :SortOrder = 'asc' THEN
+                                                CASE
+                                                    WHEN :SortColumn = 'Title' THEN CAST(Subquery.""Title"" AS text)
+                                                    WHEN :SortColumn = 'Timestamp' THEN CAST(Subquery.""Timestamp"" AS text)
+                                                    WHEN :SortColumn = 'Roles' THEN CAST(Subquery.""Roles"" AS text)
+                                                    WHEN :SortColumn = 'Categories' THEN CAST(Subquery.""Categories"" AS text)
+					                                ELSE CAST(Subquery.""Id"" AS text)
+				                                END
+                                        END ASC
+                                    LIMIT :PageSize
+                                    OFFSET(:PageNumber - 1) * :PageSize;
+                                    ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    var filterParam = new NpgsqlParameter<string>("TitleFilter", titleFilter);
+                    command.Parameters.Add(filterParam);
+
+                    filterParam = new NpgsqlParameter<string>("RolesFilter", rolesFilter);
+                    command.Parameters.Add(filterParam);
+
+                    filterParam = new NpgsqlParameter<string>("CategoriesFilter", categoriesFilter);
+                    command.Parameters.Add(filterParam);
+
+                    var sortColumnParam = new NpgsqlParameter<string>("SortColumn", sortColumn);
+                    command.Parameters.Add(sortColumnParam);
+
+                    command.Parameters.AddWithValue("SortOrder", sortOrder);
+                    command.Parameters.AddWithValue("PageNumber", pageNumber);
+                    command.Parameters.AddWithValue("PageSize", pageSize);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        while (dataReader.Read())
+                        {
+                            if (articlesPagedDataTable.TotalResultsCount == 0)
+                                articlesPagedDataTable.TotalResultsCount = Convert.ToInt32(dataReader["ResultsCount"]);
+
+                            articlesPagedDataTable.Rows.Add(
+                                dataReader[ArticlesPagedDataTable.Id],
+                                dataReader[ArticlesPagedDataTable.Title],
+                                dataReader[ArticlesPagedDataTable.Body],
+                                dataReader[ArticlesPagedDataTable.Timestamp],
+                                dataReader[ArticlesPagedDataTable.Roles],
+                                dataReader[ArticlesPagedDataTable.Categories]);
+                        }
+                    }
+                }
+            }
+
+            return articlesPagedDataTable;
         }
 
         public async Task<ArticleWithRolesDataResult> GetArticleWithRolesAsync(Guid articleId)

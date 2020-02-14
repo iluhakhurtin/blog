@@ -16,7 +16,7 @@ namespace Blog.Web.Controllers.Administration
 
         public IActionResult Index()
         {
-            return View("~/Views/Administration/Users.cshtml");
+            return View("~/Views/Administration/Articles.cshtml");
         }
     }
 }

@@ -10,7 +10,6 @@ namespace Blog.Retrievers.Article
         Task<ArticleWithRolesDataResult> GetArticleWithRolesAsync(Guid articleId);
         Task<ArticlesPagedDataTable> GetArticlesPagedAsync(
             string titleFilter,
-            string bodyFilter,
             string rolesFilter,
             string categoriesFilter,
             string sortColumn,

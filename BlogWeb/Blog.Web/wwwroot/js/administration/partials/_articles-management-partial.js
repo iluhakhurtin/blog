@@ -30,13 +30,15 @@
                     label: 'Title',
                     name: 'Title',
                     width: 100,
-                    editable: true
+                    editable: true,
+                    formatter: this.formatTitle
                 },
                 {
                     label: 'Body',
                     name: 'Body',
                     width: 100,
-                    editable: true
+                    editable: true,
+                    hidden: true,
                 },
                 {
                     label: 'Timestamp',
@@ -58,6 +60,22 @@
                     editoptions: {
                         multiple: true,
                         value: this.getRoles()
+                    }
+                },
+                {
+                    label: 'Categories',
+                    name: 'Categories',
+                    width: 100,
+                    //word wrap
+                    cellattr: function (rowId, tv, rawObject, cm, rdata) {
+                        return 'style="white-space: normal;"';
+                    },
+                    editable: true,
+                    formatter: "select",
+                    edittype: "select",
+                    editoptions: {
+                        multiple: true,
+                        value: this.getCategories()
                     }
                 }
             ],
@@ -120,6 +138,22 @@
             }
         );
     };
+
+    this.getCategories = function () {
+        if (!this.categories) {
+            this.categories = {
+                "1": "Category1",
+                "2": "Category2",
+                "3": "Category3"
+            };
+        }
+        return this.categories;
+    };
+
+    this.formatTitle = function (cellvalue, options, rowobject) {
+        return '<a href="/Article/Index/' + options.rowId + '" target="_blank">'
+            + cellvalue + '</a>';
+    }
 
     //- Methods
 
