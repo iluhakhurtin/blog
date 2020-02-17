@@ -29,27 +29,27 @@
                 {
                     label: 'Title',
                     name: 'Title',
-                    width: 100,
+                    width: 250,
                     editable: true,
                     formatter: this.formatTitle
                 },
-                {
-                    label: 'Body',
-                    name: 'Body',
-                    width: 100,
-                    editable: true,
-                    hidden: true,
-                },
+                //{
+                //    label: 'Body',
+                //    name: 'Body',
+                //    width: 100,
+                //    editable: true,
+                //    hidden: true,
+                //},
                 {
                     label: 'Timestamp',
                     name: 'Timestamp',
-                    width: 100,
+                    width: 50,
                     editable: true
                 },
                 {
                     label: 'Roles',
                     name: 'Roles',
-                    width: 100,
+                    width: 50,
                     //word wrap
                     cellattr: function (rowId, tv, rawObject, cm, rdata) {
                         return 'style="white-space: normal;"';
@@ -71,7 +71,6 @@
                         return 'style="white-space: normal;"';
                     },
                     editable: true,
-                    formatter: "select",
                     edittype: "select",
                     editoptions: {
                         multiple: true,
@@ -112,7 +111,7 @@
             },
             // options for the Edit Dialog
             {
-                editCaption: "Роли",
+                editCaption: "Статьи",
                 closeAfterEdit: true,
                 reloadAfterSubmit: true,
                 recreateForm: true,

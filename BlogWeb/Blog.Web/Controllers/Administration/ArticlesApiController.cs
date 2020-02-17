@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Blog.Domain;
+using Blog.Repositories;
 using Blog.Retrievers;
 using Blog.Retrievers.Article;
+using Blog.Services;
 using Blog.Web.Models.jqGrid;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
@@ -17,15 +19,21 @@ namespace Blog.Web.Controllers.Administration
     [Route("api/Administration/ArticlesApi")]
     public class ArticlesApiController : BaseApiAdministrationController
     {
+        private readonly IStringService stringService;
+        private readonly IArticlesRepository articlesRepository;
         private readonly IArticlesRetriever articlesRetriever;
         private readonly RoleManager<ApplicationRole> roleManager;
 
         public ArticlesApiController(
             ILog log,
+            IServices services,
             IRetrievers retrievers,
+            IRepositories repositories,
             RoleManager<ApplicationRole> roleManager)
             : base(log)
         {
+            this.stringService = services.StringService;
+            this.articlesRepository = repositories.ArticlesRepository;
             this.articlesRetriever = retrievers.ArticlesRetriever;
             this.roleManager = roleManager;
         }
@@ -90,22 +98,23 @@ namespace Blog.Web.Controllers.Administration
             [FromForm]string oper,
             [FromForm]string Title,
             [FromForm]string Body,
-            [FromForm]string Roles)
+            [FromForm]string Roles,
+            [FromForm]string Categories)
         {
 
             try
             {
-                //switch (oper)
-                //{
-                //    case jqGridActions.Add:
-                //        return await this.AddArticle(Email, Password, Roles);
+                switch (oper)
+                {
+                    case jqGridActions.Add:
+                        return await this.AddArticle(Title, Body, Roles, Categories);
 
-                //    case jqGridActions.Edit:
-                //        return await this.EditUser(id, Password, Roles);
+                    case jqGridActions.Edit:
+                        //return await this.EditArticle(id, Title, Body, Roles, Categories);
 
-                //    case jqGridActions.Delete:
-                //        return await this.DeleteUser(id);
-                //}
+                    case jqGridActions.Delete:
+                        return await this.DeleteArticle(id);
+                }
             }
             catch (Exception ex)
             {
@@ -117,57 +126,48 @@ namespace Blog.Web.Controllers.Administration
             return base.CreateErrorResponseMessage("Not implemented");
         }
 
-        //private async Task<HttpResponseMessage> AddUser(
-        //    string email,
-        //    string password,
-        //    string roles)
-        //{
-        //    ApplicationUser user = await this.userManager.FindByEmailAsync(email);
-        //    if (user != null)
-        //    {
-        //        var userDuplicationErrorResponseMessage = base.CreateErrorResponseMessage("The email is aready registered in the system.");
-        //        return await Task.FromResult(userDuplicationErrorResponseMessage);
-        //    }
+        private async Task<HttpResponseMessage> AddArticle(string title, string body, string roles, string categories)
+        {
+            //validate the roles
+            var parsedRoles = this.stringService.ParseCsvStringToArray(roles);
+            string errorMessage = await this.ValidateRoles(parsedRoles);
+            if (!String.IsNullOrEmpty(errorMessage))
+            {
+                var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
+                return await Task.FromResult(errorResponseMessage);
+            }
 
-        //    //validate the roles
-        //    var parsedRoles = this.ParseRolesFromString(roles);
-        //    string errorMessage = await this.ValidateRoles(parsedRoles);
-        //    if (!String.IsNullOrEmpty(errorMessage))
-        //    {
-        //        var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
-        //        return await Task.FromResult(errorResponseMessage);
-        //    }
+            //user = new ApplicationUser();
+            //user.Email = email;
+            //user.UserName = email;
 
-        //    user = new ApplicationUser();
-        //    user.Email = email;
-        //    user.UserName = email;
+            //try
+            //{
+            //    await this.userManager.CreateAsync(user, password);
 
-        //    try
-        //    {
-        //        await this.userManager.CreateAsync(user, password);
+            //    foreach (string role in parsedRoles)
+            //    {
+            //        await this.userManager.AddToRoleAsync(user, role);
+            //    }
 
-        //        foreach (string role in parsedRoles)
-        //        {
-        //            await this.userManager.AddToRoleAsync(user, role);
-        //        }
-
-        //        var okResponseMessage = base.CreateOkResponseMessage();
-        //        return await Task.FromResult(okResponseMessage);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        try
-        //        {
-        //            await this.userManager.DeleteAsync(user);
-        //        }
-        //        finally
-        //        {
-        //            if (base.log.IsErrorEnabled)
-        //                base.log.Error(ex);
-        //        }
-        //        return base.CreateErrorResponseMessage();
-        //    }
-        //}
+            //    var okResponseMessage = base.CreateOkResponseMessage();
+            //    return await Task.FromResult(okResponseMessage);
+            //}
+            //catch (Exception ex)
+            //{
+            //    try
+            //    {
+            //        await this.userManager.DeleteAsync(user);
+            //    }
+            //    finally
+            //    {
+            //        if (base.log.IsErrorEnabled)
+            //            base.log.Error(ex);
+            //    }
+            //    return base.CreateErrorResponseMessage();
+            //}
+            return base.CreateOkResponseMessage();
+        }
 
         //private async Task<HttpResponseMessage> EditUser(
         //    string userId,
@@ -204,22 +204,23 @@ namespace Blog.Web.Controllers.Administration
         //    return await Task.FromResult(okResponseMessage);
         //}
 
-        //private async Task<HttpResponseMessage> DeleteUser(string userId)
-        //{
-        //    ApplicationUser user = await this.userManager.FindByIdAsync(userId);
-        //    HttpResponseMessage httpResponseMessage = base.CreateOkResponseMessage();
-        //    try
-        //    {
-        //        var result = await this.userManager.DeleteAsync(user);
-        //        if (!result.Succeeded)
-        //            httpResponseMessage = base.CreateErrorResponseMessage();
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        httpResponseMessage = base.CreateErrorResponseMessage(ex.Message);
-        //    }
-        //    return await Task.FromResult(httpResponseMessage);
-        //}
+        private async Task<HttpResponseMessage> DeleteArticle(string id)
+        {
+            var articleId = Guid.Parse(id);
+            HttpResponseMessage httpResponseMessage = base.CreateOkResponseMessage();
+            try
+            {
+                await this.articlesRepository.DeleteAsync(articleId);
+            }
+            catch (Exception ex)
+            {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
+                httpResponseMessage = base.CreateErrorResponseMessage(ex.Message);
+            }
+            return await Task.FromResult(httpResponseMessage);
+        }
 
         private async Task<string> ValidateRoles(IEnumerable<string> roles)
         {
@@ -233,12 +234,6 @@ namespace Blog.Web.Controllers.Administration
                 }
             }
             return String.Empty;
-        }
-
-        private IEnumerable<string> ParseRolesFromString(string rolesString)
-        {
-            char[] separators = new char[] { ',', ' ' };
-            return rolesString.Split(separators, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers.Administration
 {
+    [Route("Administration/Articles")]
     public class ArticlesController : BaseAdministrationController
     {
         public ArticlesController(ILog log)

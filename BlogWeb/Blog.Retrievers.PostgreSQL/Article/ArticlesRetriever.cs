@@ -98,11 +98,14 @@ namespace Blog.Retrievers.PostgreSQL.Article
                             if (articlesPagedDataTable.TotalResultsCount == 0)
                                 articlesPagedDataTable.TotalResultsCount = Convert.ToInt32(dataReader["ResultsCount"]);
 
+                            var timestamp = dataReader[ArticlesPagedDataTable.Timestamp];
+                            var timestampStr = timestamp == null ? String.Empty : ((DateTime)timestamp).ToShortDateString();
+
                             articlesPagedDataTable.Rows.Add(
                                 dataReader[ArticlesPagedDataTable.Id],
                                 dataReader[ArticlesPagedDataTable.Title],
-                                dataReader[ArticlesPagedDataTable.Body],
-                                dataReader[ArticlesPagedDataTable.Timestamp],
+                                //dataReader[ArticlesPagedDataTable.Body],
+                                timestampStr,
                                 dataReader[ArticlesPagedDataTable.Roles],
                                 dataReader[ArticlesPagedDataTable.Categories]);
                         }

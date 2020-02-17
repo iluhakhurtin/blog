@@ -8,5 +8,6 @@ namespace Blog.Repositories
     {
         Task AddAsync(Article article);
         Task<Article> GetAsync(Guid id);
+        Task DeleteAsync(Guid id);
     }
 }

@@ -80,5 +80,25 @@ namespace Blog.Repositories.PostgreSQL
             }
             return null;
         }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = String.Format(@"
+                    DELETE FROM ""Articles""
+                        WHERE ""Id"" = :Id;
+                    ");
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue(":Id", id);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                connection.Close();
+            }
+        }
     }
 }

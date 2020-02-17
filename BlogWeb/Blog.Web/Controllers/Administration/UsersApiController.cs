@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Blog.Domain;
 using Blog.Retrievers;
 using Blog.Retrievers.User;
+using Blog.Services;
 using Blog.Web.Models.jqGrid;
 using log4net;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,20 +17,22 @@ namespace Blog.Web.Controllers.Administration
     [Route("api/Administration/UsersApi")]
     public class UsersApiController : BaseApiAdministrationController
     {
+        private readonly IStringService stringService;
+        private readonly IRolesService rolesService;
         private readonly IUsersRetriever usersRetriever;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly RoleManager<ApplicationRole> roleManager;
 
         public UsersApiController(
             ILog log,
+            IServices services,
             IRetrievers retrievers,
-            UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager)
+            UserManager<ApplicationUser> userManager)
             : base(log)
         {
+            this.stringService = services.StringService;
+            this.rolesService = services.RolesService;
             this.usersRetriever = retrievers.UsersRetriever;
             this.userManager = userManager;
-            this.roleManager = roleManager;
         }
 
         // GET: api/UsersApi
@@ -127,8 +129,8 @@ namespace Blog.Web.Controllers.Administration
             }
 
             //validate the roles
-            var parsedRoles = this.ParseRolesFromString(roles);
-            string errorMessage = await this.ValidateRoles(parsedRoles);
+            var parsedRoles = this.stringService.ParseCsvStringToArray(roles);
+            string errorMessage = await this.rolesService.ValidateRoles(parsedRoles);
             if (!String.IsNullOrEmpty(errorMessage))
             {
                 var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
@@ -174,8 +176,8 @@ namespace Blog.Web.Controllers.Administration
             ApplicationUser user = await this.userManager.FindByIdAsync(userId);
 
             //validate the roles
-            var parsedRoles = this.ParseRolesFromString(roles);
-            string errorMessage = await this.ValidateRoles(parsedRoles);
+            var parsedRoles = this.stringService.ParseCsvStringToArray(roles);
+            string errorMessage = await this.rolesService.ValidateRoles(parsedRoles);
             if (!String.IsNullOrEmpty(errorMessage))
             {
                 var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
@@ -216,26 +218,6 @@ namespace Blog.Web.Controllers.Administration
                 httpResponseMessage = base.CreateErrorResponseMessage(ex.Message);
             }
             return await Task.FromResult(httpResponseMessage);
-        }
-
-        private async Task<string> ValidateRoles(IEnumerable<string> roles)
-        {
-            foreach (string role in roles)
-            {
-                bool roleCheck = await this.roleManager.RoleExistsAsync(role);
-                if (!roleCheck)
-                {
-                    string roleDoesNotExistResponseMessageText = String.Concat("The given role ", role, " does not exist in the system");
-                    return roleDoesNotExistResponseMessageText;
-                }
-            }
-            return String.Empty;
-        }
-
-        private IEnumerable<string> ParseRolesFromString(string rolesString)
-        {
-            char[] separators = new char[] { ',', ' ' };
-            return rolesString.Split(separators, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

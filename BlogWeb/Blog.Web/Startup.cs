@@ -53,7 +53,9 @@ namespace Blog.Web
             ILog log = this.BuildLog();
             serviceCollection.AddSingleton<ILog>(log);
 
-            IServices services = this.BuildServices(repositories, retrievers);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            IServices services = this.BuildServices(repositories, retrievers, roleManager);
             serviceCollection.AddSingleton<IServices>(services);
         }
 
@@ -120,9 +122,9 @@ namespace Blog.Web
             return log;
         }
 
-        private IServices BuildServices(IRepositories repositories, IRetrievers retrievers)
+        private IServices BuildServices(IRepositories repositories, IRetrievers retrievers, RoleManager<ApplicationRole> roleManager)
         {
-            IServices services = new Blog.Services.Services(repositories, retrievers);
+            IServices services = new Blog.Services.Services(repositories, retrievers, roleManager);
             return services;
         }
 

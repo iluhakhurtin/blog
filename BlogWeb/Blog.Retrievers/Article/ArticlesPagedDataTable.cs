@@ -25,8 +25,8 @@ namespace Blog.Retrievers.Article
             column = new DataColumn(Title, typeof(string));
             base.Columns.Add(column);
 
-            column = new DataColumn(Body, typeof(string));
-            base.Columns.Add(column);
+            //column = new DataColumn(Body, typeof(string));
+            //base.Columns.Add(column);
 
             column = new DataColumn(Timestamp, typeof(string));
             base.Columns.Add(column);
