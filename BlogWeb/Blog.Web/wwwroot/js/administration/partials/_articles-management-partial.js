@@ -38,7 +38,8 @@
                     name: 'Title',
                     width: 250,
                     editable: true,
-                    formatter: this.formatTitle
+                    formatter: this.formatTitle,
+                    unformat: this.unformatTitle
                 },
                 {
                     label: 'Timestamp',
@@ -84,7 +85,8 @@
                     editrules: {
                         edithidden: true
                     },
-                    edittype: 'textarea'
+                    edittype: 'textarea',
+                    editoptions: { cols: 42, rows: 10 }
                 }
             ],
             autowidth: true,
@@ -165,6 +167,10 @@
     this.formatTitle = function (cellvalue, options, rowobject) {
         return '<a href="/Article/Index/' + options.rowId + '" target="_blank">'
             + cellvalue + '</a>';
+    };
+
+    this.unformatTitle = function (cellvalue, options, elem) {
+        return cellvalue;
     };
 
     this.loadArticleBody = function (articleId) {

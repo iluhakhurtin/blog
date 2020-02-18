@@ -146,6 +146,7 @@ namespace Blog.Retrievers.PostgreSQL.Article
                             {
                                 Id = (Guid)dataReader["Id"],
                                 Title = (string)dataReader["Title"],
+                                Body = (string)dataReader["Body"],
                                 Timestamp = (DateTime)dataReader["Timestamp"],
                                 Roles = Convert.ToString(dataReader["Roles"])
                             };
