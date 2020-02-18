@@ -1,6 +1,7 @@
-﻿function _ArticlesManagementPartial(elem, articlesApiUrl) {
+﻿function _ArticlesManagementPartial(elem, articlesApiUrl, categoriesApiUrl) {
     //call base constructor
     _BaseManagementPartial.apply(this, arguments);
+    this.categoriesApiUrl = categoriesApiUrl;
 
     //jqGrid
     this.grid = this.elem.find('.grid');
@@ -18,6 +19,12 @@
         return [true, "", ""];
     };
 
+    this.onBeforeShowForm = function (form, op, sender) {
+        this.targetInput = form.find('#Body');
+        var articleId = this.grid.jqGrid('getGridParam', 'selrow');
+        this.loadArticleBody(articleId);
+    };
+
     this.init = function () {
         // altrows are set with table striped class for Boostrap
         //$.jgrid.styleUI.Bootstrap.base.rowTable = "table table-bordered table-striped";
@@ -33,13 +40,6 @@
                     editable: true,
                     formatter: this.formatTitle
                 },
-                //{
-                //    label: 'Body',
-                //    name: 'Body',
-                //    width: 100,
-                //    editable: true,
-                //    hidden: true,
-                //},
                 {
                     label: 'Timestamp',
                     name: 'Timestamp',
@@ -73,9 +73,18 @@
                     editable: true,
                     edittype: "select",
                     editoptions: {
-                        multiple: true,
-                        value: this.getCategories()
+                        multiple: true
                     }
+                },
+                {
+                    label: 'Body',
+                    name: 'Body',
+                    hidden: true,
+                    editable: true,
+                    editrules: {
+                        edithidden: true
+                    },
+                    edittype: 'textarea'
                 }
             ],
             autowidth: true,
@@ -115,6 +124,7 @@
                 closeAfterEdit: true,
                 reloadAfterSubmit: true,
                 recreateForm: true,
+                beforeShowForm: utils.bind(this, this.onBeforeShowForm),
                 afterSubmit: utils.bind(this, this.onAfterSubmit)
             },
             // options for the Add Dialog
@@ -136,23 +146,38 @@
                 showQuery: true
             }
         );
+
+        this.loadCategories();
     };
 
-    this.getCategories = function () {
-        if (!this.categories) {
-            this.categories = {
-                "1": "Category1",
-                "2": "Category2",
-                "3": "Category3"
-            };
-        }
-        return this.categories;
+    this.loadCategories = function () {
+        var data = {};
+        var url = this.categoriesApiUrl + "/GetAll";
+        utils.getData(data, url, utils.bind(this, this.onLoadCategoriesComplete));
+    };
+
+    this.onLoadCategoriesComplete = function (response) {
+        var value = this.buildEditOptionsFromKeyValue(response);
+        var editoptions = { value: value };
+        this.grid.setColProp('Categories', { editoptions: editoptions });
     };
 
     this.formatTitle = function (cellvalue, options, rowobject) {
         return '<a href="/Article/Index/' + options.rowId + '" target="_blank">'
             + cellvalue + '</a>';
-    }
+    };
+
+    this.loadArticleBody = function (articleId) {
+        var data = { id: articleId };
+        var url = this.apiUrl + "/GetArticleBody";
+        utils.getData(data, url, utils.bind(this, this.onLoadArticleBodyComplete));
+    };
+
+    this.onLoadArticleBodyComplete = function (response) {
+        if (this.targetInput.length > 0) {
+            this.targetInput.val(response);
+        }
+    };
 
     //- Methods
 

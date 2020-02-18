@@ -33,7 +33,6 @@ namespace Blog.Retrievers.PostgreSQL.Article
 		                                COUNT(1) OVER()                 AS ""ResultsCount"",
                                         a.""Id""                        AS ""Id"",
                                         MAX(a.""Title"")                AS ""Title"",
-		                                MAX(a.""Body"")                 AS ""Body"",
 		                                MAX(a.""Timestamp"")            AS ""Timestamp"",
 		                                string_agg(r.""Name"", ', ')    AS ""Roles"",
 	 	                                string_agg(c.""Name"", ', ')    AS ""Categories""
@@ -147,7 +146,6 @@ namespace Blog.Retrievers.PostgreSQL.Article
                             {
                                 Id = (Guid)dataReader["Id"],
                                 Title = (string)dataReader["Title"],
-                                Body = (string)dataReader["Body"],
                                 Timestamp = (DateTime)dataReader["Timestamp"],
                                 Roles = Convert.ToString(dataReader["Roles"])
                             };

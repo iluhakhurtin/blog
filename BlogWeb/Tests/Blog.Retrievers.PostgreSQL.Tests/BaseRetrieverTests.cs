@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Blog.PostgreSQL.Tests;
 using Xunit;
 
 namespace Blog.Retrievers.PostgreSQL.Tests

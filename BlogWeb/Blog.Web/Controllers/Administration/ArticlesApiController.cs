@@ -38,6 +38,23 @@ namespace Blog.Web.Controllers.Administration
             this.roleManager = roleManager;
         }
 
+        // GET: api/ArticlesApi/GetArticleBody
+        [HttpGet("GetArticleBody")]
+        public async Task<String> GetArticleBody(Guid id)
+        {
+            try
+            {
+                var article = await this.articlesRepository.GetAsync(id);
+                return article.Body;
+            }
+            catch(Exception ex)
+            {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+            }
+            return String.Empty;
+        }
+
         // GET: api/ArticlesApi
         [HttpGet]
         public async Task<jqGridResult> Get(
@@ -64,7 +81,7 @@ namespace Blog.Web.Controllers.Administration
                     categories = filter.GetFilterByFieldName(ArticlesPagedDataTable.Categories);
                 }
 
-                ArticlesPagedDataTable pagedDataTable = await this.articlesRetriever.GetArticlesPagedAsync(
+                var pagedDataTable = await this.articlesRetriever.GetArticlesPagedAsync(
                     title,
                     roles,
                     categories,

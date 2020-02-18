@@ -15,6 +15,20 @@
         };
     };
 
+    this.buildEditOptionsFromKeyValue = function (items) {
+        var result = "";
+        if (items) {
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                result += item.Key + ":" + item.Value;
+                if (i < items.length - 1) {
+                    result += ";";
+                }
+            }
+        }
+
+        return result;
+    }
 
     //- Methods
 };
