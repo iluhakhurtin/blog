@@ -23,6 +23,7 @@ namespace Blog.Web.Controllers.Administration
         private readonly IArticlesRepository articlesRepository;
         private readonly IArticlesRetriever articlesRetriever;
         private readonly RoleManager<ApplicationRole> roleManager;
+        private readonly IRolesService rolesService;
 
         public ArticlesApiController(
             ILog log,
@@ -33,6 +34,7 @@ namespace Blog.Web.Controllers.Administration
             : base(log)
         {
             this.stringService = services.StringService;
+            this.rolesService = services.RolesService;
             this.articlesRepository = repositories.ArticlesRepository;
             this.articlesRetriever = retrievers.ArticlesRetriever;
             this.roleManager = roleManager;
@@ -127,7 +129,7 @@ namespace Blog.Web.Controllers.Administration
                         return await this.AddArticle(Title, Body, Roles, Categories);
 
                     case jqGridActions.Edit:
-                        //return await this.EditArticle(id, Title, Body, Roles, Categories);
+                        return await this.EditArticle(id, Title, Body, Roles, Categories);
 
                     case jqGridActions.Delete:
                         return await this.DeleteArticle(id);
@@ -147,7 +149,7 @@ namespace Blog.Web.Controllers.Administration
         {
             //validate the roles
             var parsedRoles = this.stringService.ParseCsvStringToArray(roles);
-            string errorMessage = await this.ValidateRoles(parsedRoles);
+            string errorMessage = await this.rolesService.ValidateRoles(parsedRoles);
             if (!String.IsNullOrEmpty(errorMessage))
             {
                 var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
@@ -183,43 +185,50 @@ namespace Blog.Web.Controllers.Administration
             //    }
             //    return base.CreateErrorResponseMessage();
             //}
+            throw new NotImplementedException();
             return base.CreateOkResponseMessage();
         }
 
-        //private async Task<HttpResponseMessage> EditUser(
-        //    string userId,
-        //    string password,
-        //    string roles)
-        //{
-        //    ApplicationUser user = await this.userManager.FindByIdAsync(userId);
+        private async Task<HttpResponseMessage> EditArticle(
+            string id,
+            string title,
+            string body,
+            string roles,
+            string categories)
+        {
+            var articleId = Guid.Parse(id);
 
-        //    //validate the roles
-        //    var parsedRoles = this.ParseRolesFromString(roles);
-        //    string errorMessage = await this.ValidateRoles(parsedRoles);
-        //    if (!String.IsNullOrEmpty(errorMessage))
-        //    {
-        //        var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
-        //        return await Task.FromResult(errorResponseMessage);
-        //    }
+            //validate the roles
+            var parsedRoles = this.stringService.ParseCsvStringToArray(roles);
+            if(parsedRoles != null)
+            {
+                string errorMessage = await this.rolesService.ValidateRoles(parsedRoles);
+                if (!String.IsNullOrEmpty(errorMessage))
+                {
+                    var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
+                    return await Task.FromResult(errorResponseMessage);
+                }
+            }
 
-        //    if (!String.IsNullOrEmpty(password))
-        //    {
-        //        string token = await this.userManager.GeneratePasswordResetTokenAsync(user);
-        //        var passwordResult = await this.userManager.ResetPasswordAsync(user, token, password);
-        //    }
+            if (String.IsNullOrEmpty(title))
+            {
+                var errorResponseMessage = base.CreateErrorResponseMessage("Title cannot be empty.");
+                return await Task.FromResult(errorResponseMessage);
+            }
 
-        //    //remove user from all roles
-        //    var currentRoles = await this.userManager.GetRolesAsync(user);
-        //    var result = await this.userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (String.IsNullOrEmpty(body))
+            {
+                var errorResponseMessage = base.CreateErrorResponseMessage("Body cannot be empty.");
+                return await Task.FromResult(errorResponseMessage);
+            }
 
-        //    foreach (string role in parsedRoles)
-        //    {
-        //        await this.userManager.AddToRoleAsync(user, role);
-        //    }
+            var parsedCategories = this.stringService.ParseCsvStringToArray(categories);
+            
+            throw new NotImplementedException();
 
-        //    var okResponseMessage = base.CreateOkResponseMessage();
-        //    return await Task.FromResult(okResponseMessage);
-        //}
+            var okResponseMessage = base.CreateOkResponseMessage();
+            return await Task.FromResult(okResponseMessage);
+        }
 
         private async Task<HttpResponseMessage> DeleteArticle(string id)
         {
@@ -237,20 +246,6 @@ namespace Blog.Web.Controllers.Administration
                 httpResponseMessage = base.CreateErrorResponseMessage(ex.Message);
             }
             return await Task.FromResult(httpResponseMessage);
-        }
-
-        private async Task<string> ValidateRoles(IEnumerable<string> roles)
-        {
-            foreach (string role in roles)
-            {
-                bool roleCheck = await this.roleManager.RoleExistsAsync(role);
-                if (!roleCheck)
-                {
-                    string roleDoesNotExistResponseMessageText = String.Concat("The given role ", role, " does not exist in the system");
-                    return roleDoesNotExistResponseMessageText;
-                }
-            }
-            return String.Empty;
         }
     }
 }

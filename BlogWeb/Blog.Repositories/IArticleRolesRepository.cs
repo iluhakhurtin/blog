@@ -7,5 +7,6 @@ namespace Blog.Repositories
     public interface IArticleRolesRepository : IRepository<ArticleRole>
     {
         Task AddAsync(ArticleRole articleRole);
+        Task DeleteAllForArticleAsync(Guid articleId);
     }
 }

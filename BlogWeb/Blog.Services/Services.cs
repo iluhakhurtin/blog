@@ -12,6 +12,7 @@ namespace Blog.Services
         IRolesService RolesService { get; }
         IImagesService ImagesService { get; }
         ICategoriesService CategoriesService { get; }
+        IArticlesService ArticlesService { get; }
     }
     
     public class Services : IServices
@@ -20,6 +21,7 @@ namespace Blog.Services
         public IRolesService RolesService { get; private set; }
         public IImagesService ImagesService { get; private set; }
         public ICategoriesService CategoriesService { get; private set; }
+        public IArticlesService ArticlesService { get; private set; }
 
         public Services(IRepositories repositories,
             IRetrievers retrievers,

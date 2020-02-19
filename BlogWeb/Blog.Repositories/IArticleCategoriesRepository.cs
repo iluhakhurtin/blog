@@ -7,5 +7,6 @@ namespace Blog.Repositories
     public interface IArticleCategoriesRepository : IRepository<ArticleCategory>
     {
         Task AddAsync(ArticleCategory articleCategory);
+        Task DeleteAllForArticleAsync(Guid articleId);
     }
 }

@@ -15,6 +15,9 @@ namespace Blog.Services
 
         public string[] ParseCsvStringToArray(string csvString)
         {
+            if (String.IsNullOrEmpty(csvString))
+                return null;
+
             char[] separators = new char[] { ',', ' ' };
             return csvString.Split(separators, StringSplitOptions.RemoveEmptyEntries);
         }

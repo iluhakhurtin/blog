@@ -100,5 +100,29 @@ namespace Blog.Repositories.PostgreSQL
                 connection.Close();
             }
         }
+
+        public async Task UpdateAsync(Article article)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = String.Format(@"
+                    UPDATE ""Articles"" SET
+	                    ""Title"" = :Title, 
+	                    ""Body"" = :Body
+                    WHERE ""Id"" = :Id;
+                    ");
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue(":Id", article.Id);
+                    command.Parameters.AddWithValue(":Title", article.Title);
+                    command.Parameters.AddWithValue(":Body", article.Body);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                connection.Close();
+            }
+        }
     }
 }
