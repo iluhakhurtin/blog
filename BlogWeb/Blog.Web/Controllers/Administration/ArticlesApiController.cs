@@ -19,25 +19,20 @@ namespace Blog.Web.Controllers.Administration
     [Route("api/Administration/ArticlesApi")]
     public class ArticlesApiController : BaseApiAdministrationController
     {
-        private readonly IStringService stringService;
         private readonly IArticlesRepository articlesRepository;
         private readonly IArticlesRetriever articlesRetriever;
-        private readonly RoleManager<ApplicationRole> roleManager;
-        private readonly IRolesService rolesService;
+        private readonly IArticlesService articlesService;
 
         public ArticlesApiController(
             ILog log,
             IServices services,
             IRetrievers retrievers,
-            IRepositories repositories,
-            RoleManager<ApplicationRole> roleManager)
+            IRepositories repositories)
             : base(log)
         {
-            this.stringService = services.StringService;
-            this.rolesService = services.RolesService;
             this.articlesRepository = repositories.ArticlesRepository;
             this.articlesRetriever = retrievers.ArticlesRetriever;
-            this.roleManager = roleManager;
+            this.articlesService = services.ArticlesService;
         }
 
         // GET: api/ArticlesApi/GetArticleBody
@@ -147,46 +142,16 @@ namespace Blog.Web.Controllers.Administration
 
         private async Task<HttpResponseMessage> AddArticle(string title, string body, string roles, string categories)
         {
-            //validate the roles
-            var parsedRoles = this.stringService.ParseCsvStringToArray(roles);
-            string errorMessage = await this.rolesService.ValidateRoles(parsedRoles);
-            if (!String.IsNullOrEmpty(errorMessage))
+            var error = await this.articlesService.AddArticle(title, body, roles, categories);
+
+            if (!String.IsNullOrEmpty(error))
             {
-                var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
+                var errorResponseMessage = base.CreateErrorResponseMessage(error);
                 return await Task.FromResult(errorResponseMessage);
             }
 
-            //user = new ApplicationUser();
-            //user.Email = email;
-            //user.UserName = email;
-
-            //try
-            //{
-            //    await this.userManager.CreateAsync(user, password);
-
-            //    foreach (string role in parsedRoles)
-            //    {
-            //        await this.userManager.AddToRoleAsync(user, role);
-            //    }
-
-            //    var okResponseMessage = base.CreateOkResponseMessage();
-            //    return await Task.FromResult(okResponseMessage);
-            //}
-            //catch (Exception ex)
-            //{
-            //    try
-            //    {
-            //        await this.userManager.DeleteAsync(user);
-            //    }
-            //    finally
-            //    {
-            //        if (base.log.IsErrorEnabled)
-            //            base.log.Error(ex);
-            //    }
-            //    return base.CreateErrorResponseMessage();
-            //}
-            throw new NotImplementedException();
-            return base.CreateOkResponseMessage();
+            var okResponseMessage = base.CreateOkResponseMessage();
+            return await Task.FromResult(okResponseMessage);
         }
 
         private async Task<HttpResponseMessage> EditArticle(
@@ -196,35 +161,13 @@ namespace Blog.Web.Controllers.Administration
             string roles,
             string categories)
         {
-            var articleId = Guid.Parse(id);
+            var error = await this.articlesService.EditArticle(id, title, body, roles, categories);
 
-            //validate the roles
-            var parsedRoles = this.stringService.ParseCsvStringToArray(roles);
-            if(parsedRoles != null)
+            if (!String.IsNullOrEmpty(error))
             {
-                string errorMessage = await this.rolesService.ValidateRoles(parsedRoles);
-                if (!String.IsNullOrEmpty(errorMessage))
-                {
-                    var errorResponseMessage = base.CreateErrorResponseMessage(errorMessage);
-                    return await Task.FromResult(errorResponseMessage);
-                }
-            }
-
-            if (String.IsNullOrEmpty(title))
-            {
-                var errorResponseMessage = base.CreateErrorResponseMessage("Title cannot be empty.");
+                var errorResponseMessage = base.CreateErrorResponseMessage(error);
                 return await Task.FromResult(errorResponseMessage);
             }
-
-            if (String.IsNullOrEmpty(body))
-            {
-                var errorResponseMessage = base.CreateErrorResponseMessage("Body cannot be empty.");
-                return await Task.FromResult(errorResponseMessage);
-            }
-
-            var parsedCategories = this.stringService.ParseCsvStringToArray(categories);
-            
-            throw new NotImplementedException();
 
             var okResponseMessage = base.CreateOkResponseMessage();
             return await Task.FromResult(okResponseMessage);

@@ -31,6 +31,8 @@ namespace Blog.Services
             this.RolesService = new RolesService(roleManager);
             this.ImagesService = new ImagesService(repositories);
             this.CategoriesService = new CategoriesService(repositories);
+            this.ArticlesService =
+                new ArticlesService(repositories, this.StringService, this.RolesService, roleManager);
         }
     }
 }

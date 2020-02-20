@@ -9,7 +9,8 @@ namespace Blog.Services
 {
     public interface IArticlesService
     {
-        Task EditArticle(Guid id, string title, string body, IEnumerable<string> roles, IEnumerable<Guid> categoryIds);
+        Task<string> AddArticle(string title, string body, string csvRoles, string csvCategories);
+        Task<string> EditArticle(string id, string title, string body, string csvRoles, string csvCategories);
     }
 
 
@@ -19,24 +20,105 @@ namespace Blog.Services
         private readonly IArticleRolesRepository articleRolesRepository;
         private readonly RoleManager<ApplicationRole> roleManager;
         private readonly IArticleCategoriesRepository articleCategoriesRepository;
+        private readonly IStringService stringService;
+        private readonly IRolesService rolesService;
 
-        public ArticlesService(IRepositories repositories, RoleManager<ApplicationRole> roleManager)
+        public ArticlesService(IRepositories repositories,
+            IStringService stringService,
+            IRolesService rolesService,
+            RoleManager<ApplicationRole> roleManager)
         {
             this.articlesRepository = repositories.ArticlesRepository;
             this.articleRolesRepository = repositories.ArticleRolesRepository;
             this.articleCategoriesRepository = repositories.ArticleCategoriesRepository;
             this.roleManager = roleManager;
+            this.stringService = stringService;
+            this.rolesService = rolesService;
         }
 
-        public async Task AddArticle(
+        public async Task<string> AddArticle(
             string title,
             string body,
-            IEnumerable<string> roles,
-            IEnumerable<Guid> categoryIds)
+            string csvRoles,
+            string csvCategories)
         {
+            //validate the roles
+            var roles = this.stringService.ParseCsvStringToArray(csvRoles);
+            if (roles != null)
+            {
+                string errorMessage = await this.rolesService.ValidateRoles(roles);
+                if (!String.IsNullOrEmpty(errorMessage))
+                    return errorMessage;
+            }
+
+            if (String.IsNullOrEmpty(title))
+            {
+                return "Title cannot be empty.";
+            }
+
+            if (String.IsNullOrEmpty(body))
+            {
+                return "Body cannot be empty.";
+            }
+
             var article = new Article();
             article.Title = title;
             article.Body = body;
+
+            await this.articlesRepository.AddAsync(article);
+
+            await this.UpdateArticleRoles(article, roles);
+            await this.UpdateArticleCategories(article, csvCategories);
+
+            return String.Empty;
+        }
+
+        public async Task<string> EditArticle(
+            string id,
+            string title,
+            string body,
+            string csvRoles,
+            string csvCategories)
+        {
+            var articleId = Guid.Parse(id);
+
+            //validate the roles
+            var roles = this.stringService.ParseCsvStringToArray(csvRoles);
+            if (roles != null)
+            {
+                string errorMessage = await this.rolesService.ValidateRoles(roles);
+                if(!String.IsNullOrEmpty(errorMessage))
+                    return errorMessage;
+            }
+
+            if (String.IsNullOrEmpty(title))
+            {
+                return "Title cannot be empty.";
+            }
+
+            if (String.IsNullOrEmpty(body))
+            {
+                return "Body cannot be empty.";
+            }
+
+            var article = await this.articlesRepository.GetAsync(articleId);
+
+            if (article.Title != title || article.Body != body)
+            {
+                article.Title = title;
+                article.Body = body;
+                await this.articlesRepository.UpdateAsync(article);
+            }
+
+            await this.UpdateArticleRoles(article, roles);
+            await this.UpdateArticleCategories(article, csvCategories);
+
+            return String.Empty;
+        }
+
+        private async Task UpdateArticleRoles(Article article, string[] roles)
+        {
+            await this.articleRolesRepository.DeleteAllForArticleAsync(article.Id);
 
             if (roles != null)
             {
@@ -50,52 +132,25 @@ namespace Blog.Services
                     await this.articleRolesRepository.AddAsync(articleRole);
                 }
             }
-
-            if (categoryIds != null)
-            {
-                foreach (var categoryId in categoryIds)
-                {
-                    var articleCategory = new ArticleCategory();
-                    articleCategory.Article = article;
-                    articleCategory.CategoryId = categoryId;
-
-                    await this.articleCategoriesRepository.AddAsync(articleCategory);
-                }
-            }
         }
 
-        public async Task EditArticle(
-            Guid id,
-            string title,
-            string body,
-            IEnumerable<string> roles,
-            IEnumerable<Guid> categoryIds)
+        private async Task UpdateArticleCategories(Article article, string csvCategories)
         {
-            var article = await this.articlesRepository.GetAsync(id);
-
-            if (article.Title != title || article.Body != body)
+            var categories = this.stringService.ParseCsvStringToArray(csvCategories);
+            List<Guid> categoryIds = null;
+            if (categories != null)
             {
-                article.Title = title;
-                article.Body = body;
-                await this.articlesRepository.UpdateAsync(article);
-            }
-
-            await this.articleRolesRepository.DeleteAllForArticleAsync(id);
-            if(roles != null)
-            {
-                foreach (var role in roles)
+                categoryIds = new List<Guid>();
+                foreach (var category in categories)
                 {
-                    var applicationRole = await this.roleManager.FindByNameAsync(role);
-                    var articleRole = new ArticleRole();
-                    articleRole.Article = article;
-                    articleRole.Role = applicationRole;
-
-                    await this.articleRolesRepository.AddAsync(articleRole);
+                    var categoryId = Guid.Parse(category);
+                    categoryIds.Add(categoryId);
                 }
             }
 
-            await this.articleCategoriesRepository.DeleteAllForArticleAsync(id);
-            if(categoryIds != null)
+            await this.articleCategoriesRepository.DeleteAllForArticleAsync(article.Id);
+
+            if (categoryIds != null)
             {
                 foreach (var categoryId in categoryIds)
                 {
