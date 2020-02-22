@@ -30,12 +30,12 @@ namespace Blog.Retrievers.PostgreSQL.Article
 	                                *
 	                                FROM
 	                                (SELECT
-		                                COUNT(1) OVER()                 AS ""ResultsCount"",
-                                        a.""Id""                        AS ""Id"",
-                                        MAX(a.""Title"")                AS ""Title"",
-		                                MAX(a.""Timestamp"")            AS ""Timestamp"",
-		                                string_agg(r.""Name"", ', ')    AS ""Roles"",
-	 	                                string_agg(c.""Name"", ', ')    AS ""Categories""
+		                                COUNT(1) OVER()                         AS ""ResultsCount"",
+                                        a.""Id""                                AS ""Id"",
+                                        MAX(a.""Title"")                        AS ""Title"",
+		                                MAX(a.""Timestamp"")                    AS ""Timestamp"",
+		                                string_agg(DISTINCT r.""Name"", ', ')   AS ""Roles"",
+	 	                                string_agg(DISTINCT c.""Name"", ', ')   AS ""Categories""
                                         FROM ""Articles"" a
                                         LEFT JOIN ""ArticleRoles"" ar ON ar.""ArticleId"" = a.""Id""
                                         LEFT JOIN ""AspNetRoles"" r ON r.""Id"" = ar.""RoleId""
