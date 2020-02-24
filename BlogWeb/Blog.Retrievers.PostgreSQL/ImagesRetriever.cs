@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Blog.Retrievers.Image;
 using Npgsql;
 
-namespace Blog.Retrievers.PostgreSQL.Image
+namespace Blog.Retrievers.PostgreSQL
 {
     internal class ImagesRetriever : Retriever, IImagesRetriever
     {

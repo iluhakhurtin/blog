@@ -10,9 +10,4 @@
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="4.1.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Article\" />
-    <Folder Include="Image\" />
-    <Folder Include="User\" />
-  </ItemGroup>
 </Project>

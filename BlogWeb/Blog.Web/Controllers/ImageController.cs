@@ -60,22 +60,5 @@ namespace Blog.Web.Controllers
                 return base.NotFound();
             }
         }
-
-        public async Task<IActionResult> Index(Guid id)
-        {
-            try
-            {
-                var file = await this.filesRepository.GetByIdAsync(id);
-                var fileContentResult = new FileContentResult(file.Data, file.MimeType);
-                return fileContentResult;
-            }
-            catch(Exception ex)
-            {
-                if (base.log.IsErrorEnabled)
-                    base.log.Error(ex);
-
-                return base.NotFound();
-            }
-        }
     }
 }

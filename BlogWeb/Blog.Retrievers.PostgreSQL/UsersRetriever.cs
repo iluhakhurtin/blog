@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Blog.Retrievers.User;
 using Npgsql;
 
-namespace Blog.Retrievers.PostgreSQL.User
+namespace Blog.Retrievers.PostgreSQL
 {
     internal class UsersRetriever : Retriever, IUsersRetriever
     {

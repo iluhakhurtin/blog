@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Blog.Retrievers.Article;
 using Npgsql;
 
-namespace Blog.Retrievers.PostgreSQL.Article
+namespace Blog.Retrievers.PostgreSQL
 {
     internal class ArticlesRetriever : Retriever, IArticlesRetriever
     {
