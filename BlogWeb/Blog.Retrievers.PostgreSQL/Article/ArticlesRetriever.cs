@@ -103,7 +103,6 @@ namespace Blog.Retrievers.PostgreSQL.Article
                             articlesPagedDataTable.Rows.Add(
                                 dataReader[ArticlesPagedDataTable.Id],
                                 dataReader[ArticlesPagedDataTable.Title],
-                                //dataReader[ArticlesPagedDataTable.Body],
                                 timestampStr,
                                 dataReader[ArticlesPagedDataTable.Roles],
                                 dataReader[ArticlesPagedDataTable.Categories]);
