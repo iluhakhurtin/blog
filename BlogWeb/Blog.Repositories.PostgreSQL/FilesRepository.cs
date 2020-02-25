@@ -89,5 +89,108 @@ namespace Blog.Repositories.PostgreSQL
             }
             return null;
         }
+
+        public async Task AddAsync(File file)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+
+                string sql = String.Format(@"
+                    INSERT INTO ""File""(
+                        ""Id"",
+	                    ""Name"", 
+	                    ""Extension"", 
+	                    ""Data""
+	                )
+	                VALUES (
+                        :Id,
+	                    :Name, 
+	                    :Extension,
+	                    :Data
+	                );
+                    ");
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    var id = command.CreateParameter();
+                    id.Direction = System.Data.ParameterDirection.Input;
+                    id.DbType = System.Data.DbType.Guid;
+                    id.ParameterName = ":Id";
+                    id.Value = file.Id;
+                    command.Parameters.Add(id);
+
+                    var fileName = command.CreateParameter();
+                    fileName.Direction = System.Data.ParameterDirection.Input;
+                    fileName.DbType = System.Data.DbType.String;
+                    fileName.ParameterName = ":Name";
+                    fileName.Value = file.Name;
+                    command.Parameters.Add(fileName);
+
+                    var extension = command.CreateParameter();
+                    extension.Direction = System.Data.ParameterDirection.Input;
+                    extension.DbType = System.Data.DbType.String;
+                    extension.ParameterName = ":Extension";
+                    extension.Value = file.Extension;
+                    command.Parameters.Add(extension);
+
+                    var data = command.CreateParameter();
+                    data.Direction = System.Data.ParameterDirection.Input;
+                    data.DbType = System.Data.DbType.Binary;
+                    data.ParameterName = ":Data";
+                    data.Value = file.Data;
+                    command.Parameters.Add(data);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                connection.Close();
+            }
+        }
+
+        public async Task UpdateAsync(File file)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = String.Format(@"
+                    UPDATE ""Files"" SET
+	                    ""Name"" = :Name, 
+	                    ""Extension"" = :Extension,
+                        ""MimeType"" = :MimeType, 
+                    WHERE ""Id"" = :Id;
+                    ");
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue(":Id", file.Id);
+                    command.Parameters.AddWithValue(":Name", file.Name);
+                    command.Parameters.AddWithValue(":Extension", file.Extension);
+                    command.Parameters.AddWithValue(":MimeType", file.MimeType);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                connection.Close();
+            }
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = String.Format(@"
+                    DELETE FROM ""Files""
+                        WHERE ""Id"" = :Id;
+                    ");
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue(":Id", id);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                connection.Close();
+            }
+        }
     }
 }

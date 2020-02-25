@@ -11,6 +11,7 @@ using Blog.Services;
 using Blog.Web.Models.jqGrid;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -21,6 +22,7 @@ namespace Blog.Web.Controllers.Administration
     public class FilesApiController : BaseApiAdministrationController
     {
         private readonly IFilesRetriever filesRetriever;
+        private readonly IFilesService filesService;
 
         public FilesApiController(
             ILog log,
@@ -30,6 +32,7 @@ namespace Blog.Web.Controllers.Administration
             : base(log)
         {
             this.filesRetriever = retrievers.FilesRetriever;
+            this.filesService = services.FilesService;
         }
 
         // GET: api/FilesApi
@@ -85,90 +88,89 @@ namespace Blog.Web.Controllers.Administration
             }
         }
 
-        //// POST: api/ArticlesApi
-        //[HttpPost]
-        //public async Task<HttpResponseMessage> Post(
-        //    [FromForm]string id,
-        //    [FromForm]string oper,
-        //    [FromForm]string Title,
-        //    [FromForm]string Body,
-        //    [FromForm]string Roles,
-        //    [FromForm]string Categories)
-        //{
+        // POST: api/ArticlesApi
+        [HttpPost]
+        public async Task<HttpResponseMessage> Post(
+            [FromForm]string id,
+            [FromForm]string oper,
+            [FromForm] string Name,
+            [FromForm] string Extension,
+            [FromForm] string MimeType,
+            [FromForm] IFormFile File)
+        {
 
-        //    try
-        //    {
-        //        switch (oper)
-        //        {
-        //            case jqGridActions.Add:
-        //                return await this.AddArticle(Title, Body, Roles, Categories);
+            try
+            {
+                switch (oper)
+                {
+                    case jqGridActions.Add:
+                        return await this.AddFile(Name, Extension, MimeType, File);
 
-        //            case jqGridActions.Edit:
-        //                return await this.EditArticle(id, Title, Body, Roles, Categories);
+                    case jqGridActions.Edit:
+                        return await this.EditFile(id, Name, Extension, MimeType);
 
-        //            case jqGridActions.Delete:
-        //                return await this.DeleteArticle(id);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        if (base.log.IsErrorEnabled)
-        //            base.log.Error(ex);
+                    case jqGridActions.Delete:
+                        return await this.DeleteFile(id);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
 
-        //        return base.CreateErrorResponseMessage();
-        //    }
-        //    return base.CreateErrorResponseMessage("Not implemented");
-        //}
+                return base.CreateErrorResponseMessage();
+            }
+            return base.CreateErrorResponseMessage("Not implemented");
+        }
 
-        //private async Task<HttpResponseMessage> AddArticle(string title, string body, string roles, string categories)
-        //{
-        //    var error = await this.articlesService.AddArticle(title, body, roles, categories);
+        private async Task<HttpResponseMessage> AddFile(string name, string extension, string mimeType, IFormFile file)
+        {
+            var error = await this.filesService.AddFile(name, extension, mimeType, file);
 
-        //    if (!String.IsNullOrEmpty(error))
-        //    {
-        //        var errorResponseMessage = base.CreateErrorResponseMessage(error);
-        //        return await Task.FromResult(errorResponseMessage);
-        //    }
+            if (!String.IsNullOrEmpty(error))
+            {
+                var errorResponseMessage = base.CreateErrorResponseMessage(error);
+                return await Task.FromResult(errorResponseMessage);
+            }
 
-        //    var okResponseMessage = base.CreateOkResponseMessage();
-        //    return await Task.FromResult(okResponseMessage);
-        //}
+            var okResponseMessage = base.CreateOkResponseMessage();
+            return await Task.FromResult(okResponseMessage);
+        }
 
-        //private async Task<HttpResponseMessage> EditArticle(
-        //    string id,
-        //    string title,
-        //    string body,
-        //    string roles,
-        //    string categories)
-        //{
-        //    var error = await this.articlesService.EditArticle(id, title, body, roles, categories);
+        private async Task<HttpResponseMessage> EditFile(
+            string id,
+            string name,
+            string extension,
+            string mimeType)
+        {
+            //var error = await this.articlesService.EditArticle(id, title, body, roles, categories);
 
-        //    if (!String.IsNullOrEmpty(error))
-        //    {
-        //        var errorResponseMessage = base.CreateErrorResponseMessage(error);
-        //        return await Task.FromResult(errorResponseMessage);
-        //    }
+            //if (!String.IsNullOrEmpty(error))
+            //{
+            //    var errorResponseMessage = base.CreateErrorResponseMessage(error);
+            //    return await Task.FromResult(errorResponseMessage);
+            //}
 
-        //    var okResponseMessage = base.CreateOkResponseMessage();
-        //    return await Task.FromResult(okResponseMessage);
-        //}
+            var okResponseMessage = base.CreateOkResponseMessage();
+            return await Task.FromResult(okResponseMessage);
+        }
 
-        //private async Task<HttpResponseMessage> DeleteArticle(string id)
-        //{
-        //    var articleId = Guid.Parse(id);
-        //    HttpResponseMessage httpResponseMessage = base.CreateOkResponseMessage();
-        //    try
-        //    {
-        //        await this.articlesRepository.DeleteAsync(articleId);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        if (base.log.IsErrorEnabled)
-        //            base.log.Error(ex);
+        private async Task<HttpResponseMessage> DeleteFile(string id)
+        {
+            var articleId = Guid.Parse(id);
+            HttpResponseMessage httpResponseMessage = base.CreateOkResponseMessage();
+            //try
+            //{
+            //    await this.articlesRepository.DeleteAsync(articleId);
+            //}
+            //catch (Exception ex)
+            //{
+            //    if (base.log.IsErrorEnabled)
+            //        base.log.Error(ex);
 
-        //        httpResponseMessage = base.CreateErrorResponseMessage(ex.Message);
-        //    }
-        //    return await Task.FromResult(httpResponseMessage);
-        //}
+            //    httpResponseMessage = base.CreateErrorResponseMessage(ex.Message);
+            //}
+            return await Task.FromResult(httpResponseMessage);
+        }
     }
 }
