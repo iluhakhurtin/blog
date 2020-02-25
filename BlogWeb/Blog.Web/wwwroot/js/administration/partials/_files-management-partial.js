@@ -28,7 +28,7 @@
         data.append('oper', "add");
 
         $.ajax({
-            url: '/api/Administration/FileApi',
+            url: this.apiUrl,
             processData: false,
             contentType: false,
             data: data,

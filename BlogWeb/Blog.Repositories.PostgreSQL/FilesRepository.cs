@@ -96,16 +96,18 @@ namespace Blog.Repositories.PostgreSQL
             {
 
                 string sql = String.Format(@"
-                    INSERT INTO ""File""(
+                    INSERT INTO ""Files""(
                         ""Id"",
 	                    ""Name"", 
-	                    ""Extension"", 
+	                    ""Extension"",
+                        ""MimeType"",
 	                    ""Data""
 	                )
 	                VALUES (
                         :Id,
 	                    :Name, 
 	                    :Extension,
+                        :MimeType,
 	                    :Data
 	                );
                     ");
@@ -132,6 +134,13 @@ namespace Blog.Repositories.PostgreSQL
                     extension.ParameterName = ":Extension";
                     extension.Value = file.Extension;
                     command.Parameters.Add(extension);
+
+                    var mimeType = command.CreateParameter();
+                    mimeType.Direction = System.Data.ParameterDirection.Input;
+                    mimeType.DbType = System.Data.DbType.String;
+                    mimeType.ParameterName = ":MimeType";
+                    mimeType.Value = file.MimeType;
+                    command.Parameters.Add(mimeType);
 
                     var data = command.CreateParameter();
                     data.Direction = System.Data.ParameterDirection.Input;

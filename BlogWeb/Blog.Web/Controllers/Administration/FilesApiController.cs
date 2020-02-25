@@ -88,7 +88,7 @@ namespace Blog.Web.Controllers.Administration
             }
         }
 
-        // POST: api/ArticlesApi
+        // POST: api/FilesApi
         [HttpPost]
         public async Task<HttpResponseMessage> Post(
             [FromForm]string id,
