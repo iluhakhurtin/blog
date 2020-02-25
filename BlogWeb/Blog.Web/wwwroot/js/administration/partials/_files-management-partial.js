@@ -168,7 +168,7 @@
             + cellvalue + '</a>';
     };
 
-    this.unformatTitle = function (cellvalue, options, elem) {
+    this.unformatName = function (cellvalue, options, elem) {
         return cellvalue;
     };
 

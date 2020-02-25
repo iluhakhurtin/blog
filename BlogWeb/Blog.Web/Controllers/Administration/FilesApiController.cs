@@ -23,6 +23,7 @@ namespace Blog.Web.Controllers.Administration
     {
         private readonly IFilesRetriever filesRetriever;
         private readonly IFilesService filesService;
+        private readonly IFilesRepository filesRepository;
 
         public FilesApiController(
             ILog log,
@@ -33,6 +34,7 @@ namespace Blog.Web.Controllers.Administration
         {
             this.filesRetriever = retrievers.FilesRetriever;
             this.filesService = services.FilesService;
+            this.filesRepository = repositories.FilesRepository;
         }
 
         // GET: api/FilesApi
@@ -143,13 +145,13 @@ namespace Blog.Web.Controllers.Administration
             string extension,
             string mimeType)
         {
-            //var error = await this.articlesService.EditArticle(id, title, body, roles, categories);
+            var error = await this.filesService.EditFile(id, name, extension, mimeType);
 
-            //if (!String.IsNullOrEmpty(error))
-            //{
-            //    var errorResponseMessage = base.CreateErrorResponseMessage(error);
-            //    return await Task.FromResult(errorResponseMessage);
-            //}
+            if (!String.IsNullOrEmpty(error))
+            {
+                var errorResponseMessage = base.CreateErrorResponseMessage(error);
+                return await Task.FromResult(errorResponseMessage);
+            }
 
             var okResponseMessage = base.CreateOkResponseMessage();
             return await Task.FromResult(okResponseMessage);
@@ -157,19 +159,10 @@ namespace Blog.Web.Controllers.Administration
 
         private async Task<HttpResponseMessage> DeleteFile(string id)
         {
-            var articleId = Guid.Parse(id);
-            HttpResponseMessage httpResponseMessage = base.CreateOkResponseMessage();
-            //try
-            //{
-            //    await this.articlesRepository.DeleteAsync(articleId);
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (base.log.IsErrorEnabled)
-            //        base.log.Error(ex);
+            var fileId = Guid.Parse(id);
+            await this.filesRepository.DeleteAsync(fileId);
 
-            //    httpResponseMessage = base.CreateErrorResponseMessage(ex.Message);
-            //}
+            var httpResponseMessage = base.CreateOkResponseMessage();
             return await Task.FromResult(httpResponseMessage);
         }
     }

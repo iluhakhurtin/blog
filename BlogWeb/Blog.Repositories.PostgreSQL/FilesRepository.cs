@@ -164,7 +164,7 @@ namespace Blog.Repositories.PostgreSQL
                     UPDATE ""Files"" SET
 	                    ""Name"" = :Name, 
 	                    ""Extension"" = :Extension,
-                        ""MimeType"" = :MimeType, 
+                        ""MimeType"" = :MimeType
                     WHERE ""Id"" = :Id;
                     ");
 

@@ -71,38 +71,23 @@ namespace Blog.Services
             string extension,
             string mimeType)
         {
-            //var articleId = Guid.Parse(id);
+            var fileId = Guid.Parse(id);
 
-            ////validate the roles
-            //var roles = this.stringService.ParseCsvStringToArray(csvRoles);
-            //if (roles != null)
-            //{
-            //    string errorMessage = await this.rolesService.ValidateRoles(roles);
-            //    if(!String.IsNullOrEmpty(errorMessage))
-            //        return errorMessage;
-            //}
+            var file = await this.filesRepository.GetByIdAsync(fileId);
 
-            //if (String.IsNullOrEmpty(title))
-            //{
-            //    return "Title cannot be empty.";
-            //}
+            if (file == null)
+                return "File does not exist";
 
-            //if (String.IsNullOrEmpty(body))
-            //{
-            //    return "Body cannot be empty.";
-            //}
+            if (!String.IsNullOrEmpty(name))
+                file.Name = name;
 
-            //var article = await this.articlesRepository.GetAsync(articleId);
+            if (!String.IsNullOrEmpty(extension))
+                file.Extension = extension;
 
-            //if (article.Title != title || article.Body != body)
-            //{
-            //    article.Title = title;
-            //    article.Body = body;
-            //    await this.articlesRepository.UpdateAsync(article);
-            //}
+            if (!String.IsNullOrEmpty(mimeType))
+                file.MimeType = mimeType;
 
-            //await this.UpdateArticleRoles(article, roles);
-            //await this.UpdateArticleCategories(article, csvCategories);
+            await this.filesRepository.UpdateAsync(file);
 
             return String.Empty;
         }
