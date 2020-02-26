@@ -10,6 +10,7 @@ namespace Blog.Repositories.PostgreSQL
         public ICategoriesRepository CategoriesRepository { get; private set; }
         public IArticleRolesRepository ArticleRolesRepository { get; private set; }
         public IArticleCategoriesRepository ArticleCategoriesRepository { get; private set; }
+        public IImagesRepository ImagesRepository { get; private set; }
 
         public Repositories(string blogConnectionString)
         {
@@ -18,6 +19,7 @@ namespace Blog.Repositories.PostgreSQL
             this.CategoriesRepository = new CategoriesRepository(blogConnectionString);
             this.ArticleRolesRepository = new ArticleRolesRepository(blogConnectionString);
             this.ArticleCategoriesRepository = new ArticleCategoriesRepository(blogConnectionString);
+            this.ImagesRepository = new ImagesRepository(blogConnectionString);
         }
     }
 }

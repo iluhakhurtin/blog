@@ -154,5 +154,86 @@ namespace Blog.Retrievers.PostgreSQL
             }
             return null;
         }
+
+        public async Task<ImagesPagedDataTable> GetImagesPagedAsync(
+            string previewFileNameFilter,
+            string originalFileNameFilter,
+            string sortColumn,
+            string sortOrder,
+            int pageNumber,
+            int pageSize)
+        {
+            var imagesPagedDataTable = new ImagesPagedDataTable(pageNumber, pageSize);
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+                                    *
+                                    FROM
+		                            (SELECT
+                                        COUNT(1) OVER()         AS ""ResultsCount"",
+                                        i.""Id""                AS ""Id"",
+                                        i.""PreviewFileId""     AS ""PreviewFileId"",
+                                        pf.""Name""             AS ""PreviewFileName"",
+                                        i.""OriginalFileId""    AS ""OriginalFileId"",
+                                        of.""Name""             AS ""OriginalFileName""
+                                        FROM ""Images"" i
+                                        LEFT JOIN ""Files"" pf ON pf.""Id"" = i.""PreviewFileId""
+                                        LEFT JOIN ""Files"" of ON of.""Id"" = i.""OriginalFileId""
+                                    ) AS Subquery
+                                    WHERE :PreviewFileNameFilter IS NULL OR pf.""Name"" ILIKE('%' || :PreviewFileNameFilter || '%')
+                                            AND :OriginalFileNameFilter IS NULL OR of.""Name"" ILIKE('%' || :OriginalFileNameFilter || '%')
+                                    ORDER BY
+                                        CASE
+                                            WHEN :SortOrder = 'desc' THEN
+                                                CASE
+                                                    WHEN :SortColumn = 'PreviewFileNameFilter' THEN CAST(Subquery.""PreviewFileNameFilter"" AS text)
+                                                    WHEN :SortColumn = 'OriginalFileNameFilter' THEN CAST(Subquery.""OriginalFileNameFilter"" AS text)
+					                                ELSE CAST(Subquery.""Id"" AS text)
+				                                END
+                                        END DESC,
+		                                CASE
+                                            WHEN :SortOrder = 'asc' THEN
+                                                CASE
+                                                    WHEN :SortColumn = 'PreviewFileNameFilter' THEN CAST(Subquery.""PreviewFileNameFilter"" AS text)
+                                                    WHEN :SortColumn = 'OriginalFileNameFilter' THEN CAST(Subquery.""OriginalFileNameFilter"" AS text)
+					                                ELSE CAST(Subquery.""Id"" AS text)
+				                                END
+                                        END ASC
+                                    LIMIT :PageSize
+                                    OFFSET(:PageNumber - 1) * :PageSize;
+                                    ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("PreviewFileNameFilter", previewFileNameFilter);
+                    command.Parameters.AddWithValue("OriginalFileNameFilter", originalFileNameFilter);
+                    command.Parameters.AddWithValue("SortColumn", sortColumn);
+                    command.Parameters.AddWithValue("SortOrder", sortOrder);
+                    command.Parameters.AddWithValue("PageNumber", pageNumber);
+                    command.Parameters.AddWithValue("PageSize", pageSize);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        while (dataReader.Read())
+                        {
+                            if (imagesPagedDataTable.TotalResultsCount == 0)
+                                imagesPagedDataTable.TotalResultsCount = Convert.ToInt32(dataReader["ResultsCount"]);
+
+                            imagesPagedDataTable.Rows.Add(
+                                dataReader[ImagesPagedDataTable.Id],
+                                dataReader[ImagesPagedDataTable.PreviewFileId],
+                                dataReader[ImagesPagedDataTable.PreviewFileName],
+                                dataReader[ImagesPagedDataTable.OriginalFileId],
+                                dataReader[ImagesPagedDataTable.OriginalFileName]);
+                        }
+                    }
+                }
+            }
+
+            return imagesPagedDataTable;
+        }
     }
 }

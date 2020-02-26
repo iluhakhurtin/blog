@@ -8,5 +8,6 @@ namespace Blog.Repositories
         public ICategoriesRepository CategoriesRepository { get; }
         public IArticleRolesRepository ArticleRolesRepository { get; }
         public IArticleCategoriesRepository ArticleCategoriesRepository { get; }
+        public IImagesRepository ImagesRepository { get; }
     }
 }

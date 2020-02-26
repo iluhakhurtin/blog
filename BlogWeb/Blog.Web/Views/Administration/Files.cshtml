@@ -32,16 +32,24 @@
     </environment>
 }
 
-<h1 class="container text-center title">Файлы</h1>
-
-@{ const string filesManagementComponentlID = "uxFilesManagementComponent"; }
+@{
+    const string filesManagementComponentlID = "uxFilesManagementComponent";
+    const string imagesManagementComponentlID = "uxImagesManagementComponent";
+}
 
 @*render partial components*@
+<h1 class="container text-center title">Файлы</h1>
+
 @await Html.PartialAsync("~/Views/Administration/Partials/_FilesManagementPartial.cshtml", new IDViewModel() { ID = filesManagementComponentlID })
+
+<h1 class="container text-center title">Изображения</h1>
+
+@await Html.PartialAsync("~/Views/Administration/Partials/_ImagesManagementPartial.cshtml", new IDViewModel() { ID = imagesManagementComponentlID })
 
 <script type="text/javascript" language="javascript">
     //create partial components objects
     $(document).ready(function () {
         uxFilesManagementComponent = new _FilesManagementPartial('#@(filesManagementComponentlID)', '@Url.Content("~/api/Administration/FilesApi")');
+        uxImagesManagementComponent = new _ImagesManagementPartial('#@(imagesManagementComponentlID)', '@Url.Content("~/api/Administration/ImagesApi")');
     });
 </script>

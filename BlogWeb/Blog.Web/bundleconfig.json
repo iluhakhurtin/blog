@@ -136,5 +136,18 @@
     },
     // Optionally generate .map file
     "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/administration/partials/_images-management-partial.min.js",
+    "inputFiles": [
+      "wwwroot/js/administration/partials/_images-management-partial.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
   }
 ]

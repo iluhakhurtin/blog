@@ -1,0 +1,18 @@
+﻿@model IDViewModel
+
+<environment include="Development">
+    <script src="~/js/_base-partial.js" asp-append-version="true"></script>
+    <script src="~/js/administration/partials/_base-management-partial.js" asp-append-version="true"></script>
+    <script src="~/js/administration/partials/_images-management-partial.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/js/_base-partial.min.js" asp-append-version="true"></script>
+    <script src="~/js/administration/partials/_base-management-partial.min.js" asp-append-version="true"></script>
+    <script src="~/js/administration/partials/_images-management-partial.min.js" asp-append-version="true"></script>
+</environment>
+
+<div id='@(Model.ID)' class="images-management jqgrid-container">
+    <table id='@(Model.ID)-grid' class="grid"></table>
+    <div id='@(Model.ID)-pager' class="pager"></div>
+    <span class="oi oi-person"></span>
+</div>
