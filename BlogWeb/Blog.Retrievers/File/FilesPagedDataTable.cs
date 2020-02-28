@@ -8,6 +8,7 @@ namespace Blog.Retrievers.Article
         public const string Name = "Name";
         public const string Extension = "Extension";
         public const string MimeType = "MimeType";
+        public const string Timestamp = "Timestamp";
 
         public FilesPagedDataTable(int pageNumber, int pageSize)
             : base(pageNumber, pageSize)
@@ -27,6 +28,9 @@ namespace Blog.Retrievers.Article
             base.Columns.Add(column);
 
             column = new DataColumn(MimeType, typeof(string));
+            base.Columns.Add(column);
+
+            column = new DataColumn(Timestamp, typeof(string));
             base.Columns.Add(column);
         }
     }

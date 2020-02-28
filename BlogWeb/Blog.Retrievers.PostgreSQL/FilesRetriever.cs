@@ -32,7 +32,8 @@ namespace Blog.Retrievers.PostgreSQL
                                     f.""Id""        AS ""Id"",
                                     f.""Name""      AS ""Name"",
                                     f.""Extension"" AS ""Extension"",
-                                    f.""MimeType""  AS ""MimeType""
+                                    f.""MimeType""  AS ""MimeType"",
+                                    f.""Timestamp"" AS ""Timestamp""
                                     FROM ""Files"" f
                                     WHERE :NameFilter IS NULL OR f.""Name"" ILIKE('%' || :NameFilter || '%')
                                         AND :ExtensionFilter IS NULL OR f.""Extension"" ILIKE('%' || :ExtensionFilter || '%')
@@ -44,6 +45,7 @@ namespace Blog.Retrievers.PostgreSQL
                                                     WHEN :SortColumn = 'Name' THEN CAST(""Name"" AS text)
                                                     WHEN :SortColumn = 'Extension' THEN CAST(""Extension"" AS text)
                                                     WHEN :SortColumn = 'MimeType' THEN CAST(""MimeType"" AS text)
+                                                    WHEN :SortColumn = 'Timestamp' THEN CAST(""Timestamp"" AS text)
 					                                ELSE CAST(""Id"" AS text)
 				                                END
                                         END DESC,
@@ -53,6 +55,7 @@ namespace Blog.Retrievers.PostgreSQL
                                                     WHEN :SortColumn = 'Name' THEN CAST(""Name"" AS text)
                                                     WHEN :SortColumn = 'Extension' THEN CAST(""Extension"" AS text)
                                                     WHEN :SortColumn = 'MimeType' THEN CAST(""MimeType"" AS text)
+                                                    WHEN :SortColumn = 'Timestamp' THEN CAST(""Timestamp"" AS text)
 					                                ELSE CAST(""Id"" AS text)
 				                                END
                                         END ASC
@@ -87,11 +90,15 @@ namespace Blog.Retrievers.PostgreSQL
                             if (filesPagedDataTable.TotalResultsCount == 0)
                                 filesPagedDataTable.TotalResultsCount = Convert.ToInt32(dataReader["ResultsCount"]);
 
+                            var timestamp = dataReader[FilesPagedDataTable.Timestamp];
+                            var timestampStr = timestamp == null ? String.Empty : ((DateTime)timestamp).ToShortDateString();
+
                             filesPagedDataTable.Rows.Add(
                                 dataReader[FilesPagedDataTable.Id],
                                 dataReader[FilesPagedDataTable.Name],
                                 dataReader[FilesPagedDataTable.Extension],
-                                dataReader[FilesPagedDataTable.MimeType]);
+                                dataReader[FilesPagedDataTable.MimeType],
+                                timestamp);
                         }
                     }
                 }

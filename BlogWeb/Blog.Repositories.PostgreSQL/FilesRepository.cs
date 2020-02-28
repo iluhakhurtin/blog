@@ -21,6 +21,7 @@ namespace Blog.Repositories.PostgreSQL
                                 ""Name"",
                                 ""MimeType"",
                                 ""Extension"",
+                                ""Timestamp"",
                                 ""Data""
                                 FROM ""Files""
                                 WHERE ""Name""=:Name;
@@ -41,6 +42,7 @@ namespace Blog.Repositories.PostgreSQL
                             file.Name = Convert.ToString(dataReader["Name"]);
                             file.MimeType = Convert.ToString(dataReader["MimeType"]);
                             file.Extension = Convert.ToString(dataReader["Extension"]);
+                            file.Timestamp = Convert.ToDateTime(dataReader["Timestamp"]);
                             file.Data = (byte[])dataReader["Data"];
 
                             return file;
@@ -60,6 +62,7 @@ namespace Blog.Repositories.PostgreSQL
                                 ""Name"",
                                 ""MimeType"",
                                 ""Extension"",
+                                ""Timestamp"",
                                 ""Data""
                                 FROM ""Files""
                                 WHERE ""Id""=:Id;
@@ -80,6 +83,7 @@ namespace Blog.Repositories.PostgreSQL
                             file.Name = Convert.ToString(dataReader["Name"]);
                             file.MimeType = Convert.ToString(dataReader["MimeType"]);
                             file.Extension = Convert.ToString(dataReader["Extension"]);
+                            file.Timestamp = Convert.ToDateTime(dataReader["Timestamp"]);
                             file.Data = (byte[])dataReader["Data"];
 
                             return file;
@@ -101,6 +105,7 @@ namespace Blog.Repositories.PostgreSQL
 	                    ""Name"", 
 	                    ""Extension"",
                         ""MimeType"",
+                        ""Timestamp"",
 	                    ""Data""
 	                )
 	                VALUES (
@@ -108,6 +113,7 @@ namespace Blog.Repositories.PostgreSQL
 	                    :Name, 
 	                    :Extension,
                         :MimeType,
+                        :Timestamp,
 	                    :Data
 	                );
                     ");
@@ -142,6 +148,13 @@ namespace Blog.Repositories.PostgreSQL
                     mimeType.Value = file.MimeType;
                     command.Parameters.Add(mimeType);
 
+                    var timestamp = command.CreateParameter();
+                    timestamp.Direction = System.Data.ParameterDirection.Input;
+                    timestamp.DbType = System.Data.DbType.DateTime;
+                    timestamp.ParameterName = ":Timestamp";
+                    timestamp.Value = file.Timestamp;
+                    command.Parameters.Add(timestamp);
+
                     var data = command.CreateParameter();
                     data.Direction = System.Data.ParameterDirection.Input;
                     data.DbType = System.Data.DbType.Binary;
@@ -164,7 +177,8 @@ namespace Blog.Repositories.PostgreSQL
                     UPDATE ""Files"" SET
 	                    ""Name"" = :Name, 
 	                    ""Extension"" = :Extension,
-                        ""MimeType"" = :MimeType
+                        ""MimeType"" = :MimeType,
+                        ""Timestamp"" = :Timestamp
                     WHERE ""Id"" = :Id;
                     ");
 
@@ -174,6 +188,7 @@ namespace Blog.Repositories.PostgreSQL
                     command.Parameters.AddWithValue(":Name", file.Name);
                     command.Parameters.AddWithValue(":Extension", file.Extension);
                     command.Parameters.AddWithValue(":MimeType", file.MimeType);
+                    command.Parameters.AddWithValue(":Timestamp", file.Timestamp);
 
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();

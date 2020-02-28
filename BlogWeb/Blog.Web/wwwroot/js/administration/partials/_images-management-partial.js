@@ -21,21 +21,24 @@
                     label: 'Id',
                     name: 'Id',
                     width: 50,
-                    editable: false
+                    editable: false,
+                    formatter: this.formatId
                 },
                 {
                     label: 'Preview File',
                     name: 'PreviewFileId',
                     width: 50,
                     editable: true,
-                    formatter: this.formatPreviewFile,
-                    unformat: this.unformatPreviewFile
+                    formatter: utils.bind(this, this.formatPreviewFile),
+                    unformat: utils.bind(this, this.unformatPreviewFile)
                 },
                 {
                     label: 'Original File',
                     name: 'OriginalFileId',
                     width: 50,
-                    editable: true
+                    editable: true,
+                    formatter: utils.bind(this, this.formatOriginalFile),
+                    unformat: utils.bind(this, this.unformatOriginalFile)
                 }
             ],
             autowidth: true,
@@ -96,17 +99,41 @@
         );
     };
 
+    this.formatId = function (cellvalue, options, rowobject) {
+        return options.rowId;
+    }
+
     this.formatPreviewFile = function (cellvalue, options, rowobject) {
         var fileId = rowobject[0];
         var fileName = rowobject[1];
-        return '<a href="/File/Index/' + fileId + '" target="_blank">'
-            + '<img src="/File/Index/' + fileId + '" class="image" />'
+        var value = this.formatImageCell(fileId, fileName);
+        return value;
+    };
+
+    this.formatOriginalFile = function (cellvalue, options, rowobject) {
+        var fileId = rowobject[2];
+        var fileName = rowobject[3];
+        var value = this.formatImageCell(fileId, fileName);
+        return value;
+    };
+
+    this.formatImageCell = function (fileId, fileName) {
+        return '<a href="/File/Index/' + fileId + '" target="_blank" class="image-cell">'
+            + '<img src="/File/Index/' + fileId + '" />'
             + '<span>' + fileName + '</span>'
             + '</a>';
     };
 
     this.unformatPreviewFile = function (cellvalue, options, elem) {
-        return cellvalue;
+        //var rowData = this.grid.jqGrid('getRowData', options.rowId);
+        //return rowData[0];
+        return "";
+    };
+
+    this.unformatOriginalFile = function (cellvalue, options, elem) {
+        //var rowData = this.grid.jqGrid('getRowData', options.rowId);
+        //return rowData[2];
+        return "";
     };
 
     //- Methods

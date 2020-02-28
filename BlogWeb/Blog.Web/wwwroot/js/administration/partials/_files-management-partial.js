@@ -70,7 +70,7 @@
                 {
                     label: 'Name',
                     name: 'Name',
-                    width: 250,
+                    width: 200,
                     editable: true,
                     formatter: this.formatName,
                     unformat: this.unformatName
@@ -86,6 +86,12 @@
                     name: 'MimeType',
                     width: 50,
                     editable: true
+                },
+                {
+                    label: 'Timestamp',
+                    name: 'Timestamp',
+                    width: 50,
+                    editable: false
                 },
                 {
                     label: 'File',

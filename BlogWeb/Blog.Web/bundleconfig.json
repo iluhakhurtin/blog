@@ -149,5 +149,18 @@
     },
     // Optionally generate .map file
     "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/css/administration/partials/_images-management-partial.min.css",
+    "inputFiles": [
+      "wwwroot/css/administration/partials/_images-management-partial.css"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
   }
 ]
