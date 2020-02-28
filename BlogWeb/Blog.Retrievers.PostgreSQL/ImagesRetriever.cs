@@ -181,22 +181,22 @@ namespace Blog.Retrievers.PostgreSQL
                                         LEFT JOIN ""Files"" pf ON pf.""Id"" = i.""PreviewFileId""
                                         LEFT JOIN ""Files"" of ON of.""Id"" = i.""OriginalFileId""
                                     ) AS Subquery
-                                    WHERE :PreviewFileNameFilter IS NULL OR pf.""Name"" ILIKE('%' || :PreviewFileNameFilter || '%')
-                                            AND :OriginalFileNameFilter IS NULL OR of.""Name"" ILIKE('%' || :OriginalFileNameFilter || '%')
+                                    WHERE :PreviewFileNameFilter IS NULL OR Subquery.""PreviewFileName"" ILIKE('%' || :PreviewFileNameFilter || '%')
+                                            AND :OriginalFileNameFilter IS NULL OR Subquery.""OriginalFileName"" ILIKE('%' || :OriginalFileNameFilter || '%')
                                     ORDER BY
                                         CASE
                                             WHEN :SortOrder = 'desc' THEN
                                                 CASE
-                                                    WHEN :SortColumn = 'PreviewFileNameFilter' THEN CAST(Subquery.""PreviewFileNameFilter"" AS text)
-                                                    WHEN :SortColumn = 'OriginalFileNameFilter' THEN CAST(Subquery.""OriginalFileNameFilter"" AS text)
+                                                    WHEN :SortColumn = 'PreviewFileName' THEN CAST(Subquery.""PreviewFileName"" AS text)
+                                                    WHEN :SortColumn = 'OriginalFileName' THEN CAST(Subquery.""OriginalFileName"" AS text)
 					                                ELSE CAST(Subquery.""Id"" AS text)
 				                                END
                                         END DESC,
 		                                CASE
                                             WHEN :SortOrder = 'asc' THEN
                                                 CASE
-                                                    WHEN :SortColumn = 'PreviewFileNameFilter' THEN CAST(Subquery.""PreviewFileNameFilter"" AS text)
-                                                    WHEN :SortColumn = 'OriginalFileNameFilter' THEN CAST(Subquery.""OriginalFileNameFilter"" AS text)
+                                                    WHEN :SortColumn = 'PreviewFileName' THEN CAST(Subquery.""PreviewFileName"" AS text)
+                                                    WHEN :SortColumn = 'OriginalFileName' THEN CAST(Subquery.""OriginalFileName"" AS text)
 					                                ELSE CAST(Subquery.""Id"" AS text)
 				                                END
                                         END ASC
@@ -206,9 +206,15 @@ namespace Blog.Retrievers.PostgreSQL
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("PreviewFileNameFilter", previewFileNameFilter);
-                    command.Parameters.AddWithValue("OriginalFileNameFilter", originalFileNameFilter);
-                    command.Parameters.AddWithValue("SortColumn", sortColumn);
+                    var filterParam = new NpgsqlParameter<string>("PreviewFileNameFilter", previewFileNameFilter);
+                    command.Parameters.Add(filterParam);
+
+                    filterParam = new NpgsqlParameter<string>("OriginalFileNameFilter", originalFileNameFilter);
+                    command.Parameters.Add(filterParam);
+
+                    var sortColumnParam = new NpgsqlParameter<string>("SortColumn", sortColumn);
+                    command.Parameters.Add(sortColumnParam);
+
                     command.Parameters.AddWithValue("SortOrder", sortOrder);
                     command.Parameters.AddWithValue("PageNumber", pageNumber);
                     command.Parameters.AddWithValue("PageSize", pageSize);
