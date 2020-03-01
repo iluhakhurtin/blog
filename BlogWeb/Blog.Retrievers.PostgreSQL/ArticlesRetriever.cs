@@ -212,5 +212,63 @@ namespace Blog.Retrievers.PostgreSQL
 
             return result;
         }
+
+        public async Task<IList<ArticleDataResult>> FindArticlesAsync(string searchPattern)
+        {
+            var result = new List<ArticleDataResult>();
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"WITH RECURSIVE ""RecursiveCategories"" AS (
+                                    SELECT
+                                        ""Id"",
+		                                ""ParentId"",
+		                                ""Name""
+                                        FROM ""Categories""
+                                    UNION
+                                    SELECT
+                                        c.""Id"",
+		                                c.""ParentId"",
+		                                c.""Name""
+                                        FROM ""Categories"" c
+                                        JOIN ""RecursiveCategories"" rc ON rc.""Id"" = c.""ParentId""
+                                )
+                                SELECT
+                                    DISTINCT
+                                        a.""Id"",
+		                                a.""Title""
+                                    FROM ""RecursiveCategories"" rc
+                                    JOIN ""ArticleCategories"" ac ON ac.""CategoryId"" = rc.""Id""
+                                    JOIN ""Articles"" a ON a.""Id"" = ac.""ArticleId""
+                                    WHERE a.""Title"" ILIKE('%' || :SearchPattern || '%')
+                                        OR a.""Body"" ILIKE('%' || :SearchPattern || '%')
+                                        OR rc.""Name"" ILIKE('%' || :SearchPattern || '%')
+                                    ORDER BY a.""Timestamp"", a.""Title""
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("SearchPattern", searchPattern);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        while (await dataReader.ReadAsync())
+                        {
+                            var item = new ArticleDataResult
+                            {
+                                Id = (Guid)dataReader["Id"],
+                                Title = (string)dataReader["Title"]
+                            };
+
+                            result.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }

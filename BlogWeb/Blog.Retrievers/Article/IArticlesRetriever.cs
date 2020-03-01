@@ -6,6 +6,7 @@ namespace Blog.Retrievers.Article
 {
     public interface IArticlesRetriever : IRetriever
     {
+        Task<IList<ArticleDataResult>> FindArticlesAsync(string searchPattern);
         Task<IList<ArticleDataResult>> GetCategoryArticlesAsync(Guid categoryId);
         Task<ArticleWithRolesDataResult> GetArticleWithRolesAsync(Guid articleId);
         Task<ArticlesPagedDataTable> GetArticlesPagedAsync(

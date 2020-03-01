@@ -7,6 +7,7 @@ namespace Blog.Web.Models.Articles
 {
     public class ArticlesViewModel
     {
+        public String SearchPattern { get; set; }
         public IList<ArticleDataResult> Articles { get; set; }
 
         public ArticlesViewModel()

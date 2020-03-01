@@ -23,7 +23,25 @@ namespace Blog.Web.Controllers
             this.articlesRetriever = retrievers.ArticlesRetriever;
         }
 
-        public async Task<IActionResult> Index(Guid id)
+        public async Task<IActionResult> Search(string searchPattern)
+        {
+            try
+            {
+                var articles = await this.articlesRetriever.FindArticles(searchPattern);
+                var articlesViewModel = new ArticlesViewModel(articles);
+
+                return View(articlesViewModel);
+            }
+            catch (Exception ex)
+            {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
+                return base.NotFound();
+            }
+        }
+
+        public async Task<IActionResult> SearchByCategory(Guid id)
         {
             try
             {
