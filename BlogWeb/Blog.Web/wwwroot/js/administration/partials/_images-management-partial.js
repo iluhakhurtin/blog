@@ -119,7 +119,7 @@
 
     this.formatImageCell = function (fileId, fileName) {
         return '<a href="/File/Index/' + fileId + '" target="_blank" class="image-cell">'
-            + '<img src="/File/Index/' + fileId + '" />'
+            + '<img src="/File/Thumbnail/' + fileId + '" />'
             + '<span>' + fileName + '</span>'
             + '</a>';
     };
