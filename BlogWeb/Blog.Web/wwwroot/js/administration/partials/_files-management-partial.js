@@ -70,7 +70,7 @@
                 {
                     label: 'Name',
                     name: 'Name',
-                    width: 150,
+                    width: 90,
                     editable: true,
                     formatter: this.formatName,
                     unformat: this.unformatName
@@ -78,25 +78,31 @@
                 {
                     label: 'Extension',
                     name: 'Extension',
-                    width: 50,
+                    width: 30,
                     editable: true
                 },
                 {
                     label: 'Mime Type',
                     name: 'MimeType',
-                    width: 50,
+                    width: 35,
                     editable: true
                 },
                 {
                     label: 'Timestamp',
                     name: 'Timestamp',
-                    width: 50,
+                    width: 35,
                     editable: false
+                },
+                {
+                    label: 'Id',
+                    name: 'Id',
+                    width: 80,
+                    editable: false,
+                    formatter: this.formatId
                 },
                 {
                     label: 'File',
                     name: 'File',
-                    width: 80,
                     editable: true,
                     editoptions: {
                         enctype: "multipart/form-data"
@@ -185,6 +191,10 @@
     this.unformatName = function (cellvalue, options, elem) {
         return cellvalue;
     };
+
+    this.formatId = function (cellvalue, options, rowobject) {
+        return options.rowId;
+    }
 
     //- Methods
 

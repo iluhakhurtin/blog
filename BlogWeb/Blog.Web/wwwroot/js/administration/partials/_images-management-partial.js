@@ -116,7 +116,7 @@
 
     this.formatId = function (cellvalue, options, rowobject) {
         return options.rowId;
-    }
+    };
 
     this.formatPreviewFile = function (cellvalue, options, rowobject) {
         var fileId = rowobject[0];
