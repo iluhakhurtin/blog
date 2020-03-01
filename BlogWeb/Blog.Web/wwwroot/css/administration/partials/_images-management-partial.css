@@ -1,7 +1,7 @@
-﻿.images-management .image-cell img {
+﻿.files-management .image-cell img {
     width: 100px;
 }
 
-.images-management .image-cell span {
+.files-management .image-cell span {
     margin-left: 15px;
 }

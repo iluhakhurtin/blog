@@ -18,27 +18,42 @@
             datatype: "json",
             colModel: [
                 {
+                    label: 'PreviewFileId',
+                    name: 'PreviewFileId',
+                    width: 50,
+                    editable: true,
+                    editrules: { edithidden: true },
+                    hidden: true
+                },
+                {
+                    label: 'Preview File',
+                    name: 'PreviewFileName',
+                    width: 50,
+                    editable: false,
+                    formatter: utils.bind(this, this.formatPreviewFile)
+                },
+                {
+                    label: 'OriginalFileId',
+                    name: 'OriginalFileId',
+                    width: 50,
+                    editable: true,
+                    editrules: { edithidden: true },
+                    hidden: true
+                },
+                {
+                    label: 'Original File',
+                    name: 'OriginalFileName',
+                    width: 50,
+                    editable: false,
+                    formatter: utils.bind(this, this.formatOriginalFile),
+                    unformat: utils.bind(this, this.unformatOriginalFile)
+                },
+                {
                     label: 'Id',
                     name: 'Id',
                     width: 50,
                     editable: false,
                     formatter: this.formatId
-                },
-                {
-                    label: 'Preview File',
-                    name: 'PreviewFileId',
-                    width: 50,
-                    editable: true,
-                    formatter: utils.bind(this, this.formatPreviewFile),
-                    unformat: utils.bind(this, this.unformatPreviewFile)
-                },
-                {
-                    label: 'Original File',
-                    name: 'OriginalFileId',
-                    width: 50,
-                    editable: true,
-                    formatter: utils.bind(this, this.formatOriginalFile),
-                    unformat: utils.bind(this, this.unformatOriginalFile)
                 }
             ],
             autowidth: true,
@@ -122,18 +137,6 @@
             + '<img src="/File/Thumbnail/' + fileId + '" />'
             + '<span>' + fileName + '</span>'
             + '</a>';
-    };
-
-    this.unformatPreviewFile = function (cellvalue, options, elem) {
-        //var rowData = this.grid.jqGrid('getRowData', options.rowId);
-        //return rowData[0];
-        return "";
-    };
-
-    this.unformatOriginalFile = function (cellvalue, options, elem) {
-        //var rowData = this.grid.jqGrid('getRowData', options.rowId);
-        //return rowData[2];
-        return "";
     };
 
     //- Methods

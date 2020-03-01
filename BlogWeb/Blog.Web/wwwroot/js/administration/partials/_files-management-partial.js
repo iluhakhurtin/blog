@@ -70,7 +70,7 @@
                 {
                     label: 'Name',
                     name: 'Name',
-                    width: 200,
+                    width: 150,
                     editable: true,
                     formatter: this.formatName,
                     unformat: this.unformatName
@@ -170,8 +170,16 @@
     };
 
     this.formatName = function (cellvalue, options, rowobject) {
-        return '<a href="/File/Index/' + options.rowId + '" target="_blank">'
-            + cellvalue + '</a>';
+        var mimeType = rowobject[2];
+        if (mimeType && mimeType.match(/image/g)) {
+            return '<a href="/File/Index/' + options.rowId + '" target="_blank" class="image-cell">'
+                + '<img src="/File/Thumbnail/' + options.rowId + '" />'
+                + '<span>' + cellvalue + '</span>'
+                + '</a>';
+        }
+        return '<a href="/File/Index/' + options.rowId + '" target="_blank" class="image-cell">'
+            + cellvalue
+            + '</a>';
     };
 
     this.unformatName = function (cellvalue, options, elem) {
