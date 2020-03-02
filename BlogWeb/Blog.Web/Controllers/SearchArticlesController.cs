@@ -12,25 +12,33 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers
 {
-    public class ArticlesController : BaseController
+    public class SearchArticlesController : BaseController
     {
         private readonly IArticlesRetriever articlesRetriever;
 
 
-        public ArticlesController(ILog log, IRetrievers retrievers)
+        public SearchArticlesController(ILog log, IRetrievers retrievers)
             : base(log)
         {
             this.articlesRetriever = retrievers.ArticlesRetriever;
         }
 
-        public async Task<IActionResult> Search(string searchPattern)
+        public async Task<IActionResult> Search(SearchArticlesViewModel viewModel)
         {
             try
             {
-                var articles = await this.articlesRetriever.FindArticles(searchPattern);
-                var articlesViewModel = new ArticlesViewModel(articles);
+                if (viewModel == null)
+                {
+                    viewModel = new SearchArticlesViewModel();
+                }
 
-                return View(articlesViewModel);
+                if (!String.IsNullOrEmpty(viewModel.SearchPattern))
+                {
+                    var articles = await this.articlesRetriever.FindArticlesAsync(viewModel.SearchPattern);
+                    viewModel.Articles.AddRange(articles);
+                }
+
+                return View("Index", viewModel);
             }
             catch (Exception ex)
             {
@@ -46,9 +54,9 @@ namespace Blog.Web.Controllers
             try
             {
                 var articles = await this.articlesRetriever.GetCategoryArticlesAsync(id);
-                var articlesViewModel = new ArticlesViewModel(articles);
+                var viewModel = new SearchArticlesViewModel(articles);
 
-                return View(articlesViewModel);
+                return View("Index", viewModel);
             }
             catch(Exception ex)
             {

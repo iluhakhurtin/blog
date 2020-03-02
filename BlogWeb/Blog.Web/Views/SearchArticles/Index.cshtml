@@ -1,0 +1,34 @@
+﻿@model Blog.Web.Models.Articles.SearchArticlesViewModel
+
+@{
+    ViewData["Title"] = "Поиск";
+}
+
+<div class="col-md-4">
+    <section>
+        <form asp-area=""
+              asp-controller="SearchArticles"
+              asp-action="Search"
+              method="post"
+              id="searchForm"
+              class="ml-auto">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SearchPattern"></label>
+                <input asp-for="SearchPattern" class="form-control" />
+                <span asp-validation-for="SearchPattern" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Найти</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+@foreach (var article in Model.Articles)
+{
+    <div class="nav-item article-item">
+        <a class="nav-link" asp-controller="Article" asp-action="Index" asp-route-id="@article.Id"
+           role="button">@article.Title</a>
+    </div>
+}

@@ -236,7 +236,8 @@ namespace Blog.Retrievers.PostgreSQL
                                 SELECT
                                     DISTINCT
                                         a.""Id"",
-		                                a.""Title""
+		                                a.""Title"",
+                                        a.""Timestamp""
                                     FROM ""RecursiveCategories"" rc
                                     JOIN ""ArticleCategories"" ac ON ac.""CategoryId"" = rc.""Id""
                                     JOIN ""Articles"" a ON a.""Id"" = ac.""ArticleId""

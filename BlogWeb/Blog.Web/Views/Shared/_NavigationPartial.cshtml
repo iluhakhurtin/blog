@@ -12,7 +12,7 @@
             <a class="nav-link" asp-area="" asp-controller="Catalog" asp-action="Index">Каталог</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" asp-area="" asp-controller="Articles" asp-action="Index">Поиск</a>
+            <a class="nav-link" asp-area="" asp-controller="SearchArticles" asp-action="Search">Поиск</a>
         </li>
         @if (User.IsInRole(ApplicationRole.Administrator))
         {
