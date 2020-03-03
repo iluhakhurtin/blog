@@ -273,5 +273,50 @@ namespace Blog.Retrievers.PostgreSQL
 
             return result;
         }
+
+        public async Task<IList<ArticleDataResult>> GetLatestArticles(int count)
+        {
+            var result = new List<ArticleDataResult>();
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+                                    ""Id"",
+                                    ""Title"",
+                                    ""CoverFileId""
+                                    FROM ""Articles""
+                                    ORDER BY ""Timestamp"" DESC
+                                    LIMIT :Count
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("Count", count);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        while (await dataReader.ReadAsync())
+                        {
+                            Guid? coverFileId = null;
+                            if (dataReader["CoverFileId"] != DBNull.Value)
+                                coverFileId = (Guid)dataReader["CoverFileId"];
+
+                            var item = new ArticleDataResult
+                            {
+                                Id = (Guid)dataReader["Id"],
+                                Title = (string)dataReader["Title"],
+                                CoverFileId = coverFileId
+                            };
+
+                            result.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }

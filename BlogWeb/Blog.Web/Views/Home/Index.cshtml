@@ -1,4 +1,18 @@
-﻿@{
+﻿@model Blog.Web.Models.Home.HomeViewModel
+
+@{
     ViewData["Title"] = "Начало";
 }
 
+@section Stylesheets {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/home/_article-partial.css">
+        <link rel="stylesheet" href="~/css/home/_articles-partial.css">
+        <link rel="stylesheet" href="~/css/home/index.css">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/home/index.min.css">
+    </environment>
+}
+
+@await Html.PartialAsync("_ArticlesPartial", Model.Articles)

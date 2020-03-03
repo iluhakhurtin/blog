@@ -1,0 +1,14 @@
+﻿.article {
+    display: inline-block;
+    padding: 0px;
+    margin: 0px;
+    text-align: center;
+}
+
+.article .cover {
+    width: 100%;
+}
+
+.article .title {
+    text-align: center;
+}

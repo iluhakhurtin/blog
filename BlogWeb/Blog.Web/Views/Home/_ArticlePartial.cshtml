@@ -1,0 +1,6 @@
+﻿@model Blog.Retrievers.Article.ArticleDataResult
+
+<a class="article" asp-controller="Article" asp-action="Index" asp-route-id="@Model.Id">
+    <img class="cover" src='@Url.Action("Index", "File", new { id = Model.CoverFileId })' />
+    <span class="title center">@Model.Title.</span>
+</a>

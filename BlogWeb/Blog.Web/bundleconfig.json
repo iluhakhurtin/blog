@@ -54,12 +54,19 @@
     // Optionally generate .map file
     "sourceMap": false
   },
-
   {
     "outputFileName": "wwwroot/css/catalog/index.min.css",
     "inputFiles": [
       "wwwroot/css/catalog/_catalog-partial.css",
       "wwwroot/css/catalog/index.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/home/index.min.css",
+    "inputFiles": [
+      "wwwroot/css/home/_article-partial.css",
+      "wwwroot/css/home/_articles-partial.css",
+      "wwwroot/css/home/index.css"
     ]
   },
   {
