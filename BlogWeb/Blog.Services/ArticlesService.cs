@@ -9,8 +9,8 @@ namespace Blog.Services
 {
     public interface IArticlesService
     {
-        Task<string> AddArticle(string title, string body, string csvRoles, string csvCategories);
-        Task<string> EditArticle(string id, string title, string body, string csvRoles, string csvCategories);
+        Task<string> AddArticle(string coverFileId, string title, string body, string csvRoles, string csvCategories);
+        Task<string> EditArticle(string id, string coverFileId, string title, string body, string csvRoles, string csvCategories);
     }
 
 
@@ -37,6 +37,7 @@ namespace Blog.Services
         }
 
         public async Task<string> AddArticle(
+            string coverFileId,
             string title,
             string body,
             string csvRoles,
@@ -65,6 +66,9 @@ namespace Blog.Services
             article.Title = title;
             article.Body = body;
 
+            if (!String.IsNullOrEmpty(coverFileId))
+                article.CoverFileId = Guid.Parse(coverFileId);
+
             await this.articlesRepository.AddAsync(article);
 
             await this.UpdateArticleRoles(article, roles);
@@ -75,6 +79,7 @@ namespace Blog.Services
 
         public async Task<string> EditArticle(
             string id,
+            string coverFileId,
             string title,
             string body,
             string csvRoles,
@@ -103,10 +108,16 @@ namespace Blog.Services
 
             var article = await this.articlesRepository.GetAsync(articleId);
 
-            if (article.Title != title || article.Body != body)
+            Guid? newCoverFileId = null;
+            if (!String.IsNullOrEmpty(coverFileId))
+                newCoverFileId = Guid.Parse(coverFileId);
+
+            if (article.Title != title || article.Body != body || article.CoverFileId != newCoverFileId)
             {
                 article.Title = title;
                 article.Body = body;
+                article.CoverFileId = newCoverFileId;
+
                 await this.articlesRepository.UpdateAsync(article);
             }
 

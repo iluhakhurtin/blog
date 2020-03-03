@@ -9,6 +9,7 @@ namespace Blog.Retrievers.Article
         public const string Timestamp = "Timestamp";
         public const string Roles = "Roles";
         public const string Categories = "Categories";
+        public const string CoverFileId = "CoverFileId";
 
         public ArticlesPagedDataTable(int pageNumber, int pageSize)
             : base(pageNumber, pageSize)
@@ -19,6 +20,9 @@ namespace Blog.Retrievers.Article
         private void InitializeColumns()
         {
             DataColumn column = new DataColumn(Id, typeof(Guid));
+            base.Columns.Add(column);
+
+            column = new DataColumn(CoverFileId, typeof(Guid));
             base.Columns.Add(column);
 
             column = new DataColumn(Title, typeof(string));

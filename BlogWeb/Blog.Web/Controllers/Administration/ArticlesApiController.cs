@@ -110,6 +110,7 @@ namespace Blog.Web.Controllers.Administration
         public async Task<HttpResponseMessage> Post(
             [FromForm]string id,
             [FromForm]string oper,
+            [FromForm]string CoverFileId,
             [FromForm]string Title,
             [FromForm]string Body,
             [FromForm]string Roles,
@@ -121,10 +122,10 @@ namespace Blog.Web.Controllers.Administration
                 switch (oper)
                 {
                     case jqGridActions.Add:
-                        return await this.AddArticle(Title, Body, Roles, Categories);
+                        return await this.AddArticle(CoverFileId, Title, Body, Roles, Categories);
 
                     case jqGridActions.Edit:
-                        return await this.EditArticle(id, Title, Body, Roles, Categories);
+                        return await this.EditArticle(id, CoverFileId, Title, Body, Roles, Categories);
 
                     case jqGridActions.Delete:
                         return await this.DeleteArticle(id);
@@ -140,9 +141,14 @@ namespace Blog.Web.Controllers.Administration
             return base.CreateErrorResponseMessage("Not implemented");
         }
 
-        private async Task<HttpResponseMessage> AddArticle(string title, string body, string roles, string categories)
+        private async Task<HttpResponseMessage> AddArticle(
+            string coverFileId,
+            string title,
+            string body,
+            string roles,
+            string categories)
         {
-            var error = await this.articlesService.AddArticle(title, body, roles, categories);
+            var error = await this.articlesService.AddArticle(coverFileId, title, body, roles, categories);
 
             if (!String.IsNullOrEmpty(error))
             {
@@ -156,12 +162,13 @@ namespace Blog.Web.Controllers.Administration
 
         private async Task<HttpResponseMessage> EditArticle(
             string id,
+            string coverFileId,
             string title,
             string body,
             string roles,
             string categories)
         {
-            var error = await this.articlesService.EditArticle(id, title, body, roles, categories);
+            var error = await this.articlesService.EditArticle(id, coverFileId, title, body, roles, categories);
 
             if (!String.IsNullOrEmpty(error))
             {

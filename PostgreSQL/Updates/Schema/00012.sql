@@ -1,0 +1,1 @@
+ALTER TABLE "Articles" ADD "CoverFileId" uuid NULL;

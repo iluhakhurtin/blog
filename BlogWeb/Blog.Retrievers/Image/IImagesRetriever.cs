@@ -11,6 +11,7 @@ namespace Blog.Retrievers.Image
         Task<ImageDataResult> GetPreviewImageDataByNameAsync(String fileName);
         Task<ImageDataResult> GetOriginalImageDataByNameAsync(String fileName);
         Task<ImagesPagedDataTable> GetImagesPagedAsync(
+            string imageIdFilter,
             string previewFileNameFilter,
             string originalFileNameFilter,
             string sortColumn,

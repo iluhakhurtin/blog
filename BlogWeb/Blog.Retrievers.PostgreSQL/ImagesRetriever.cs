@@ -156,6 +156,7 @@ namespace Blog.Retrievers.PostgreSQL
         }
 
         public async Task<ImagesPagedDataTable> GetImagesPagedAsync(
+            string imageIdFilter,
             string previewFileNameFilter,
             string originalFileNameFilter,
             string sortColumn,
@@ -181,7 +182,8 @@ namespace Blog.Retrievers.PostgreSQL
                                         LEFT JOIN ""Files"" pf ON pf.""Id"" = i.""PreviewFileId""
                                         LEFT JOIN ""Files"" of ON of.""Id"" = i.""OriginalFileId""
                                     ) AS Subquery
-                                    WHERE :PreviewFileNameFilter IS NULL OR Subquery.""PreviewFileName"" ILIKE('%' || :PreviewFileNameFilter || '%')
+                                    WHERE   :ImageIdFilter IS NULL OR Subquery.""Id"" = :ImageIdFilter
+                                            AND :PreviewFileNameFilter IS NULL OR Subquery.""PreviewFileName"" ILIKE('%' || :PreviewFileNameFilter || '%')
                                             AND :OriginalFileNameFilter IS NULL OR Subquery.""OriginalFileName"" ILIKE('%' || :OriginalFileNameFilter || '%')
                                     ORDER BY
                                         CASE
@@ -206,6 +208,15 @@ namespace Blog.Retrievers.PostgreSQL
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
+                    var imageIdFilterParam = new NpgsqlParameter();
+                    imageIdFilterParam.ParameterName = "ImageIdFilter";
+                    imageIdFilterParam.DbType = System.Data.DbType.Guid;
+                    if (!String.IsNullOrEmpty(imageIdFilter))
+                        imageIdFilterParam.Value = Guid.Parse(imageIdFilter);
+                    else
+                        imageIdFilterParam.Value = DBNull.Value;
+                    command.Parameters.Add(imageIdFilterParam);
+
                     var filterParam = new NpgsqlParameter<string>("PreviewFileNameFilter", previewFileNameFilter);
                     command.Parameters.Add(filterParam);
 

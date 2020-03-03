@@ -52,17 +52,20 @@ namespace Blog.Web.Controllers.Administration
         {
             try
             {
+                string imageId = null;
                 string previewFileName = null;
                 string originalFileName = null;
 
                 if (!String.IsNullOrEmpty(filters))
                 {
                     jqGridFilter filter = JsonConvert.DeserializeObject<jqGridFilter>(filters);
+                    imageId = filter.GetFilterByFieldName(ImagesPagedDataTable.Id);
                     previewFileName = filter.GetFilterByFieldName(ImagesPagedDataTable.OriginalFileName);
                     originalFileName = filter.GetFilterByFieldName(ImagesPagedDataTable.PreviewFileName);
                 }
 
                 var pagedDataTable = await this.imagesRetriever.GetImagesPagedAsync(
+                    imageId,
                     previewFileName,
                     originalFileName,
                     sidx,

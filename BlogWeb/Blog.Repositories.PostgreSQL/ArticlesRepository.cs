@@ -21,13 +21,15 @@ namespace Blog.Repositories.PostgreSQL
                         ""Id"",
 	                    ""Title"", 
 	                    ""Body"",
-                        ""Timestamp""
+                        ""Timestamp"",
+                        ""CoverFileId""
 	                )
 	                VALUES (
                         :Id,
 	                    :Title, 
 	                    :Body,
-                        :Timestamp
+                        :Timestamp,
+                        :CoverFileId
 	                );
                     ");
 
@@ -37,6 +39,7 @@ namespace Blog.Repositories.PostgreSQL
                     command.Parameters.AddWithValue(":Title", article.Title);
                     command.Parameters.AddWithValue(":Body", article.Body);
                     command.Parameters.AddWithValue(":Timestamp", article.Timestamp);
+                    command.Parameters.AddWithValue(":CoverFileId", article.CoverFileId ?? (object)DBNull.Value);
 
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
@@ -52,7 +55,8 @@ namespace Blog.Repositories.PostgreSQL
                 string sql = @"SELECT
                                 ""Title"",
                                 ""Body"",
-                                ""Timestamp""
+                                ""Timestamp"",
+                                ""CoverFileId""
                                 FROM ""Articles""
                                 WHERE ""Id""=:Id;
                             ";
@@ -72,6 +76,10 @@ namespace Blog.Repositories.PostgreSQL
                             article.Title = Convert.ToString(dataReader["Title"]);
                             article.Body = Convert.ToString(dataReader["Body"]);
                             article.Timestamp = Convert.ToDateTime(dataReader["Timestamp"]);
+
+                            var coverFileId = dataReader["CoverFileId"];
+                            if(coverFileId != DBNull.Value)
+                                article.CoverFileId = (Guid)coverFileId;
 
                             return article;
                         }
@@ -108,7 +116,8 @@ namespace Blog.Repositories.PostgreSQL
                 string sql = String.Format(@"
                     UPDATE ""Articles"" SET
 	                    ""Title"" = :Title, 
-	                    ""Body"" = :Body
+	                    ""Body"" = :Body,
+                        ""CoverFileId"" = :CoverFileId
                     WHERE ""Id"" = :Id;
                     ");
 
@@ -117,6 +126,7 @@ namespace Blog.Repositories.PostgreSQL
                     command.Parameters.AddWithValue(":Id", article.Id);
                     command.Parameters.AddWithValue(":Title", article.Title);
                     command.Parameters.AddWithValue(":Body", article.Body);
+                    command.Parameters.AddWithValue(":CoverFileId", article.CoverFileId ?? (object)DBNull.Value);
 
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();

@@ -32,8 +32,9 @@ namespace Blog.Retrievers.PostgreSQL
 	                                (SELECT
 		                                COUNT(1) OVER()                         AS ""ResultsCount"",
                                         a.""Id""                                AS ""Id"",
-                                        MAX(a.""Title"")                        AS ""Title"",
-		                                MAX(a.""Timestamp"")                    AS ""Timestamp"",
+                                        a.""Title""                             AS ""Title"",
+		                                a.""Timestamp""                         AS ""Timestamp"",
+                                        a.""CoverFileId""                       AS ""CoverFileId"",
 		                                string_agg(DISTINCT r.""Name"", ', ')   AS ""Roles"",
 	 	                                string_agg(DISTINCT c.""Name"", ', ')   AS ""Categories""
                                         FROM ""Articles"" a
@@ -42,7 +43,7 @@ namespace Blog.Retrievers.PostgreSQL
                                         LEFT JOIN ""ArticleCategories"" ac ON ac.""ArticleId"" = a.""Id""
                                         LEFT JOIN ""Categories"" c ON c.""Id"" = ac.""CategoryId""
                                         WHERE :TitleFilter IS NULL OR a.""Title"" ILIKE('%' || :TitleFilter || '%')
-                                        GROUP BY a.""Id"") Subquery
+                                        GROUP BY a.""Id"", a.""Title"", a.""Timestamp"", a.""CoverFileId"") Subquery
                                     WHERE :RolesFilter IS NULL OR Subquery.""Roles"" ILIKE('%' || :RolesFilter || '%')
                                         AND :CategoriesFilter IS NULL OR Subquery.""Categories"" ILIKE ('%' || :CategoriesFilter || '%')
                                     ORDER BY
@@ -102,6 +103,7 @@ namespace Blog.Retrievers.PostgreSQL
 
                             articlesPagedDataTable.Rows.Add(
                                 dataReader[ArticlesPagedDataTable.Id],
+                                dataReader[ArticlesPagedDataTable.CoverFileId],
                                 dataReader[ArticlesPagedDataTable.Title],
                                 timestampStr,
                                 dataReader[ArticlesPagedDataTable.Roles],

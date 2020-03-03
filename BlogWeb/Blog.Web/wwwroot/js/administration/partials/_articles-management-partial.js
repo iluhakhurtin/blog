@@ -34,9 +34,17 @@
             datatype: "json",
             colModel: [
                 {
+                    label: 'Cover File',
+                    name: 'CoverFileId',
+                    width: 45,
+                    editable: true,
+                    formatter: this.formatCoverFileId,
+                    unformat: this.unformatCoverFileId
+                },
+                {
                     label: 'Title',
                     name: 'Title',
-                    width: 250,
+                    width: 200,
                     editable: true,
                     formatter: this.formatTitle,
                     unformat: this.unformatTitle
@@ -44,13 +52,13 @@
                 {
                     label: 'Timestamp',
                     name: 'Timestamp',
-                    width: 50,
+                    width: 45,
                     editable: true
                 },
                 {
                     label: 'Roles',
                     name: 'Roles',
-                    width: 50,
+                    width: 45,
                     //word wrap
                     cellattr: function (rowId, tv, rawObject, cm, rdata) {
                         return 'style="white-space: normal;"';
@@ -66,7 +74,7 @@
                 {
                     label: 'Categories',
                     name: 'Categories',
-                    width: 100,
+                    width: 70,
                     //word wrap
                     cellattr: function (rowId, tv, rawObject, cm, rdata) {
                         return 'style="white-space: normal;"';
@@ -170,6 +178,17 @@
     };
 
     this.unformatTitle = function (cellvalue, options, elem) {
+        return cellvalue;
+    };
+
+    this.formatCoverFileId = function (cellvalue, options, rowObject) {
+        var fileId = rowObject[0];
+        return '<a href="/File/Index/' + fileId + '" target="_blank" class="image-cell">'
+            + '<img src="/File/Thumbnail/' + fileId + '" />'
+            + '</a>';
+    };
+
+    this.unformatCoverFileId = function (cellvalue, options, elem) {
         return cellvalue;
     };
 
