@@ -46,6 +46,40 @@ namespace Blog.Repositories.PostgreSQL
             return categories;
         }
 
+        public async Task<Category> GetAsync(Guid id)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+                                ""Name"",
+                                ""ParentId""
+                                FROM ""Categories""
+                                WHERE ""Id"" = :Id
+                            ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    var idParam = command.Parameters.AddWithValue("Id", id);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        while (await dataReader.ReadAsync())
+                        {
+                            var category = new Category();
+                            category.Id = id;
+                            category.Name = Convert.ToString(dataReader["Name"]);
+                            category.ParentId = dataReader["ParentId"] == DBNull.Value ? null : (Guid?)dataReader["ParentId"];
+
+                            return category;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public async Task AddAsync(Category category)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))

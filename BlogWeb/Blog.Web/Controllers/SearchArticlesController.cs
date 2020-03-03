@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blog.Repositories;
 using Blog.Retrievers;
 using Blog.Retrievers.Article;
 using Blog.Web.Models.Articles;
@@ -15,12 +16,13 @@ namespace Blog.Web.Controllers
     public class SearchArticlesController : BaseController
     {
         private readonly IArticlesRetriever articlesRetriever;
+        private readonly ICategoriesRepository categoriesRepository;
 
-
-        public SearchArticlesController(ILog log, IRetrievers retrievers)
+        public SearchArticlesController(ILog log, IRetrievers retrievers, IRepositories repositories)
             : base(log)
         {
             this.articlesRetriever = retrievers.ArticlesRetriever;
+            this.categoriesRepository = repositories.CategoriesRepository;
         }
 
         public async Task<IActionResult> Search(SearchArticlesViewModel viewModel)
@@ -53,8 +55,10 @@ namespace Blog.Web.Controllers
         {
             try
             {
+                var category = await this.categoriesRepository.GetAsync(id);
                 var articles = await this.articlesRetriever.GetCategoryArticlesAsync(id);
                 var viewModel = new SearchArticlesViewModel(articles);
+                viewModel.SearchPattern = category.Name;
 
                 return View("Index", viewModel);
             }
