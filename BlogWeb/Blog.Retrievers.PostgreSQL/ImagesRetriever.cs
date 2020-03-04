@@ -181,10 +181,10 @@ namespace Blog.Retrievers.PostgreSQL
                                         FROM ""Images"" i
                                         LEFT JOIN ""Files"" pf ON pf.""Id"" = i.""PreviewFileId""
                                         LEFT JOIN ""Files"" of ON of.""Id"" = i.""OriginalFileId""
+                                        WHERE (:ImageIdFilter IS NULL OR i.""Id"" = :ImageIdFilter)
+                                            AND (:PreviewFileNameFilter IS NULL OR pf.""Name"" ILIKE('%' || :PreviewFileNameFilter || '%'))
+                                            AND (:OriginalFileNameFilter IS NULL OR of.""Name"" ILIKE('%' || :OriginalFileNameFilter || '%'))
                                     ) AS Subquery
-                                    WHERE   :ImageIdFilter IS NULL OR Subquery.""Id"" = :ImageIdFilter
-                                            AND :PreviewFileNameFilter IS NULL OR Subquery.""PreviewFileName"" ILIKE('%' || :PreviewFileNameFilter || '%')
-                                            AND :OriginalFileNameFilter IS NULL OR Subquery.""OriginalFileName"" ILIKE('%' || :OriginalFileNameFilter || '%')
                                     ORDER BY
                                         CASE
                                             WHEN :SortOrder = 'desc' THEN
@@ -211,17 +211,29 @@ namespace Blog.Retrievers.PostgreSQL
                     var imageIdFilterParam = new NpgsqlParameter();
                     imageIdFilterParam.ParameterName = "ImageIdFilter";
                     imageIdFilterParam.DbType = System.Data.DbType.Guid;
-                    if (!String.IsNullOrEmpty(imageIdFilter))
-                        imageIdFilterParam.Value = Guid.Parse(imageIdFilter);
-                    else
+                    if (String.IsNullOrEmpty(imageIdFilter))
                         imageIdFilterParam.Value = DBNull.Value;
+                    else
+                        imageIdFilterParam.Value = Guid.Parse(imageIdFilter); 
                     command.Parameters.Add(imageIdFilterParam);
 
-                    var filterParam = new NpgsqlParameter<string>("PreviewFileNameFilter", previewFileNameFilter);
-                    command.Parameters.Add(filterParam);
+                    var previewFileNameFilterParam = new NpgsqlParameter();
+                    previewFileNameFilterParam.ParameterName = "PreviewFileNameFilter";
+                    previewFileNameFilterParam.DbType = System.Data.DbType.String;
+                    if (String.IsNullOrEmpty(previewFileNameFilter))
+                        previewFileNameFilterParam.Value = DBNull.Value;
+                    else
+                        previewFileNameFilterParam.Value = previewFileNameFilter;
+                    command.Parameters.Add(previewFileNameFilterParam);
 
-                    filterParam = new NpgsqlParameter<string>("OriginalFileNameFilter", originalFileNameFilter);
-                    command.Parameters.Add(filterParam);
+                    var originalFileNameFilterParam = new NpgsqlParameter();
+                    originalFileNameFilterParam.ParameterName = "OriginalFileNameFilter";
+                    originalFileNameFilterParam.DbType = System.Data.DbType.String;
+                    if (String.IsNullOrEmpty(originalFileNameFilter))
+                        originalFileNameFilterParam.Value = DBNull.Value;
+                    else
+                        originalFileNameFilterParam.Value = originalFileNameFilter;
+                    command.Parameters.Add(originalFileNameFilterParam);
 
                     var sortColumnParam = new NpgsqlParameter<string>("SortColumn", sortColumn);
                     command.Parameters.Add(sortColumnParam);

@@ -60,8 +60,8 @@ namespace Blog.Web.Controllers.Administration
                 {
                     jqGridFilter filter = JsonConvert.DeserializeObject<jqGridFilter>(filters);
                     imageId = filter.GetFilterByFieldName(ImagesPagedDataTable.Id);
-                    previewFileName = filter.GetFilterByFieldName(ImagesPagedDataTable.OriginalFileName);
-                    originalFileName = filter.GetFilterByFieldName(ImagesPagedDataTable.PreviewFileName);
+                    previewFileName = filter.GetFilterByFieldName(ImagesPagedDataTable.PreviewFileName);
+                    originalFileName = filter.GetFilterByFieldName(ImagesPagedDataTable.OriginalFileName);
                 }
 
                 var pagedDataTable = await this.imagesRetriever.GetImagesPagedAsync(

@@ -96,31 +96,28 @@ namespace Blog.Services
                     return errorMessage;
             }
 
-            if (String.IsNullOrEmpty(title))
-            {
-                return "Title cannot be empty.";
-            }
-
-            if (String.IsNullOrEmpty(body))
-            {
-                return "Body cannot be empty.";
-            }
-
             var article = await this.articlesRepository.GetAsync(articleId);
+
+            if (!String.IsNullOrEmpty(title) && article.Title != title)
+            {
+                article.Title = title;
+            }
+
+            if (!String.IsNullOrEmpty(body) && article.Body != body)
+            {
+                article.Body = body;
+            }
 
             Guid? newCoverFileId = null;
             if (!String.IsNullOrEmpty(coverFileId))
                 newCoverFileId = Guid.Parse(coverFileId);
 
-            if (article.Title != title || article.Body != body || article.CoverFileId != newCoverFileId)
+            if (article.CoverFileId != newCoverFileId)
             {
-                article.Title = title;
-                article.Body = body;
                 article.CoverFileId = newCoverFileId;
-
-                await this.articlesRepository.UpdateAsync(article);
             }
 
+            await this.articlesRepository.UpdateAsync(article);
             await this.UpdateArticleRoles(article, roles);
             await this.UpdateArticleCategories(article, csvCategories);
 
