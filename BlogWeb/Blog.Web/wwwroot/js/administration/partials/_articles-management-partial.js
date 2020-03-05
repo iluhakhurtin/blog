@@ -39,7 +39,7 @@
                     width: 45,
                     editable: true,
                     formatter: this.formatCoverFileId,
-                    unformat: this.unformatCoverFileId
+                    unformat: this.unformatTitle
                 },
                 {
                     label: 'Title',
@@ -182,9 +182,9 @@
     };
 
     this.formatCoverFileId = function (cellvalue, options, rowObject) {
-        var fileId = rowObject[0];
-        return '<a href="/File/Index/' + fileId + '" target="_blank" class="image-cell">'
-            + '<img src="/File/Thumbnail/' + fileId + '" />'
+        return '<a href="/File/Index/' + cellvalue + '" target="_blank" class="image-cell">'
+            + '<img src="/File/Thumbnail/' + cellvalue + '" />'
+            + '<span style="display:none">' + cellvalue + '</span>'
             + '</a>';
     };
 

@@ -53,6 +53,7 @@
     <Folder Include="wwwroot\css\administration\partials\" />
     <Folder Include="Models\Home\" />
     <Folder Include="wwwroot\css\home\" />
+    <Folder Include="Views\About\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
