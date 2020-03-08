@@ -13,14 +13,11 @@ namespace Blog.Web.Controllers
     [Authorize]
     public class AccountController : BaseController
     {
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
 
-        public AccountController(ILog log, UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+        public AccountController(ILog log, SignInManager<ApplicationUser> signInManager)
             : base(log)
         {
-            this.userManager = userManager;
             this.signInManager = signInManager;
         }
 

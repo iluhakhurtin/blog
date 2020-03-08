@@ -33,8 +33,8 @@ namespace Blog.Repositories.PostgreSQL
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue(":Id", image.Id);
-                    command.Parameters.AddWithValue(":OriginalFileId", image.Id);
-                    command.Parameters.AddWithValue(":PreviewFileId", image.Id);
+                    command.Parameters.AddWithValue(":OriginalFileId", image.OriginalFileId);
+                    command.Parameters.AddWithValue(":PreviewFileId", image.PreviewFileId);
 
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();

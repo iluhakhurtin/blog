@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Blog.Retrievers\Blog.Retrievers.csproj" />
+    <ProjectReference Include="..\Blog.Domain\Blog.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="4.1.2" />

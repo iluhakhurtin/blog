@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Blog.Retrievers.Article;
 using Npgsql;
+using Blog.Domain;
 
 namespace Blog.Retrievers.PostgreSQL
 {
@@ -160,7 +162,7 @@ namespace Blog.Retrievers.PostgreSQL
             return null;
         }
 
-        public async Task<IList<ArticleDataResult>> GetCategoryArticlesAsync(Guid categoryId)
+        public async Task<IList<ArticleDataResult>> GetCategoryArticlesAsync(Guid categoryId, IEnumerable<string> roles)
         {
             var result = new List<ArticleDataResult>();
 
@@ -187,12 +189,19 @@ namespace Blog.Retrievers.PostgreSQL
                                     FROM ""RecursiveCategories"" rc
                                     JOIN ""ArticleCategories"" ac ON ac.""CategoryId"" = rc.""Id""
                                     JOIN ""Articles"" a ON a.""Id"" = ac.""ArticleId""
+                                    LEFT JOIN ""ArticleRoles"" ar ON ar.""ArticleId"" = a.""Id""
+                                    LEFT JOIN ""AspNetRoles"" r ON r.""Id"" = ar.""RoleId""
+                                    WHERE r.""Name"" IS NULL OR r.""Name"" = ANY(:Roles)
                                     ORDER BY a.""Timestamp"", a.""Title""
                             ";
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("CategoryId", categoryId);
+
+                    var rolesParam = new NpgsqlParameter("Roles", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Text);
+                    rolesParam.Value = roles;
+                    command.Parameters.Add(rolesParam);
 
                     await connection.OpenAsync();
 
@@ -215,7 +224,7 @@ namespace Blog.Retrievers.PostgreSQL
             return result;
         }
 
-        public async Task<IList<ArticleDataResult>> FindArticlesAsync(string searchPattern)
+        public async Task<IList<ArticleDataResult>> FindArticlesAsync(string searchPattern, IEnumerable<string> roles)
         {
             var result = new List<ArticleDataResult>();
 
@@ -243,15 +252,24 @@ namespace Blog.Retrievers.PostgreSQL
                                     FROM ""RecursiveCategories"" rc
                                     JOIN ""ArticleCategories"" ac ON ac.""CategoryId"" = rc.""Id""
                                     JOIN ""Articles"" a ON a.""Id"" = ac.""ArticleId""
-                                    WHERE a.""Title"" ILIKE('%' || :SearchPattern || '%')
-                                        OR a.""Body"" ILIKE('%' || :SearchPattern || '%')
-                                        OR rc.""Name"" ILIKE('%' || :SearchPattern || '%')
+                                    LEFT JOIN ""ArticleRoles"" ar ON ar.""ArticleId"" = a.""Id""
+                                    LEFT JOIN ""AspNetRoles"" r ON r.""Id"" = ar.""RoleId""
+                                    WHERE (
+                                        (a.""Title"" ILIKE('%' || :SearchPattern || '%'))
+                                        OR (a.""Body"" ILIKE('%' || :SearchPattern || '%'))
+                                        OR (rc.""Name"" ILIKE('%' || :SearchPattern || '%'))
+                                    )
+                                    AND (r.""Name"" IS NULL OR r.""Name"" = ANY(:Roles))
                                     ORDER BY a.""Timestamp"", a.""Title""
                             ";
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("SearchPattern", searchPattern);
+
+                    var rolesParam = new NpgsqlParameter("Roles", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Text);
+                    rolesParam.Value = roles;
+                    command.Parameters.Add(rolesParam);
 
                     await connection.OpenAsync();
 
@@ -274,17 +292,20 @@ namespace Blog.Retrievers.PostgreSQL
             return result;
         }
 
-        public async Task<IList<ArticleDataResult>> GetLatestArticles(int count)
+        public async Task<IList<ArticleDataResult>> GetLatestArticles(int count, IEnumerable<string> roles)
         {
             var result = new List<ArticleDataResult>();
 
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
                 string sql = @"SELECT
-                                    ""Id"",
-                                    ""Title"",
-                                    ""CoverFileId""
-                                    FROM ""Articles""
+                                    a.""Id"",
+                                    a.""Title"",
+                                    a.""CoverFileId""
+                                    FROM ""Articles"" a
+                                    LEFT JOIN ""ArticleRoles"" ar ON ar.""ArticleId"" = a.""Id""
+                                    LEFT JOIN ""AspNetRoles"" r ON r.""Id"" = ar.""RoleId""
+                                    WHERE r.""Name"" IS NULL OR r.""Name"" = ANY(:Roles)
                                     ORDER BY ""Timestamp"" DESC
                                     LIMIT :Count
                             ";
@@ -292,6 +313,10 @@ namespace Blog.Retrievers.PostgreSQL
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("Count", count);
+
+                    var rolesParam = new NpgsqlParameter("Roles", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Text);
+                    rolesParam.Value = roles;
+                    command.Parameters.Add(rolesParam);
 
                     await connection.OpenAsync();
 

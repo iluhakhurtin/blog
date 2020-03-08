@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Blog.Domain;
 using Blog.Repositories;
 using Blog.Retrievers;
 using Blog.Retrievers.Article;
 using Blog.Web.Models.Articles;
 using log4net;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Blog.Web.Controllers
 {
-    public class SearchArticlesController : BaseController
+    public class SearchArticlesController : BaseUserManagerController
     {
         private readonly IArticlesRetriever articlesRetriever;
         private readonly ICategoriesRepository categoriesRepository;
 
-        public SearchArticlesController(ILog log, IRetrievers retrievers, IRepositories repositories)
-            : base(log)
+        public SearchArticlesController(ILog log, IRetrievers retrievers, IRepositories repositories, UserManager<ApplicationUser> userManager)
+            : base(log, userManager)
         {
             this.articlesRetriever = retrievers.ArticlesRetriever;
             this.categoriesRepository = repositories.CategoriesRepository;
@@ -36,7 +39,8 @@ namespace Blog.Web.Controllers
 
                 if (!String.IsNullOrEmpty(viewModel.SearchPattern))
                 {
-                    var articles = await this.articlesRetriever.FindArticlesAsync(viewModel.SearchPattern);
+                    var userRoles = await base.GetUserRoles();
+                    var articles = await this.articlesRetriever.FindArticlesAsync(viewModel.SearchPattern, userRoles);
                     viewModel.Articles.AddRange(articles);
                 }
 
@@ -55,8 +59,9 @@ namespace Blog.Web.Controllers
         {
             try
             {
+                var userRoles = await base.GetUserRoles();
                 var category = await this.categoriesRepository.GetAsync(id);
-                var articles = await this.articlesRetriever.GetCategoryArticlesAsync(id);
+                var articles = await this.articlesRetriever.GetCategoryArticlesAsync(id, userRoles);
                 var viewModel = new SearchArticlesViewModel(articles);
                 viewModel.SearchPattern = category.Name;
 

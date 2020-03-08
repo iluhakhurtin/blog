@@ -10,16 +10,18 @@ using log4net;
 using Blog.Retrievers;
 using Blog.Retrievers.Article;
 using Blog.Web.Models.Home;
+using Microsoft.AspNetCore.Identity;
+using Blog.Domain;
 
 namespace Blog.Web.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : BaseUserManagerController
     {
         private readonly IArticlesRetriever articlesRetriever;
 
 
-        public HomeController(ILog log, IRetrievers retrievers)
-            : base(log)
+        public HomeController(ILog log, IRetrievers retrievers, UserManager<ApplicationUser> userManager)
+            : base(log, userManager)
         {
             this.articlesRetriever = retrievers.ArticlesRetriever;
         }
@@ -29,9 +31,10 @@ namespace Blog.Web.Controllers
             try
             {
                 if (count == 0)
-                    count = 12;
+                    count = 24;
 
-                var articles = await this.articlesRetriever.GetLatestArticles(count);
+                var userRoles = await base.GetUserRoles();
+                var articles = await this.articlesRetriever.GetLatestArticles(count, userRoles);
                 var viewModel = new HomeViewModel(articles);
                 return View(viewModel);
             }
