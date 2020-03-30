@@ -7,12 +7,21 @@
     vertical-align: middle;
 }
 
-    .imageContainer td {
-        padding: 1px;
-    }
+.imageContainer td {
+    padding: 1px;
+}
 
 .image {
     width: 100%;
+}
+
+.imageDescriptionContainer {
+    padding-left: 10%;
+    text-align: left;
+}
+
+.imageDescriptionContainer > p {
+    font-size: 12pt;
 }
 
 .videoDescription,
