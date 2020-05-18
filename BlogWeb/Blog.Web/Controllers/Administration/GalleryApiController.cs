@@ -52,9 +52,12 @@ namespace Blog.Web.Controllers.Administration
         {
             try
             {
-                string imageId = null;
+                string smallFileName = null;
                 string previewFileName = null;
                 string originalFileName = null;
+                string articleTitle = null;
+                string description = null;
+
 
                 if (!String.IsNullOrEmpty(filters))
                 {

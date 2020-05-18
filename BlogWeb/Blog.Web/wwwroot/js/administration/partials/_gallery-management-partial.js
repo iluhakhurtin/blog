@@ -18,12 +18,28 @@
             datatype: "json",
             colModel: [
                 {
+                    label: 'SmallFileId',
+                    name: 'SmallFileId',
+                    width: 50,
+                    editable: true,
+                    editrules: { edithidden: true },
+                    hidden: true
+                },
+                {
                     label: 'Small',
                     name: 'Small',
                     width: 50,
                     editable: true,
                     formatter: this.formatImage,
                     unformat: this.unformatImage
+                },
+                {
+                    label: 'ImageId',
+                    name: 'ImageId',
+                    width: 50,
+                    editable: true,
+                    editrules: { edithidden: true },
+                    hidden: true
                 },
                 {
                     label: 'Preview',
@@ -40,6 +56,14 @@
                     editable: true,
                     formatter: this.formatImage,
                     unformat: this.unformatImage
+                },
+                {
+                    label: 'ArticleId',
+                    name: 'ArticleId',
+                    width: 50,
+                    editable: true,
+                    editrules: { edithidden: true },
+                    hidden: true
                 },
                 {
                     label: 'Article',
@@ -71,10 +95,8 @@
             viewrecords: true,
             hoverrows: true,
             rowNum: 10,
-            caption: 'Фотогаллерея',
+            caption: 'Управление фотогаллереей',
             sortable: true,
-            //altRows: true, This does not work in boostrarap
-            //altclass: '....'
             pager: this.pagerID,
             editurl: this.apiUrl
         });
@@ -93,7 +115,7 @@
             },
             // options for the Edit Dialog
             {
-                editCaption: "Статьи",
+                editCaption: "Фото",
                 closeAfterEdit: true,
                 reloadAfterSubmit: true,
                 recreateForm: true
@@ -120,7 +142,8 @@
 
     this.formatImage = function (cellvalue, options, rowobject) {
         return '<a href="/File/Index/' + cellvalue + '" target="_blank" class="image-cell">'
-            + cellvalue
+            + '<img src="/File/Thumbnail/' + cellvalue + '" />'
+            + '<span>' + cellvalue + '</span>'
             + '</a>';
     };
 

@@ -9,5 +9,6 @@
     <Folder Include="User\" />
     <Folder Include="Article\" />
     <Folder Include="File\" />
+    <Folder Include="Gallery\" />
   </ItemGroup>
 </Project>
