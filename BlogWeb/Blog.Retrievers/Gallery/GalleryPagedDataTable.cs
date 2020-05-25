@@ -11,6 +11,10 @@ namespace Blog.Retrievers.Gallery
         public const string PreviewFileName = "PreviewFileName";
         public const string OriginalFileId = "OriginalFileId";
         public const string OriginalFileName = "OriginalFileName";
+        public const string ArticleId = "ArticleId";
+        public const string ArticleTitle = "ArticleTitle";
+        public const string Description = "Description";
+        public const string Timestamp = "Timestamp";
 
         public GalleryPagedDataTable(int pageNumber, int pageSize)
             : base(pageNumber, pageSize)
@@ -39,6 +43,18 @@ namespace Blog.Retrievers.Gallery
             base.Columns.Add(column);
 
             column = new DataColumn(OriginalFileName, typeof(string));
+            base.Columns.Add(column);
+
+            column = new DataColumn(ArticleId, typeof(string));
+            base.Columns.Add(column);
+
+            column = new DataColumn(ArticleTitle, typeof(string));
+            base.Columns.Add(column);
+
+            column = new DataColumn(Description, typeof(string));
+            base.Columns.Add(column);
+
+            column = new DataColumn(Timestamp, typeof(string));
             base.Columns.Add(column);
         }
     }

@@ -7,6 +7,7 @@ using Blog.Repositories;
 using Blog.Retrievers;
 using Blog.Retrievers.Article;
 using Blog.Retrievers.File;
+using Blog.Retrievers.Gallery;
 using Blog.Retrievers.Image;
 using Blog.Services;
 using Blog.Web.Models.jqGrid;
@@ -22,9 +23,7 @@ namespace Blog.Web.Controllers.Administration
     [Route("api/Administration/GalleryApi")]
     public class GalleryApiController : BaseApiAdministrationController
     {
-        private readonly IImagesRetriever imagesRetriever;
-        private readonly IImagesService imagesService;
-        private readonly IImagesRepository imagesRepository;
+        private readonly IGalleryRetriever galleryRetriever;
 
         public GalleryApiController(
             ILog log,
@@ -33,9 +32,7 @@ namespace Blog.Web.Controllers.Administration
             IRepositories repositories)
             : base(log)
         {
-            this.imagesRetriever = retrievers.ImagesRetriever;
-            this.imagesService = services.ImagesService;
-            this.imagesRepository = repositories.ImagesRepository;
+            this.galleryRetriever = retrievers.GalleryRetriever;
         }
 
         // GET: api/GalleryApi
@@ -62,15 +59,19 @@ namespace Blog.Web.Controllers.Administration
                 if (!String.IsNullOrEmpty(filters))
                 {
                     jqGridFilter filter = JsonConvert.DeserializeObject<jqGridFilter>(filters);
-                    imageId = filter.GetFilterByFieldName(ImagesPagedDataTable.Id);
-                    previewFileName = filter.GetFilterByFieldName(ImagesPagedDataTable.PreviewFileName);
-                    originalFileName = filter.GetFilterByFieldName(ImagesPagedDataTable.OriginalFileName);
+                    smallFileName = filter.GetFilterByFieldName(GalleryPagedDataTable.SmallFileName);
+                    previewFileName = filter.GetFilterByFieldName(GalleryPagedDataTable.PreviewFileName);
+                    originalFileName = filter.GetFilterByFieldName(GalleryPagedDataTable.OriginalFileName);
+                    articleTitle = filter.GetFilterByFieldName(GalleryPagedDataTable.ArticleTitle);
+                    description = filter.GetFilterByFieldName(GalleryPagedDataTable.Description);
                 }
 
-                var pagedDataTable = await this.imagesRetriever.GetImagesPagedAsync(
-                    imageId,
+                var pagedDataTable = await this.galleryRetriever.GetGalleryPagedAsync(
+                    smallFileName,
                     previewFileName,
                     originalFileName,
+                    articleTitle,
+                    description,
                     sidx,
                     sord,
                     page,
@@ -94,13 +95,13 @@ namespace Blog.Web.Controllers.Administration
             }
         }
 
-        // POST: api/ImagesApi
+        // POST: api/GalleryApi
         [HttpPost]
         public async Task<HttpResponseMessage> Post(
             [FromForm]string id,
             [FromForm]string oper,
-            [FromForm] string previewFileId,
-            [FromForm] string originalFileId)
+            [FromForm]string previewFileId,
+            [FromForm]string originalFileId)
         {
 
             try
@@ -129,16 +130,17 @@ namespace Blog.Web.Controllers.Administration
 
         private async Task<HttpResponseMessage> AddImage(string previewFileId, string originalFileId)
         {
-            var error = await this.imagesService.AddImage(previewFileId, originalFileId);
+            throw new NotImplementedException();
+            //var error = await this.imagesService.AddImage(previewFileId, originalFileId);
 
-            if (!String.IsNullOrEmpty(error))
-            {
-                var errorResponseMessage = base.CreateErrorResponseMessage(error);
-                return await Task.FromResult(errorResponseMessage);
-            }
+            //if (!String.IsNullOrEmpty(error))
+            //{
+            //    var errorResponseMessage = base.CreateErrorResponseMessage(error);
+            //    return await Task.FromResult(errorResponseMessage);
+            //}
 
-            var okResponseMessage = base.CreateOkResponseMessage();
-            return await Task.FromResult(okResponseMessage);
+            //var okResponseMessage = base.CreateOkResponseMessage();
+            //return await Task.FromResult(okResponseMessage);
         }
 
         private async Task<HttpResponseMessage> EditImage(
@@ -146,25 +148,27 @@ namespace Blog.Web.Controllers.Administration
             string previewFileId,
             string originalFileId)
         {
-            var error = await this.imagesService.EditImage(id, previewFileId, originalFileId);
+            throw new NotImplementedException();
+            //var error = await this.imagesService.EditImage(id, previewFileId, originalFileId);
 
-            if (!String.IsNullOrEmpty(error))
-            {
-                var errorResponseMessage = base.CreateErrorResponseMessage(error);
-                return await Task.FromResult(errorResponseMessage);
-            }
+            //if (!String.IsNullOrEmpty(error))
+            //{
+            //    var errorResponseMessage = base.CreateErrorResponseMessage(error);
+            //    return await Task.FromResult(errorResponseMessage);
+            //}
 
-            var okResponseMessage = base.CreateOkResponseMessage();
-            return await Task.FromResult(okResponseMessage);
+            //var okResponseMessage = base.CreateOkResponseMessage();
+            //return await Task.FromResult(okResponseMessage);
         }
 
         private async Task<HttpResponseMessage> DeleteImage(string id)
         {
-            var fileId = Guid.Parse(id);
-            await this.imagesRepository.DeleteAsync(fileId);
+            throw new NotImplementedException();
+            //var fileId = Guid.Parse(id);
+            //await this.imagesRepository.DeleteAsync(fileId);
 
-            var httpResponseMessage = base.CreateOkResponseMessage();
-            return await Task.FromResult(httpResponseMessage);
+            //var httpResponseMessage = base.CreateOkResponseMessage();
+            //return await Task.FromResult(httpResponseMessage);
         }
     }
 }

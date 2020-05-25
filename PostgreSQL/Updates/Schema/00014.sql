@@ -4,7 +4,7 @@ CREATE TABLE "Gallery"
     "ImageId"       		uuid NOT NULL,
 	"SmallPreviewFileId"	uuid NOT NULL,
     "ArticleId"     		uuid NULL,
-    "Description"   		uuid NULL,
+    "Description"   		text NULL,
     "Timestamp"     		timestamp NOT NULL,
     CONSTRAINT "PK_Gallery" PRIMARY KEY ("Id")
 )

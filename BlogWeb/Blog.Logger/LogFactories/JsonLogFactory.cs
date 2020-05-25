@@ -17,6 +17,7 @@ namespace Blog.Logger.LogFactories
     {
         private string fileName;
         private string fileFolderPath;
+        private IConfigurationRoot configurationRoot;
 
         public JsonLogFactory()
         {
@@ -30,11 +31,18 @@ namespace Blog.Logger.LogFactories
             this.fileName = configFileName;
         }
 
+        public JsonLogFactory(IConfigurationRoot configurationRoot)
+        {
+            this.configurationRoot = configurationRoot;
+        }
+
         public ILog GetLog()
         {
-            IConfigurationRoot configurationRoot = this.GetConfigurationRoot(this.fileFolderPath, this.fileName);
-            IConfigurationSection log4netSection = this.GetLog4NetConfigurationSection(configurationRoot);
-            IEnumerable<AppenderSkeleton> appenders = this.GetAppenders(configurationRoot, log4netSection);
+            if(this.configurationRoot == null)
+                this.configurationRoot = this.GetConfigurationRoot(this.fileFolderPath, this.fileName);
+
+            IConfigurationSection log4netSection = this.GetLog4NetConfigurationSection(this.configurationRoot);
+            IEnumerable<AppenderSkeleton> appenders = this.GetAppenders(this.configurationRoot, log4netSection);
             IConfigurationSection loggerSection = this.GetLoggerSection(log4netSection);
 
             IConfigurationSection name = loggerSection.GetSection("name");

@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SanaLive.Service.DbConnections;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Blog.Domain;
@@ -39,22 +38,28 @@ namespace Blog.Web
         {
             serviceCollection.AddControllersWithViews();
 
-            IDbConnections dbConnections = new JsonDbConnections();
-            serviceCollection.AddSingleton<IDbConnections>(dbConnections);
+            IConfigurationService configurationService = new ConfigurationService();
+            serviceCollection.AddSingleton<IConfigurationService>(configurationService);
 
-            this.InitIdentity(serviceCollection, dbConnections.BlogConnectionString);
+            this.InitIdentity(serviceCollection, configurationService.BlogConnectionString);
 
-            IRepositories repositories = this.BuildRepositories(dbConnections.BlogConnectionString);
+            IRepositories repositories = this.BuildRepositories(configurationService.BlogConnectionString);
             serviceCollection.AddSingleton<IRepositories>(repositories);
 
-            IRetrievers retrievers = this.BuildRetrievers(dbConnections.BlogConnectionString);
+            IRetrievers retrievers = this.BuildRetrievers(configurationService.BlogConnectionString);
             serviceCollection.AddSingleton<IRetrievers>(retrievers);
 
-            ILog log = this.BuildLog();
+            ILog log = this.BuildLog(configurationService.ConfigurationRoot);
             serviceCollection.AddSingleton<ILog>(log);
 
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            RoleManager<ApplicationRole> roleManager = null;
+            foreach (var item in serviceCollection)
+            {
+                if(item.ServiceType == typeof(RoleManager<ApplicationRole>))
+                {
+                    roleManager = (RoleManager<ApplicationRole>)item.ImplementationInstance;
+                }
+            }
             IServices services = this.BuildServices(repositories, retrievers, roleManager);
             serviceCollection.AddSingleton<IServices>(services);
         }
@@ -115,9 +120,9 @@ namespace Blog.Web
             return retrievers;
         }
 
-        private ILog BuildLog()
+        private ILog BuildLog(IConfigurationRoot configurationRoot)
         {
-            var logFactory = new JsonLogFactory();
+            var logFactory = new JsonLogFactory(configurationRoot);
             ILog log = logFactory.GetLog();
             return log;
         }

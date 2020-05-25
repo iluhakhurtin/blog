@@ -98,7 +98,7 @@ namespace Blog.Retrievers.PostgreSQL
                                 dataReader[FilesPagedDataTable.Name],
                                 dataReader[FilesPagedDataTable.Extension],
                                 dataReader[FilesPagedDataTable.MimeType],
-                                timestamp);
+                                timestampStr);
                         }
                     }
                 }

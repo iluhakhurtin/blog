@@ -156,7 +156,7 @@ namespace Blog.Retrievers.PostgreSQL.Tests.Article
 
             await this.articleCategoriesRepository.AddAsync(article3Category1);
 
-            var actual = await this.articlesRetriever.GetCategoryArticlesAsync(category2.Id);
+            var actual = await this.articlesRetriever.GetCategoryArticlesAsync(category2.Id, null);
 
             Assert.Equal(2, actual.Count);
             Assert.Equal(article1.Id, actual[0].Id);

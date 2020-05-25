@@ -26,8 +26,8 @@
                     hidden: true
                 },
                 {
-                    label: 'Small',
-                    name: 'Small',
+                    label: 'Small File',
+                    name: 'SmallFileName',
                     width: 50,
                     editable: true,
                     formatter: this.formatImage,
@@ -42,16 +42,16 @@
                     hidden: true
                 },
                 {
-                    label: 'Preview',
-                    name: 'Preview',
+                    label: 'Preview File',
+                    name: 'PreviewFileName',
                     width: 50,
                     editable: true,
                     formatter: this.formatImage,
                     unformat: this.unformatImage
                 },
                 {
-                    label: 'Original',
-                    name: 'Original',
+                    label: 'Original File',
+                    name: 'OriginalFileName',
                     width: 50,
                     editable: true,
                     formatter: this.formatImage,
@@ -67,7 +67,7 @@
                 },
                 {
                     label: 'Article',
-                    name: 'Article',
+                    name: 'ArticleTitle',
                     width: 35,
                     editable: true
                 },
