@@ -23,28 +23,34 @@ namespace Blog.Retrievers.PostgreSQL
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
                 string sql = @"SELECT
-	                                COUNT(1) OVER()		AS ""ResultsCount"",
-	                                sf.""Id""           AS ""SmallFileId"",
-	                                sf.""Name""         AS ""SmallFileName"",
-	                                pf.""Id""           AS ""PreviewFileId"",
-	                                pf.""Name""         AS ""PreviewFileName"",
-	                                of.""Id""           AS ""OriginalFileId"",
-	                                of.""Name""         AS ""OriginalFileName"",
-	                                a.""Id""            AS ""ArticleId"",
-	                                a.""Title""         AS ""ArticleTitle"",
-	                                g.""Description""   AS ""Description"",
-	                                g.""Timestamp""     AS ""Timestamp""
-	                                FROM ""Gallery"" g
-	                                LEFT JOIN ""Files"" sf ON sf.""Id"" = g.""SmallPreviewFileId""
-	                                LEFT JOIN ""Images"" i ON i.""Id"" = g.""ImageId""
-	                                LEFT JOIN ""Files"" pf ON pf.""Id"" = i.""PreviewFileId""
-	                                LEFT JOIN ""Files"" of ON of.""Id"" = i.""OriginalFileId""
-	                                LEFT JOIN ""Articles"" a ON a.""Id"" = g.""ArticleId""
-                                    WHERE :SmallFileNameFilter IS NULL OR sf.""Name"" ILIKE('%' || :SmallFileNameFilter || '%')
-                                        AND :PreviewFileNameFilter IS NULL OR pf.""Name"" ILIKE('%' || :PreviewFileNameFilter || '%')
-                                        AND :OriginalFileNameFilter IS NULL OR of.""Name"" ILIKE('%' || :OriginalFileNameFilter || '%')
-                                        AND :ArticleTitleFilter IS NULL OR a.""Title"" ILIKE('%' || :ArticleTitleFilter || '%')
-                                        AND :DescriptionFilter IS NULL OR g.""Description"" ILIKE('%' || :DescriptionFilter || '%')
+                                    *
+                                    FROM
+                                    (
+                                        SELECT
+	                                        COUNT(1) OVER()		AS ""ResultsCount"",
+                                            g.""Id""            AS ""Id"",
+	                                        sf.""Id""           AS ""SmallFileId"",
+	                                        sf.""Name""         AS ""SmallFileName"",
+	                                        pf.""Id""           AS ""PreviewFileId"",
+	                                        pf.""Name""         AS ""PreviewFileName"",
+	                                        of.""Id""           AS ""OriginalFileId"",
+	                                        of.""Name""         AS ""OriginalFileName"",
+	                                        a.""Id""            AS ""ArticleId"",
+	                                        a.""Title""         AS ""ArticleTitle"",
+	                                        g.""Description""   AS ""Description"",
+	                                        g.""Timestamp""     AS ""Timestamp""
+	                                        FROM ""Gallery"" g
+	                                        LEFT JOIN ""Files"" sf ON sf.""Id"" = g.""SmallPreviewFileId""
+	                                        LEFT JOIN ""Images"" i ON i.""Id"" = g.""ImageId""
+	                                        LEFT JOIN ""Files"" pf ON pf.""Id"" = i.""PreviewFileId""
+	                                        LEFT JOIN ""Files"" of ON of.""Id"" = i.""OriginalFileId""
+	                                        LEFT JOIN ""Articles"" a ON a.""Id"" = g.""ArticleId""
+                                            WHERE :SmallFileNameFilter IS NULL OR sf.""Name"" ILIKE('%' || :SmallFileNameFilter || '%')
+                                                AND :PreviewFileNameFilter IS NULL OR pf.""Name"" ILIKE('%' || :PreviewFileNameFilter || '%')
+                                                AND :OriginalFileNameFilter IS NULL OR of.""Name"" ILIKE('%' || :OriginalFileNameFilter || '%')
+                                                AND :ArticleTitleFilter IS NULL OR a.""Title"" ILIKE('%' || :ArticleTitleFilter || '%')
+                                                AND :DescriptionFilter IS NULL OR g.""Description"" ILIKE('%' || :DescriptionFilter || '%')
+                                    ) AS Result
                                     ORDER BY
                                         CASE
                                             WHEN :SortOrder = 'desc' THEN
