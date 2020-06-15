@@ -42,23 +42,19 @@
                 {
                     label: 'PreviewFileId',
                     name: 'PreviewFileId',
-                    editable: true,
-                    editrules: { edithidden: true },
                     hidden: true
                 },
                 {
                     label: 'Preview File',
                     name: 'PreviewFileName',
                     width: 50,
-                    editable: true,
+                    editable: false,
                     formatter: utils.bind(this, this.formatPreviewFile),
                     unformat: utils.bind(this, this.unformatImage)
                 },
                 {
                     label: 'OriginalFileId',
                     name: 'OriginalFileId',
-                    editable: true,
-                    editrules: { edithidden: true },
                     hidden: true
                 },
                 {
@@ -81,6 +77,7 @@
                     name: 'ArticleTitle',
                     width: 80,
                     editable: true,
+                    formatter: utils.bind(this, this.formatArticleTitle),
                     //word wrap
                     cellattr: function (rowId, tv, rawObject, cm, rdata) {
                         return 'style="white-space: normal;"';
@@ -189,6 +186,15 @@
             + '<img src="/File/Thumbnail/' + fileId + '" />'
             + '<span>' + fileName + '</span>'
             + '</a>';
+    };
+
+    this.formatArticleTitle = function (cellvalue, options, rowobject) {
+        var articleId = rowobject[7];
+        var articleTitle = rowobject[8];
+        var value = '<a href="/Article/Index/' + articleId + '" target="_blank" class="image-cell">'
+            + articleTitle
+            + '</a>';
+        return value;
     };
 
     //- Methods
