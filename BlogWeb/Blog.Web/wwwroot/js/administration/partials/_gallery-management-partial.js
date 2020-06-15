@@ -20,7 +20,6 @@
                 {
                     label: 'SmallFileId',
                     name: 'SmallFileId',
-                    width: 50,
                     editable: true,
                     editrules: { edithidden: true },
                     hidden: true
@@ -30,13 +29,19 @@
                     name: 'SmallFileName',
                     width: 50,
                     editable: true,
-                    formatter: this.formatImage,
-                    unformat: this.unformatImage
+                    formatter: utils.bind(this, this.formatSmallFile),
+                    unformat: utils.bind(this, this.unformatImage)
                 },
                 {
                     label: 'ImageId',
                     name: 'ImageId',
-                    width: 50,
+                    editable: true,
+                    editrules: { edithidden: true },
+                    hidden: true
+                },
+                {
+                    label: 'PreviewFileId',
+                    name: 'PreviewFileId',
                     editable: true,
                     editrules: { edithidden: true },
                     hidden: true
@@ -46,21 +51,27 @@
                     name: 'PreviewFileName',
                     width: 50,
                     editable: true,
-                    formatter: this.formatImage,
-                    unformat: this.unformatImage
+                    formatter: utils.bind(this, this.formatPreviewFile),
+                    unformat: utils.bind(this, this.unformatImage)
+                },
+                {
+                    label: 'OriginalFileId',
+                    name: 'OriginalFileId',
+                    editable: true,
+                    editrules: { edithidden: true },
+                    hidden: true
                 },
                 {
                     label: 'Original File',
                     name: 'OriginalFileName',
                     width: 50,
                     editable: true,
-                    formatter: this.formatImage,
-                    unformat: this.unformatImage
+                    formatter: utils.bind(this, this.formatOriginalFile),
+                    unformat: utils.bind(this, this.unformatImage)
                 },
                 {
                     label: 'ArticleId',
                     name: 'ArticleId',
-                    width: 50,
                     editable: true,
                     editrules: { edithidden: true },
                     hidden: true
@@ -68,14 +79,22 @@
                 {
                     label: 'Article',
                     name: 'ArticleTitle',
-                    width: 35,
-                    editable: true
+                    width: 80,
+                    editable: true,
+                    //word wrap
+                    cellattr: function (rowId, tv, rawObject, cm, rdata) {
+                        return 'style="white-space: normal;"';
+                    }
                 },
                 {
                     label: 'Description',
                     name: 'Description',
-                    width: 50,
-                    editable: true
+                    width: 80,
+                    editable: true,
+                    //word wrap
+                    cellattr: function (rowId, tv, rawObject, cm, rdata) {
+                        return 'style="white-space: normal;"';
+                    }
                 },
                 {
                     label: 'Timestamp',
@@ -95,7 +114,7 @@
             viewrecords: true,
             hoverrows: true,
             rowNum: 10,
-            caption: 'Управление фотогаллереей',
+            caption: 'Управление фотогалереей',
             sortable: true,
             pager: this.pagerID,
             editurl: this.apiUrl
@@ -140,15 +159,36 @@
         );
     };
 
-    this.formatImage = function (cellvalue, options, rowobject) {
-        return '<a href="/File/Index/' + cellvalue + '" target="_blank" class="image-cell">'
-            + '<img src="/File/Thumbnail/' + cellvalue + '" />'
-            + '<span>' + cellvalue + '</span>'
-            + '</a>';
+    this.formatSmallFile = function (cellvalue, options, rowobject) {
+        var fileId = rowobject[0];
+        var fileName = rowobject[1];
+        var value = this.formatImageCell(fileId, fileName);
+        return value;
+    };
+
+    this.formatPreviewFile = function (cellvalue, options, rowobject) {
+        var fileId = rowobject[3];
+        var fileName = rowobject[4];
+        var value = this.formatImageCell(fileId, fileName);
+        return value;
+    };
+
+    this.formatOriginalFile = function (cellvalue, options, rowobject) {
+        var fileId = rowobject[5];
+        var fileName = rowobject[6];
+        var value = this.formatImageCell(fileId, fileName);
+        return value;
     };
 
     this.unformatImage = function (cellvalue, options, elem) {
         return cellvalue;
+    };
+
+    this.formatImageCell = function (fileId, fileName) {
+        return '<a href="/File/Index/' + fileId + '" target="_blank" class="image-cell">'
+            + '<img src="/File/Thumbnail/' + fileId + '" />'
+            + '<span>' + fileName + '</span>'
+            + '</a>';
     };
 
     //- Methods

@@ -7,6 +7,7 @@ namespace Blog.Retrievers.Gallery
     {
         public const string SmallFileId = "SmallFileId";
         public const string SmallFileName = "SmallFileName";
+        public const string ImageId = "ImageId";
         public const string PreviewFileId = "PreviewFileId";
         public const string PreviewFileName = "PreviewFileName";
         public const string OriginalFileId = "OriginalFileId";
@@ -27,19 +28,22 @@ namespace Blog.Retrievers.Gallery
             DataColumn column = new DataColumn(Id, typeof(Guid));
             base.Columns.Add(column);
 
-            column = new DataColumn(SmallFileId, typeof(string));
+            column = new DataColumn(SmallFileId, typeof(Guid));
             base.Columns.Add(column);
 
             column = new DataColumn(SmallFileName, typeof(string));
             base.Columns.Add(column);
 
-            column = new DataColumn(PreviewFileId, typeof(string));
+            column = new DataColumn(ImageId, typeof(Guid));
+            base.Columns.Add(column);
+
+            column = new DataColumn(PreviewFileId, typeof(Guid));
             base.Columns.Add(column);
 
             column = new DataColumn(PreviewFileName, typeof(string));
             base.Columns.Add(column);
 
-            column = new DataColumn(OriginalFileId, typeof(string));
+            column = new DataColumn(OriginalFileId, typeof(Guid));
             base.Columns.Add(column);
 
             column = new DataColumn(OriginalFileName, typeof(string));

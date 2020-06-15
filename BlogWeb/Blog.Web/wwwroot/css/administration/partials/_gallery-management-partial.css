@@ -1,0 +1,13 @@
+﻿.gallery-management .image-cell {
+    display: block;
+    text-align: center;
+}
+
+.gallery-management .image-cell img {
+    width: 100px;
+    display: inline-block;
+}
+
+.gallery-management .image-cell span {
+    display: block;
+}
