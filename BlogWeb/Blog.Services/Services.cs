@@ -14,8 +14,9 @@ namespace Blog.Services
         ICategoriesService CategoriesService { get; }
         IArticlesService ArticlesService { get; }
         IFilesService FilesService { get; }
+        IGalleryService GalleryService { get; }
     }
-    
+
     public class Services : IServices
     {
         public IStringService StringService { get; private set; }
@@ -24,6 +25,7 @@ namespace Blog.Services
         public ICategoriesService CategoriesService { get; private set; }
         public IArticlesService ArticlesService { get; private set; }
         public IFilesService FilesService { get; private set; }
+        public IGalleryService GalleryService { get; private set; }
 
         public Services(IRepositories repositories,
             IRetrievers retrievers,
@@ -34,6 +36,7 @@ namespace Blog.Services
             this.ImagesService = new ImagesService(repositories);
             this.CategoriesService = new CategoriesService(repositories);
             this.FilesService = new FilesService(repositories);
+            this.GalleryService = new GalleryService(repositories);
             this.ArticlesService =
                 new ArticlesService(repositories, this.StringService, this.RolesService, roleManager);
         }

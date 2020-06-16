@@ -9,5 +9,6 @@ namespace Blog.Repositories
         public IArticleRolesRepository ArticleRolesRepository { get; }
         public IArticleCategoriesRepository ArticleCategoriesRepository { get; }
         public IImagesRepository ImagesRepository { get; }
+        public IGalleryRepository GalleryRepository { get; }
     }
 }

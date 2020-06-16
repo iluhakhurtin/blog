@@ -24,6 +24,8 @@ namespace Blog.Web.Controllers.Administration
     public class GalleryApiController : BaseApiAdministrationController
     {
         private readonly IGalleryRetriever galleryRetriever;
+        private readonly IGalleryRepository galleryRepository;
+        private readonly IGalleryService galleryService;
 
         public GalleryApiController(
             ILog log,
@@ -32,7 +34,9 @@ namespace Blog.Web.Controllers.Administration
             IRepositories repositories)
             : base(log)
         {
+            this.galleryService = services.GalleryService;
             this.galleryRetriever = retrievers.GalleryRetriever;
+            this.galleryRepository = repositories.GalleryRepository;
         }
 
         // GET: api/GalleryApi
@@ -100,8 +104,10 @@ namespace Blog.Web.Controllers.Administration
         public async Task<HttpResponseMessage> Post(
             [FromForm]string id,
             [FromForm]string oper,
-            [FromForm]string previewFileId,
-            [FromForm]string originalFileId)
+            [FromForm] string smallFileId,
+            [FromForm]string imageId,
+            [FromForm]string articleId,
+            [FromForm]string description)
         {
 
             try
@@ -109,13 +115,13 @@ namespace Blog.Web.Controllers.Administration
                 switch (oper)
                 {
                     case jqGridActions.Add:
-                        return await this.AddImage(previewFileId, originalFileId);
+                        return await this.AddGalleryItem(smallFileId, imageId, articleId, description);
 
                     case jqGridActions.Edit:
-                        return await this.EditImage(id, previewFileId, originalFileId);
+                        return await this.EditGalleryItem(id, smallFileId, imageId, articleId, description);
 
                     case jqGridActions.Delete:
-                        return await this.DeleteImage(id);
+                        return await this.DeleteGalleryItem(id);
                 }
             }
             catch (Exception ex)
@@ -128,47 +134,50 @@ namespace Blog.Web.Controllers.Administration
             return base.CreateErrorResponseMessage("Not implemented");
         }
 
-        private async Task<HttpResponseMessage> AddImage(string previewFileId, string originalFileId)
+        private async Task<HttpResponseMessage> AddGalleryItem(
+            string smallFileId,
+            string imageId,
+            string articleId,
+            string description)
         {
-            throw new NotImplementedException();
-            //var error = await this.imagesService.AddImage(previewFileId, originalFileId);
+            var error = await this.galleryService.AddGalleryItem(smallFileId, imageId, articleId, description);
 
-            //if (!String.IsNullOrEmpty(error))
-            //{
-            //    var errorResponseMessage = base.CreateErrorResponseMessage(error);
-            //    return await Task.FromResult(errorResponseMessage);
-            //}
+            if (!String.IsNullOrEmpty(error))
+            {
+                var errorResponseMessage = base.CreateErrorResponseMessage(error);
+                return await Task.FromResult(errorResponseMessage);
+            }
 
-            //var okResponseMessage = base.CreateOkResponseMessage();
-            //return await Task.FromResult(okResponseMessage);
+            var okResponseMessage = base.CreateOkResponseMessage();
+            return await Task.FromResult(okResponseMessage);
         }
 
-        private async Task<HttpResponseMessage> EditImage(
+        private async Task<HttpResponseMessage> EditGalleryItem(
             string id,
-            string previewFileId,
-            string originalFileId)
+            string smallFileId,
+            string imageId,
+            string articleId,
+            string description)
         {
-            throw new NotImplementedException();
-            //var error = await this.imagesService.EditImage(id, previewFileId, originalFileId);
+            var error = await this.galleryService.EditGalleryItem(id, smallFileId, imageId, articleId, description);
 
-            //if (!String.IsNullOrEmpty(error))
-            //{
-            //    var errorResponseMessage = base.CreateErrorResponseMessage(error);
-            //    return await Task.FromResult(errorResponseMessage);
-            //}
+            if (!String.IsNullOrEmpty(error))
+            {
+                var errorResponseMessage = base.CreateErrorResponseMessage(error);
+                return await Task.FromResult(errorResponseMessage);
+            }
 
-            //var okResponseMessage = base.CreateOkResponseMessage();
-            //return await Task.FromResult(okResponseMessage);
+            var okResponseMessage = base.CreateOkResponseMessage();
+            return await Task.FromResult(okResponseMessage);
         }
 
-        private async Task<HttpResponseMessage> DeleteImage(string id)
+        private async Task<HttpResponseMessage> DeleteGalleryItem(string id)
         {
-            throw new NotImplementedException();
-            //var fileId = Guid.Parse(id);
-            //await this.imagesRepository.DeleteAsync(fileId);
+            var galleryItemId = Guid.Parse(id);
+            await this.galleryRepository.DeleteAsync(galleryItemId);
 
-            //var httpResponseMessage = base.CreateOkResponseMessage();
-            //return await Task.FromResult(httpResponseMessage);
+            var httpResponseMessage = base.CreateOkResponseMessage();
+            return await Task.FromResult(httpResponseMessage);
         }
     }
 }

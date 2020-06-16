@@ -28,7 +28,7 @@
                     label: 'Small File',
                     name: 'SmallFileName',
                     width: 50,
-                    editable: true,
+                    editable: false,
                     formatter: utils.bind(this, this.formatSmallFile),
                     unformat: utils.bind(this, this.unformatImage)
                 },
@@ -61,7 +61,7 @@
                     label: 'Original File',
                     name: 'OriginalFileName',
                     width: 50,
-                    editable: true,
+                    editable: false,
                     formatter: utils.bind(this, this.formatOriginalFile),
                     unformat: utils.bind(this, this.unformatImage)
                 },
@@ -76,7 +76,7 @@
                     label: 'Article',
                     name: 'ArticleTitle',
                     width: 80,
-                    editable: true,
+                    editable: false,
                     formatter: utils.bind(this, this.formatArticleTitle),
                     //word wrap
                     cellattr: function (rowId, tv, rawObject, cm, rdata) {
@@ -91,7 +91,9 @@
                     //word wrap
                     cellattr: function (rowId, tv, rawObject, cm, rdata) {
                         return 'style="white-space: normal;"';
-                    }
+                    },
+                    edittype: 'textarea',
+                    editoptions: { cols: 42, rows: 10 }
                 },
                 {
                     label: 'Timestamp',
