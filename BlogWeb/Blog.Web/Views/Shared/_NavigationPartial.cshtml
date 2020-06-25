@@ -15,6 +15,9 @@
             <a class="nav-link" asp-area="" asp-controller="SearchArticles" asp-action="Search">Поиск</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" asp-area="" asp-controller="PhotoGallery" asp-action="Index">Фотогалерея</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" asp-area="" asp-controller="About" asp-action="Index">Описание</a>
         </li>
         @if (User.IsInRole(ApplicationRole.Administrator))

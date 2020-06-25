@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+
 namespace Blog.Domain
 {
     public class GalleryItem : IdEntity<Guid>
@@ -49,6 +51,20 @@ namespace Blog.Domain
         {
             base.Id = Guid.NewGuid();
             this.Timestamp = DateTime.Now;
+        }
+
+        public GalleryItem(IDataReader dataReader)
+        {
+            this.Id = (Guid)dataReader["Id"];
+            this.ImageId = (Guid)dataReader["ImageId"];
+            this.SmallPreviewFileId = (Guid)dataReader["SmallPreviewFileId"];
+
+            var articleId = dataReader["ArticleId"];
+            if (articleId != DBNull.Value)
+                this.ArticleId = (Guid)articleId;
+
+            this.Description = (string)dataReader["Description"];
+            this.Timestamp = (DateTime)dataReader["Timestamp"];
         }
     }
 }

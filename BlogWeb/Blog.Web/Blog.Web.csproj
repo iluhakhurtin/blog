@@ -54,6 +54,8 @@
     <Folder Include="Models\Home\" />
     <Folder Include="wwwroot\css\home\" />
     <Folder Include="Views\About\" />
+    <Folder Include="Views\PhotoGallery\" />
+    <Folder Include="Models\PhotoGallery\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />

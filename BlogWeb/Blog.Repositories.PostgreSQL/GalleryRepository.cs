@@ -100,6 +100,7 @@ namespace Blog.Repositories.PostgreSQL
             {
                 string sql = String.Format(@"
                     SELECT
+                        ""Id"",
                         ""ImageId"",
                         ""SmallPreviewFileId"",
                         ""ArticleId"",
@@ -119,18 +120,7 @@ namespace Blog.Repositories.PostgreSQL
                     {
                         if (await dataReader.ReadAsync())
                         {
-                            var galleryItem = new GalleryItem();
-                            galleryItem.Id = id;
-                            galleryItem.ImageId = (Guid)dataReader["ImageId"];
-                            galleryItem.SmallPreviewFileId = (Guid)dataReader["SmallPreviewFileId"];
-
-                            var articleId = dataReader["ArticleId"];
-                            if (articleId != DBNull.Value)
-                                galleryItem.ArticleId = (Guid)articleId;
-
-                            galleryItem.Description = (string)dataReader["Description"];
-                            galleryItem.Timestamp = (DateTime)dataReader["Timestamp"];
-
+                            var galleryItem = new GalleryItem(dataReader);
                             return galleryItem;
                         }
                     }

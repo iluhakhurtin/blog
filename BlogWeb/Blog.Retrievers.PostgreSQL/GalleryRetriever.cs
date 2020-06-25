@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blog.Domain;
 using Blog.Retrievers.Article;
 using Blog.Retrievers.Gallery;
 using Npgsql;
@@ -12,6 +13,50 @@ namespace Blog.Retrievers.PostgreSQL
         public GalleryRetriever(string connectionString)
             : base(connectionString)
         {
+        }
+
+        public async Task<GalleryPagedItemsList> GetGalleryItemsPagedAsync(int pageNumber, int pageSize)
+        {
+            var galleryPagedItemsList = new GalleryPagedItemsList(pageNumber, pageSize);
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
+            {
+                string sql = @"SELECT
+                                    COUNT(1) OVER()		AS ""ResultsCount"",
+                                    ""Id"",
+                                    ""ImageId"",
+                                    ""SmallPreviewFileId"",
+                                    ""ArticleId"",
+                                    ""Description"",
+                                    ""Timestamp""
+                                    FROM ""Gallery""
+                                    LIMIT :PageSize
+                                    OFFSET(:PageNumber - 1) * :PageSize;
+                                    ";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("PageNumber", pageNumber);
+                    command.Parameters.AddWithValue("PageSize", pageSize);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader dataReader = await command.ExecuteReaderAsync())
+                    {
+                        while (dataReader.Read())
+                        {
+                            if (galleryPagedItemsList.TotalResultsCount == 0)
+                                galleryPagedItemsList.TotalResultsCount = Convert.ToInt32(dataReader["ResultsCount"]);
+
+                            var galleryItem = new GalleryItem(dataReader);
+
+                            galleryPagedItemsList.AddItem(galleryItem);
+                        }
+                    }
+                }
+            }
+
+            return galleryPagedItemsList;
         }
 
         public async Task<GalleryPagedDataTable> GetGalleryPagedAsync(string smallFileNameFilter, string previewFileNameFilter,

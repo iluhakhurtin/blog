@@ -11,4 +11,7 @@
     <Folder Include="File\" />
     <Folder Include="Gallery\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Blog.Domain\Blog.Domain.csproj" />
+  </ItemGroup>
 </Project>

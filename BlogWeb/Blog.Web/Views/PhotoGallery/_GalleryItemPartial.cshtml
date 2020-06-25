@@ -1,0 +1,6 @@
+﻿@model Blog.Domain.GalleryItem
+
+<a class="gallery-item" asp-controller="Gallery" asp-action="Preview" asp-route-id="@Model.Id">
+    <img class="preview" src='@Url.Action("Index", "File", new { id = Model.SmallPreviewFileId })' />
+    <span class="title center">@Model.Description</span>
+</a>

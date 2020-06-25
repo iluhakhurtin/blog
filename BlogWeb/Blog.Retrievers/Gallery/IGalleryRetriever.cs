@@ -15,5 +15,9 @@ namespace Blog.Retrievers.Gallery
             string sortOrder,
             int pageNumber,
             int pageSize);
+
+        Task<GalleryPagedItemsList> GetGalleryItemsPagedAsync(
+            int pageNumber,
+            int pageSize);
     }
 }

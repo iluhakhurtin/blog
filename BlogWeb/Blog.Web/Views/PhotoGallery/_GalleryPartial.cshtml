@@ -1,0 +1,25 @@
+﻿@model IList<Blog.Domain.GalleryItem>
+
+<div class="gallery container">
+    @{
+        int countInRow = 3;
+    }
+
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        if (i % countInRow == 0)
+        {
+            @:<div class="row">
+            }
+
+            <div class="col-4">
+                @await Html.PartialAsync("_GalleryItemPartial", Model[i])
+            </div>
+
+            if (i % countInRow == (countInRow - 1))
+            {
+            @:</div>
+        }
+    }
+
+</div>

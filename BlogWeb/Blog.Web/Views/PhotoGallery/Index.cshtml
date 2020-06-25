@@ -1,0 +1,17 @@
+﻿@model Blog.Web.Models.Gallery.PhotoGalleryViewModel
+
+@{
+    ViewData["Title"] = "Фотогалерея";
+}
+
+@section Stylesheets {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/gallery/_gallery-partial.css">
+        <link rel="stylesheet" href="~/css/gallery/index.css">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/gallery/index.min.css">
+    </environment>
+}
+
+@await Html.PartialAsync("_GalleryPartial", Model.GalleryItems)
