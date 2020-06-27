@@ -27,6 +27,7 @@ namespace Blog.Retrievers.PostgreSQL
                                     ""ImageId"",
                                     ""SmallPreviewFileId"",
                                     ""ArticleId"",
+                                    ""Title"",
                                     ""Description"",
                                     ""Timestamp""
                                     FROM ""Gallery""
@@ -60,7 +61,7 @@ namespace Blog.Retrievers.PostgreSQL
         }
 
         public async Task<GalleryPagedDataTable> GetGalleryPagedAsync(string smallFileNameFilter, string previewFileNameFilter,
-            string originalFileNameFilter, string articleTitleFilter, string descriptionFilter, string sortColumn, string sortOrder,
+            string originalFileNameFilter, string articleTitleFilter, string titleFilter, string descriptionFilter, string sortColumn, string sortOrder,
             int pageNumber, int pageSize)
         {
             var galleryPagedDataTable = new GalleryPagedDataTable(pageNumber, pageSize);
@@ -83,6 +84,7 @@ namespace Blog.Retrievers.PostgreSQL
 	                                        of.""Name""         AS ""OriginalFileName"",
 	                                        a.""Id""            AS ""ArticleId"",
 	                                        a.""Title""         AS ""ArticleTitle"",
+                                            g.""Title""         AS ""Title"",
 	                                        g.""Description""   AS ""Description"",
 	                                        g.""Timestamp""     AS ""Timestamp""
 	                                        FROM ""Gallery"" g
@@ -95,6 +97,7 @@ namespace Blog.Retrievers.PostgreSQL
                                                 AND :PreviewFileNameFilter IS NULL OR pf.""Name"" ILIKE('%' || :PreviewFileNameFilter || '%')
                                                 AND :OriginalFileNameFilter IS NULL OR of.""Name"" ILIKE('%' || :OriginalFileNameFilter || '%')
                                                 AND :ArticleTitleFilter IS NULL OR a.""Title"" ILIKE('%' || :ArticleTitleFilter || '%')
+                                                AND :TitleFilter IS NULL OR g.""Title"" ILIKE('%' || :TitleFilter || '%')
                                                 AND :DescriptionFilter IS NULL OR g.""Description"" ILIKE('%' || :DescriptionFilter || '%')
                                     ) AS Result
                                     ORDER BY
@@ -104,8 +107,9 @@ namespace Blog.Retrievers.PostgreSQL
                                                     WHEN :SortColumn = 'SmallFileName' THEN CAST(""SmallFileName"" AS text)
                                                     WHEN :SortColumn = 'PreviewFileName' THEN CAST(""PreviewFileName"" AS text)
                                                     WHEN :SortColumn = 'OriginalFileName' THEN CAST(""OriginalFileName"" AS text)
-                                                    WHEN :SortColumn = 'OriginalFileName' THEN CAST(""ArticleTitle"" AS text)
-                                                    WHEN :SortColumn = 'OriginalFileName' THEN CAST(""Description"" AS text)
+                                                    WHEN :SortColumn = 'ArticleTitle' THEN CAST(""ArticleTitle"" AS text)
+                                                    WHEN :SortColumn = 'Title' THEN CAST(""Title"" AS text)
+                                                    WHEN :SortColumn = 'Description' THEN CAST(""Description"" AS text)
                                                     WHEN :SortColumn = 'Timestamp' THEN CAST(""Timestamp"" AS text)
 					                                ELSE CAST(""Id"" AS text)
 				                                END
@@ -116,8 +120,9 @@ namespace Blog.Retrievers.PostgreSQL
                                                     WHEN :SortColumn = 'SmallFileName' THEN CAST(""SmallFileName"" AS text)
                                                     WHEN :SortColumn = 'PreviewFileName' THEN CAST(""PreviewFileName"" AS text)
                                                     WHEN :SortColumn = 'OriginalFileName' THEN CAST(""OriginalFileName"" AS text)
-                                                    WHEN :SortColumn = 'OriginalFileName' THEN CAST(""ArticleTitle"" AS text)
-                                                    WHEN :SortColumn = 'OriginalFileName' THEN CAST(""Description"" AS text)
+                                                    WHEN :SortColumn = 'ArticleTitle' THEN CAST(""ArticleTitle"" AS text)
+                                                    WHEN :SortColumn = 'Title' THEN CAST(""Title"" AS text)
+                                                    WHEN :SortColumn = 'Description' THEN CAST(""Description"" AS text)
                                                     WHEN :SortColumn = 'Timestamp' THEN CAST(""Timestamp"" AS text)
 					                                ELSE CAST(""Id"" AS text)
 				                                END
@@ -138,6 +143,9 @@ namespace Blog.Retrievers.PostgreSQL
                     command.Parameters.Add(filterParam);
 
                     filterParam = new NpgsqlParameter<string>("ArticleTitleFilter", articleTitleFilter);
+                    command.Parameters.Add(filterParam);
+
+                    filterParam = new NpgsqlParameter<string>("TitleFilter", titleFilter);
                     command.Parameters.Add(filterParam);
 
                     filterParam = new NpgsqlParameter<string>("DescriptionFilter", descriptionFilter);
@@ -173,6 +181,7 @@ namespace Blog.Retrievers.PostgreSQL
                                 dataReader[GalleryPagedDataTable.OriginalFileName],
                                 dataReader[GalleryPagedDataTable.ArticleId],
                                 dataReader[GalleryPagedDataTable.ArticleTitle],
+                                dataReader[GalleryPagedDataTable.Title],
                                 dataReader[GalleryPagedDataTable.Description],
                                 timestampStr);
                         }

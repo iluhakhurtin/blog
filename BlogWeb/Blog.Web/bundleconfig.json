@@ -75,6 +75,14 @@
       "wwwroot/css/article/index.css"
     ]
   },
+  {
+    "outputFileName": "wwwroot/css/photo-gallery/index.min.css",
+    "inputFiles": [
+      "wwwroot/css/photo-gallery/_gallery-item-partial.css",
+      "wwwroot/css/photo-gallery/_gallery-partial.css",
+      "wwwroot/css/photo-gallery/index.css"
+    ]
+  },
 
   //Minify Partial Componentss scripts and css files
 

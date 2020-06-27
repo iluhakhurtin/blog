@@ -57,6 +57,7 @@ namespace Blog.Web.Controllers.Administration
                 string previewFileName = null;
                 string originalFileName = null;
                 string articleTitle = null;
+                string title = null;
                 string description = null;
 
 
@@ -67,6 +68,7 @@ namespace Blog.Web.Controllers.Administration
                     previewFileName = filter.GetFilterByFieldName(GalleryPagedDataTable.PreviewFileName);
                     originalFileName = filter.GetFilterByFieldName(GalleryPagedDataTable.OriginalFileName);
                     articleTitle = filter.GetFilterByFieldName(GalleryPagedDataTable.ArticleTitle);
+                    title = filter.GetFilterByFieldName(GalleryPagedDataTable.Title);
                     description = filter.GetFilterByFieldName(GalleryPagedDataTable.Description);
                 }
 
@@ -75,6 +77,7 @@ namespace Blog.Web.Controllers.Administration
                     previewFileName,
                     originalFileName,
                     articleTitle,
+                    title,
                     description,
                     sidx,
                     sord,
@@ -107,6 +110,7 @@ namespace Blog.Web.Controllers.Administration
             [FromForm] string smallFileId,
             [FromForm]string imageId,
             [FromForm]string articleId,
+            [FromForm]string title,
             [FromForm]string description)
         {
 
@@ -115,10 +119,10 @@ namespace Blog.Web.Controllers.Administration
                 switch (oper)
                 {
                     case jqGridActions.Add:
-                        return await this.AddGalleryItem(smallFileId, imageId, articleId, description);
+                        return await this.AddGalleryItem(smallFileId, imageId, articleId, title, description);
 
                     case jqGridActions.Edit:
-                        return await this.EditGalleryItem(id, smallFileId, imageId, articleId, description);
+                        return await this.EditGalleryItem(id, smallFileId, imageId, articleId, title, description);
 
                     case jqGridActions.Delete:
                         return await this.DeleteGalleryItem(id);
@@ -138,9 +142,10 @@ namespace Blog.Web.Controllers.Administration
             string smallFileId,
             string imageId,
             string articleId,
+            string title,
             string description)
         {
-            var error = await this.galleryService.AddGalleryItem(smallFileId, imageId, articleId, description);
+            var error = await this.galleryService.AddGalleryItem(smallFileId, imageId, articleId, title, description);
 
             if (!String.IsNullOrEmpty(error))
             {
@@ -157,9 +162,10 @@ namespace Blog.Web.Controllers.Administration
             string smallFileId,
             string imageId,
             string articleId,
+            string title,
             string description)
         {
-            var error = await this.galleryService.EditGalleryItem(id, smallFileId, imageId, articleId, description);
+            var error = await this.galleryService.EditGalleryItem(id, smallFileId, imageId, articleId, title, description);
 
             if (!String.IsNullOrEmpty(error))
             {

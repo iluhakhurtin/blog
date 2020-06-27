@@ -10,6 +10,7 @@ namespace Blog.Retrievers.Gallery
             string previewFileNameFilter,
             string originalFileNameFilter,
             string articleTitleFilter,
+            string titleFilter,
             string descriptionFilter,
             string sortColumn,
             string sortOrder,

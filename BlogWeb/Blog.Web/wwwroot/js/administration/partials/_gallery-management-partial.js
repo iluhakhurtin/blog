@@ -84,6 +84,17 @@
                     }
                 },
                 {
+                    label: 'Title',
+                    name: 'Title',
+                    width: 80,
+                    editable: true,
+                    //word wrap
+                    cellattr: function (rowId, tv, rawObject, cm, rdata) {
+                        return 'style="white-space: normal;"';
+                    },
+                    edittype: 'text'
+                },
+                {
                     label: 'Description',
                     name: 'Description',
                     width: 80,

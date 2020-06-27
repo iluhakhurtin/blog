@@ -14,6 +14,7 @@ namespace Blog.Retrievers.Gallery
         public const string OriginalFileName = "OriginalFileName";
         public const string ArticleId = "ArticleId";
         public const string ArticleTitle = "ArticleTitle";
+        public const string Title = "Title";
         public const string Description = "Description";
         public const string Timestamp = "Timestamp";
 
@@ -53,6 +54,9 @@ namespace Blog.Retrievers.Gallery
             base.Columns.Add(column);
 
             column = new DataColumn(ArticleTitle, typeof(string));
+            base.Columns.Add(column);
+
+            column = new DataColumn(Title, typeof(string));
             base.Columns.Add(column);
 
             column = new DataColumn(Description, typeof(string));

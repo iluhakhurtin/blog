@@ -14,6 +14,7 @@ namespace Blog.Services
             string smallFileId,
             string imageId,
             string articleId,
+            string title,
             string description);
 
         Task<string> EditGalleryItem(
@@ -21,6 +22,7 @@ namespace Blog.Services
             string smallFileId,
             string imageId,
             string articleId,
+            string title,
             string description);
     }
 
@@ -37,6 +39,7 @@ namespace Blog.Services
             string smallFileId,
             string imageId,
             string articleId,
+            string title,
             string description)
         {
             var galleryItem = new GalleryItem();
@@ -45,6 +48,7 @@ namespace Blog.Services
             if (!string.IsNullOrEmpty(articleId))
                 galleryItem.ArticleId = Guid.Parse(articleId);
 
+            galleryItem.Title = title;
             galleryItem.Description = description;
 
             await this.galleryRepository.AddAsync(galleryItem);
@@ -57,6 +61,7 @@ namespace Blog.Services
             string smallFileId,
             string imageId,
             string articleId,
+            string title,
             string description)
         {
             var galleryItemId = Guid.Parse(id);
@@ -68,6 +73,7 @@ namespace Blog.Services
             if (!string.IsNullOrEmpty(articleId))
                 galleryItem.ArticleId = Guid.Parse(articleId);
 
+            galleryItem.Title = title;
             galleryItem.Description = description;
 
             await this.galleryRepository.UpdateAsync(galleryItem);

@@ -23,6 +23,7 @@ namespace Blog.Repositories.PostgreSQL
 	                    ""ImageId"",
                         ""SmallPreviewFileId"",
                         ""ArticleId"",
+                        ""Title"",
                         ""Description"",
                         ""Timestamp""
                     )
@@ -31,6 +32,7 @@ namespace Blog.Repositories.PostgreSQL
 	                    :ImageId,
 	                    :SmallPreviewFileId,
                         :ArticleId,
+                        :Title,
                         :Description,
                         :Timestamp
 	                );
@@ -42,6 +44,7 @@ namespace Blog.Repositories.PostgreSQL
                     command.Parameters.AddWithValue(":ImageId", galleryItem.ImageId);
                     command.Parameters.AddWithValue(":SmallPreviewFileId", galleryItem.SmallPreviewFileId);
                     command.Parameters.AddWithValue(":ArticleId", galleryItem.ArticleId ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue(":Title", galleryItem.Title);
                     command.Parameters.AddWithValue(":Description", galleryItem.Description);
 
                     var timestamp = command.CreateParameter();
@@ -67,6 +70,7 @@ namespace Blog.Repositories.PostgreSQL
                         ""ImageId"" = :ImageId,
 	                    ""SmallPreviewFileId"" = :SmallPreviewFileId, 
 	                    ""ArticleId"" = :ArticleId,
+                        ""Title"" = :Title,
                         ""Description"" = :Description,
                         ""Timestamp"" = :Timestamp
                     WHERE ""Id"" = :Id;
@@ -78,6 +82,7 @@ namespace Blog.Repositories.PostgreSQL
                     command.Parameters.AddWithValue(":ImageId", galleryItem.ImageId);
                     command.Parameters.AddWithValue(":SmallPreviewFileId", galleryItem.SmallPreviewFileId);
                     command.Parameters.AddWithValue(":ArticleId", galleryItem.ArticleId ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue(":Title", galleryItem.Title);
                     command.Parameters.AddWithValue(":Description", galleryItem.Description);
 
                     var timestamp = command.CreateParameter();
@@ -104,6 +109,7 @@ namespace Blog.Repositories.PostgreSQL
                         ""ImageId"",
                         ""SmallPreviewFileId"",
                         ""ArticleId"",
+                        ""Title"",
                         ""Description"",
                         ""Timestamp""
                         FROM ""Gallery""

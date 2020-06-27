@@ -8,6 +8,7 @@ namespace Blog.Domain
         public virtual Guid SmallPreviewFileId { get; set; }
         public virtual Guid ImageId { get; set; }
         public virtual Guid? ArticleId { get; set; }
+        public virtual string Title { get; set; }
         public virtual string Description { get; set; }
         public virtual DateTime Timestamp { get; set; }
 
@@ -63,7 +64,14 @@ namespace Blog.Domain
             if (articleId != DBNull.Value)
                 this.ArticleId = (Guid)articleId;
 
-            this.Description = (string)dataReader["Description"];
+            var title = dataReader["Title"];
+            if (title != DBNull.Value)
+                this.Title = (string)title;
+
+            var description = dataReader["Description"];
+            if(description != DBNull.Value)
+                this.Description = (string)description;
+
             this.Timestamp = (DateTime)dataReader["Timestamp"];
         }
     }
