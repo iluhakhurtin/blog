@@ -83,6 +83,12 @@
       "wwwroot/css/photo-gallery/index.css"
     ]
   },
+  {
+    "outputFileName": "wwwroot/css/photo-gallery/preview.min.css",
+    "inputFiles": [
+      "wwwroot/css/photo-gallery/preview.css"
+    ]
+  },
 
   //Minify Partial Componentss scripts and css files
 
