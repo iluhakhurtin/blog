@@ -19,11 +19,13 @@ namespace Blog.Web.Controllers
     public class PhotoGalleryController : BaseController
     {
         private readonly IGalleryRetriever galleryRetriever;
+        private readonly IGalleryRepository galleryRepository;
 
-        public PhotoGalleryController(ILog log, IRetrievers retrievers)
+        public PhotoGalleryController(ILog log, IRetrievers retrievers, IRepositories repositories)
             : base(log)
         {
             this.galleryRetriever = retrievers.GalleryRetriever;
+            this.galleryRepository = repositories.GalleryRepository;
         }
 
 
@@ -34,6 +36,23 @@ namespace Blog.Web.Controllers
             {
                 var galleryItems = await this.galleryRetriever.GetGalleryItemsPagedAsync(pageNumber, pageSize);
                 var viewModel = new PhotoGalleryViewModel(galleryItems);
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                if (base.log.IsErrorEnabled)
+                    base.log.Error(ex);
+
+                return base.NotFound();
+            }
+        }
+
+        public async Task<IActionResult> Preview(Guid id)
+        {
+            try
+            {
+                var galleryItem = await this.galleryRepository.GetAsync(id);
+                var viewModel = new PhotoGalleryPreviewViewModel(galleryItem);
                 return View(viewModel);
             }
             catch (Exception ex)

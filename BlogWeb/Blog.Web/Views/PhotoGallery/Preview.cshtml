@@ -1,0 +1,28 @@
+﻿@model Blog.Web.Models.Gallery.PhotoGalleryPreviewViewModel
+
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+
+@section Stylesheets {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/photo-gallery/preview.css">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/photo-gallery/preview.min.css">
+    </environment>
+}
+
+<div class="preview container">
+    <div class="row">
+        <img src='@Url.Action("Preview", "Image", new { id = Model.ImageId })' />
+    </div>
+    <div class="row">
+        <a class="title text-center" href='@Url.Action("Original", "Image", new { id = Model.ImageId })'>
+            <span>@Model.PhotoTitle</span>
+        </a>
+    </div>
+    <div class="row">
+        <span class="description">@Model.PhotoDescription</span>
+    </div>
+</div>
