@@ -52,14 +52,9 @@ namespace Blog.Web
             ILog log = this.BuildLog(configurationService.ConfigurationRoot);
             serviceCollection.AddSingleton<ILog>(log);
 
-            RoleManager<ApplicationRole> roleManager = null;
-            foreach (var item in serviceCollection)
-            {
-                if(item.ServiceType == typeof(RoleManager<ApplicationRole>))
-                {
-                    roleManager = (RoleManager<ApplicationRole>)item.ImplementationInstance;
-                }
-            }
+            
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            RoleManager<ApplicationRole> roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             IServices services = this.BuildServices(repositories, retrievers, roleManager);
             serviceCollection.AddSingleton<IServices>(services);
         }
