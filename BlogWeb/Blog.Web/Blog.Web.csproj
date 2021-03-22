@@ -57,6 +57,7 @@
     <Folder Include="Views\PhotoGallery\" />
     <Folder Include="Models\PhotoGallery\" />
     <Folder Include="wwwroot\css\photo-gallery\" />
+    <Folder Include="wwwroot\css\shared\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />

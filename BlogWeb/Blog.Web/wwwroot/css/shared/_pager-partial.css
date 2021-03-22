@@ -1,0 +1,9 @@
+﻿.pager .page-item .page-link {
+    background-color: transparent;
+}
+
+.pager .page-item.active .page-link {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(0,0,0,0.7);
+}

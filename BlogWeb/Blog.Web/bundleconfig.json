@@ -80,7 +80,8 @@
     "inputFiles": [
       "wwwroot/css/photo-gallery/_gallery-item-partial.css",
       "wwwroot/css/photo-gallery/_gallery-partial.css",
-      "wwwroot/css/photo-gallery/index.css"
+      "wwwroot/css/photo-gallery/index.css",
+      "wwwroot/css/shared/_pager-partial.css"
     ]
   },
   {

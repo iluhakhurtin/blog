@@ -1,0 +1,27 @@
+﻿@model IPagerViewModel
+
+<div class="pager">
+    <ul class="pagination pagination-sm justify-content-center">
+
+        <li class="page-item">
+            <a asp-route-pageNumber="1" class="page-link" aria-label="First">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">First</span>
+            </a>
+        </li>
+
+        @for (var i = 1; i <= @Model.TotalPagesCount; i++)
+        {
+            <li class="page-item @(i == @Model.PageNumber ? "active" : "")">
+                <a asp-route-pageNumber="@i" class="page-link">@i</a>
+            </li>
+        }
+
+        <li class="page-item">
+            <a asp-route-pageNumber="@Model.TotalPagesCount" class="page-link" aria-label="Last">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Last</span>
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,32 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
+using Blog.Retrievers.Pagination;
 
 namespace Blog.Retrievers
 {
-    public abstract class PagedItemsList<T>
+    public abstract class PagedItemsList<T> : IPagedItem
     {
+        private IPagedItem pagedItem;
+
         public List<T> Items { get; set; }
-        public int TotalResultsCount { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+
+        #region IPagination Members
+
+        public int TotalResultsCount
+        {
+            get
+            {
+                return this.pagedItem.TotalResultsCount;
+            }
+
+            set
+            {
+                this.pagedItem.TotalResultsCount = value;
+            }
+        }
+
+        public int PageNumber
+        {
+            get
+            {
+                return this.pagedItem.PageNumber;
+            }
+
+            set
+            {
+                this.pagedItem.PageNumber = value;
+            }
+        }
+
+        public int PageSize
+        {
+            get
+            {
+                return this.pagedItem.PageSize;
+            }
+
+            set
+            {
+                this.pagedItem.PageSize = value;
+            }
+        }
 
         public int TotalPagesCount
         {
             get
             {
-                return this.GetTotalPagesCount();
+                return this.pagedItem.TotalPagesCount;
             }
         }
 
-        public int GetTotalPagesCount()
-        {
-            if (this.PageSize < 1)
-                this.PageSize = 1;
-
-            int totalPages = (this.TotalResultsCount + this.PageSize - 1) / this.PageSize;
-            return totalPages;
-        }
+        #endregion
 
         protected PagedItemsList()
             : this(0, 0)
@@ -37,8 +69,8 @@ namespace Blog.Retrievers
         public PagedItemsList(int pageNumber, int pageSize)
         {
             this.Items = new List<T>();
-            this.PageNumber = pageNumber;
-            this.PageSize = pageSize;
+
+            this.pagedItem = new PagedItem(pageNumber, pageSize);
         }
 
         public void AddItem(T item)

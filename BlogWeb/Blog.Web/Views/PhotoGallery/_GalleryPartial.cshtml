@@ -10,14 +10,14 @@
         if (i % countInRow == 0)
         {
             @:<div class="row">
-            }
+        }
 
-            <div class="col-4">
-                @await Html.PartialAsync("_GalleryItemPartial", Model[i])
-            </div>
+        <div class="col-4">
+            @await Html.PartialAsync("_GalleryItemPartial", Model[i])
+        </div>
 
-            if (i % countInRow == (countInRow - 1))
-            {
+        if (i % countInRow == (countInRow - 1))
+        {
             @:</div>
         }
     }

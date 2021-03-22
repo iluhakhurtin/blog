@@ -5,8 +5,16 @@ using Blog.Retrievers.Gallery;
 
 namespace Blog.Web.Models.Gallery
 {
-    public class PhotoGalleryViewModel
+    public class PhotoGalleryViewModel : IPagerViewModel
     {
+        #region IPaginationViewModel Props
+
+        public int TotalPagesCount { get; set; }
+
+        public int PageNumber { get; set; }
+
+        #endregion
+
         public List<GalleryItem> GalleryItems { get; set; }
 
         public PhotoGalleryViewModel()
@@ -17,6 +25,8 @@ namespace Blog.Web.Models.Gallery
         public PhotoGalleryViewModel(GalleryPagedItemsList galleryPagedItemsList)
             : this(galleryPagedItemsList.Items)
         {
+            this.TotalPagesCount = galleryPagedItemsList.TotalPagesCount;
+            this.PageNumber = galleryPagedItemsList.PageNumber;
         }
 
         public PhotoGalleryViewModel(IEnumerable<GalleryItem> galleryItems)
