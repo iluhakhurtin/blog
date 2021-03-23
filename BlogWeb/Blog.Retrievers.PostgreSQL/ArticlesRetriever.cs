@@ -200,7 +200,7 @@ namespace Blog.Retrievers.PostgreSQL
                     command.Parameters.AddWithValue("CategoryId", categoryId);
 
                     var rolesParam = new NpgsqlParameter("Roles", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Text);
-                    rolesParam.Value = roles;
+                    rolesParam.Value = roles == null ? (object)DBNull.Value : (object)roles;
                     command.Parameters.Add(rolesParam);
 
                     await connection.OpenAsync();
