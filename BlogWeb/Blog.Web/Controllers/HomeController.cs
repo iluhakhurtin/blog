@@ -26,16 +26,13 @@ namespace Blog.Web.Controllers
             this.articlesRetriever = retrievers.ArticlesRetriever;
         }
 
-        public async Task<IActionResult> Index(int count)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
         {
             try
             {
-                if (count == 0)
-                    count = 24;
-
                 var userRoles = await base.GetUserRoles();
-                var articles = await this.articlesRetriever.GetLatestArticles(count, userRoles);
-                var viewModel = new HomeViewModel(articles);
+                var articleItems = await this.articlesRetriever.GetLatestArticleItemsPagedAsync(pageNumber, pageSize, userRoles);
+                var viewModel = new HomeViewModel(articleItems);
                 return View(viewModel);
             }
             catch(Exception ex)

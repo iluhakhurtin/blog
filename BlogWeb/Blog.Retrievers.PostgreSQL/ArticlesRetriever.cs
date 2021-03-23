@@ -292,13 +292,14 @@ namespace Blog.Retrievers.PostgreSQL
             return result;
         }
 
-        public async Task<IList<ArticleDataResult>> GetLatestArticles(int count, IEnumerable<string> roles)
+        public async Task<ArticleDataResultPagedItemsList> GetLatestArticleItemsPagedAsync(int pageNumber, int pageSize, IEnumerable<string> roles)
         {
-            var result = new List<ArticleDataResult>();
+            var articleDataResultPagedItemsList = new ArticleDataResultPagedItemsList(pageNumber, pageSize);
 
             using (NpgsqlConnection connection = new NpgsqlConnection(base.connectionString))
             {
                 string sql = @"SELECT
+                                    COUNT(1) OVER()		AS ""ResultsCount"",
                                     a.""Id"",
                                     a.""Title"",
                                     a.""CoverFileId""
@@ -307,12 +308,14 @@ namespace Blog.Retrievers.PostgreSQL
                                     LEFT JOIN ""AspNetRoles"" r ON r.""Id"" = ar.""RoleId""
                                     WHERE r.""Name"" IS NULL OR r.""Name"" = ANY(:Roles)
                                     ORDER BY ""Timestamp"" DESC
-                                    LIMIT :Count
+                                    LIMIT :PageSize
+                                    OFFSET(:PageNumber - 1) * :PageSize;
                             ";
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("Count", count);
+                    command.Parameters.AddWithValue("PageNumber", pageNumber);
+                    command.Parameters.AddWithValue("PageSize", pageSize);
 
                     var rolesParam = new NpgsqlParameter("Roles", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Text);
                     rolesParam.Value = roles;
@@ -324,24 +327,17 @@ namespace Blog.Retrievers.PostgreSQL
                     {
                         while (await dataReader.ReadAsync())
                         {
-                            Guid? coverFileId = null;
-                            if (dataReader["CoverFileId"] != DBNull.Value)
-                                coverFileId = (Guid)dataReader["CoverFileId"];
+                            if (articleDataResultPagedItemsList.TotalResultsCount == 0)
+                                articleDataResultPagedItemsList.TotalResultsCount = Convert.ToInt32(dataReader["ResultsCount"]);
 
-                            var item = new ArticleDataResult
-                            {
-                                Id = (Guid)dataReader["Id"],
-                                Title = (string)dataReader["Title"],
-                                CoverFileId = coverFileId
-                            };
-
-                            result.Add(item);
+                            var item = new ArticleDataResult(dataReader);
+                            articleDataResultPagedItemsList.AddItem(item);
                         }
                     }
                 }
             }
 
-            return result;
+            return articleDataResultPagedItemsList;
         }
     }
 }
