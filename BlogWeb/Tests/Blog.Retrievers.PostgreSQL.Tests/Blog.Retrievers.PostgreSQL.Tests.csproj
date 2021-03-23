@@ -31,7 +31,7 @@
     <ProjectReference Include="..\..\Blog.Repositories.PostgreSQL\Blog.Repositories.PostgreSQL.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Article\" />
+    <Folder Include="Tests\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

@@ -6,11 +6,12 @@ using Blog.Retrievers.Article;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
 
-namespace Blog.Retrievers.PostgreSQL.Tests.Article
+namespace Blog.Retrievers.PostgreSQL.Tests.Tests
 {
     public class ArticlesRetriever_Tests : BaseRetrieverTests
     {
         private readonly IArticlesRetriever articlesRetriever;
+
         private readonly IArticlesRepository articlesRepository;
         private readonly IArticleRolesRepository articleRolesRepository;
         private readonly ICategoriesRepository categoriesRepository;
